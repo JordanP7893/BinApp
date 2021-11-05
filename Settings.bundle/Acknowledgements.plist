@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>Root</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Household waste collections, (c) Leeds City Council, 2020, https://datamillnorth.org/dataset/household-waste-collections?q=waste%20collection.  This information is licensed under the terms of the Open Government Licence.
+
+Bringing Sites, (c) Leeds City Council, 2020, https://datamillnorth.org/dataset/bring-sites.  This information is licensed under the terms of the Open Government Licence.
+
+Icons by Icons8 - https://icons8.com</string>
+		</dict>
+	</array>
+</dict>
+</plist>
