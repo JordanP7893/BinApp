@@ -42,8 +42,10 @@ class LocationModalViewController: UIViewController {
         
         if firstTimeOpeningApp {
             self.isModalInPresentation = true
+            /*
             cancelButton.isEnabled = false
             cancelButton.tintColor = UIColor.clear
+            */
         }
         
         setupView()
