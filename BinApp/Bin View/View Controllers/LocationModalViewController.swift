@@ -103,7 +103,9 @@ class LocationModalViewController: UIViewController {
         
         binAddressDataController.fetchAddress(postcode: postcodeToSearch) { addresses in
             guard let addresses = addresses else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve address data. Please check your connection and try again")
+                DispatchQueue.main.async {
+                    self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve address data. Please check your connection and try again")
+                }
                 return
             }
             self.addresses.removeAll()
@@ -111,8 +113,8 @@ class LocationModalViewController: UIViewController {
             if addresses.count == 0 {
                 DispatchQueue.main.async {
                     self.errorAlertController.showErrorAlertView(in: self, with: "Postcode not found", and: "Please check that your postcode is valid for Leeds")
+                    self.hidePickerView()
                 }
-                self.hidePickerView()
                 return
             }
             
