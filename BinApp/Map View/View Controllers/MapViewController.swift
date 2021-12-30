@@ -35,8 +35,6 @@ class MapViewController: UIViewController {
             }
         }
         
-        mapView.userTrackingMode = .none
-        
         setupUserTrackingButton()
         registerForAnnotationViewClasses()
         getMapPins()
@@ -68,6 +66,7 @@ class MapViewController: UIViewController {
     
     func setupUserTrackingButton() {
         let button = MKUserTrackingButton(mapView: mapView)
+        
         button.backgroundColor = UIColor.secondarySystemBackground
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = false
@@ -126,42 +125,65 @@ class MapViewController: UIViewController {
     }
     
     func addAnnotationsToMap() {
-        var recyclingMapPins: [MapPin] = []
+        guard let currentLocation = locationManager.location else {return}
+        
         if let allRecyclingLocions = allRecyclingLocations {
             mapView.removeAnnotations(allRecyclingLocions)
             
-            for pin in allRecyclingLocions {
-                if pin.type == selectedRecyclingType.description {
-                    pin.distance = distance(to: pin.coordinate)
-                    recyclingMapPins.append(pin)
-                }
-            }
-            let sortedMapPins = orderPinsByDistance(mapPins: recyclingMapPins)
+            guard let sortedMapPins = orderMap(pins: allRecyclingLocions, asDistancefrom: currentLocation) else {return}
             
             self.selectedRecyclingLocations = sortedMapPins
-            mapView.addAnnotations(recyclingMapPins)
+            mapView.addAnnotations(sortedMapPins)
         }
     }
     
-    func orderPinsByDistance(mapPins: [MapPin]) -> [MapPin]? {
+    func orderMap(pins: [MapPin], asDistancefrom location: CLLocation) -> [MapPin]? {
+        var recyclingMapPins: [MapPin] = []
         
-        let sortedPins = mapPins.sorted { (pin1, pin2) -> Bool in
+        for pin in pins {
+            if pin.type == selectedRecyclingType.description {
+                pin.distance = distance(from: location, to: pin.coordinate)
+                recyclingMapPins.append(pin)
+            }
+        }
+        
+        let sortedMapPins = recyclingMapPins.sorted { (pin1, pin2) -> Bool in
             guard let distance1 = pin1.distance, let distance2 = pin2.distance else { return false }
             return distance1 < distance2
         }
         
-        return sortedPins
+        return sortedMapPins
     }
     
-    func distance(to coordinates: CLLocationCoordinate2D) -> CLLocationDistance? {
-        guard let currentLocation = locationManager.location else {return nil}
-        
+    func distance(from location: CLLocation, to coordinates: CLLocationCoordinate2D) -> CLLocationDistance? {
         let latitude = coordinates.latitude
         let longitude = coordinates.longitude
         
-        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let pinLocation = CLLocation(latitude: latitude, longitude: longitude)
         
-        return location.distance(from: currentLocation)
+        return location.distance(from: pinLocation)
+    }
+    
+    func zoomMapOnNewRegion() {
+        let centerOfMap = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
+        
+        guard let allRecyclingLocations = allRecyclingLocations else {return}
+
+        guard let orderedMapPins = orderMap(pins: allRecyclingLocations, asDistancefrom: centerOfMap) else {return}
+        
+        let furthestPinInRegion = orderedMapPins[4]
+        let furthestPinLatitude = CLLocation(latitude: furthestPinInRegion.coordinate.latitude, longitude: 0)
+        let furthestPinLongitude = CLLocation(latitude: 0, longitude: furthestPinInRegion.coordinate.longitude)
+        
+        let centerOfMapLatitude = CLLocation(latitude: centerOfMap.coordinate.latitude, longitude: 0)
+        let centerOfMapLongitude = CLLocation(latitude: 0, longitude: centerOfMap.coordinate.longitude)
+        
+        let latitudeDistance = centerOfMapLatitude.distance(from: furthestPinLatitude)
+        let longitudeDistance = centerOfMapLongitude.distance(from: furthestPinLongitude)
+        
+        let region = MKCoordinateRegion(center: centerOfMap.coordinate, latitudinalMeters: latitudeDistance * 1.9, longitudinalMeters: longitudeDistance * 1.9)
+        mapView.userTrackingMode = .none
+        mapView.setRegion(region, animated: true)
     }
     
     @IBAction func changedRecyclingType(_ sender: UISegmentedControl) {
@@ -169,6 +191,7 @@ class MapViewController: UIViewController {
         self.selectedRecyclingType = RecyclingType(rawValue: recyclingTypes[sender.selectedSegmentIndex])
         
         addAnnotationsToMap()
+        zoomMapOnNewRegion()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
