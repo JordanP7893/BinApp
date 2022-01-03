@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="OW8-s8-sKm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="OW8-s8-sKm">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -33,7 +33,7 @@
                     <navigationItem key="navigationItem" id="E0Y-lW-SZ9">
                         <nil key="title"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="A0N-iS-I70">
-                            <rect key="frame" x="12" y="5.5" width="339.5" height="33"/>
+                            <rect key="frame" x="12" y="5.5" width="338.5" height="33"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <segments>
                                 <segment title="Glass"/>
@@ -73,7 +73,7 @@
                                 <rect key="frame" x="0.0" y="44.5" width="414" height="55.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="xKg-sQ-V0x" id="aXV-P6-md9">
-                                    <rect key="frame" x="0.0" y="0.0" width="384.5" height="55.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="385.5" height="55.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zOV-WE-e9u">
@@ -341,16 +341,11 @@
                                         <connections>
                                             <action selector="returnKeyPressed:" destination="eLs-si-WLi" eventType="primaryActionTriggered" id="rZO-y2-F8F"/>
                                             <action selector="searchFieldEditted:" destination="eLs-si-WLi" eventType="editingChanged" id="jRI-yb-omh"/>
+                                            <action selector="searchFieldTapped:" destination="eLs-si-WLi" eventType="touchDown" id="chq-LN-Ew7"/>
                                         </connections>
                                     </textField>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="384-et-awp">
-                                <rect key="frame" x="188.5" y="135" width="37" height="17"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Pg9-Bz-ZYF">
                                 <rect key="frame" x="0.0" y="842" width="414" height="260"/>
                                 <subviews>
@@ -376,17 +371,34 @@
                                     <constraint firstAttribute="height" constant="260" id="c52-S1-DYT"/>
                                 </constraints>
                             </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1iD-e6-gbP">
+                                <rect key="frame" x="0.0" y="110" width="414" height="732"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="384-et-awp">
+                                        <rect key="frame" x="188.5" y="30" width="37" height="17"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="384-et-awp" firstAttribute="top" secondItem="1iD-e6-gbP" secondAttribute="top" constant="30" id="Vel-vS-xNR"/>
+                                    <constraint firstItem="384-et-awp" firstAttribute="centerX" secondItem="1iD-e6-gbP" secondAttribute="centerX" id="i8f-mO-5IL"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rkT-vU-uXr"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="1iD-e6-gbP" firstAttribute="leading" secondItem="rkT-vU-uXr" secondAttribute="leading" id="5tA-Fv-1CV"/>
                             <constraint firstItem="dql-0F-GE5" firstAttribute="leading" secondItem="rkT-vU-uXr" secondAttribute="leading" constant="10" id="BG7-14-pXJ"/>
+                            <constraint firstItem="1iD-e6-gbP" firstAttribute="top" secondItem="dql-0F-GE5" secondAttribute="bottom" id="FgJ-tL-O2x"/>
                             <constraint firstItem="Pg9-Bz-ZYF" firstAttribute="leading" secondItem="NIh-0V-8VZ" secondAttribute="leading" id="J0D-LP-WbY"/>
-                            <constraint firstItem="384-et-awp" firstAttribute="centerX" secondItem="NIh-0V-8VZ" secondAttribute="centerX" id="KxK-Wi-A6i"/>
-                            <constraint firstItem="384-et-awp" firstAttribute="top" secondItem="dql-0F-GE5" secondAttribute="bottom" constant="25" id="adk-Oi-Kft"/>
+                            <constraint firstItem="Pg9-Bz-ZYF" firstAttribute="top" secondItem="1iD-e6-gbP" secondAttribute="bottom" id="RjD-gP-rms"/>
+                            <constraint firstItem="rkT-vU-uXr" firstAttribute="trailing" secondItem="1iD-e6-gbP" secondAttribute="trailing" id="Wwu-c8-qPS"/>
                             <constraint firstAttribute="bottom" secondItem="Pg9-Bz-ZYF" secondAttribute="bottom" constant="-260" id="e9V-Lg-Luw"/>
                             <constraint firstAttribute="trailing" secondItem="Pg9-Bz-ZYF" secondAttribute="trailing" id="i5x-i8-tUG"/>
-                            <constraint firstItem="384-et-awp" firstAttribute="centerX" secondItem="NIh-0V-8VZ" secondAttribute="centerX" id="jhO-EH-wPX"/>
                             <constraint firstItem="rkT-vU-uXr" firstAttribute="trailing" secondItem="dql-0F-GE5" secondAttribute="trailing" constant="10" id="lWf-vu-5kW"/>
                             <constraint firstItem="dql-0F-GE5" firstAttribute="top" secondItem="rkT-vU-uXr" secondAttribute="top" constant="20" id="sxe-Tu-tQ4"/>
                         </constraints>
@@ -404,6 +416,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="AddressLabelSuperview" destination="1iD-e6-gbP" id="Yp8-HO-XgU"/>
                         <outlet property="addressLabel" destination="384-et-awp" id="mYj-e9-Rc1"/>
                         <outlet property="addressPicker" destination="Y9B-jr-XgX" id="rMB-lQ-1Pr"/>
                         <outlet property="addressPickerStackView" destination="Pg9-Bz-ZYF" id="0tz-gU-VMk"/>

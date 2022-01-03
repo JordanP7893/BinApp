@@ -20,6 +20,7 @@ class LocationModalViewController: UIViewController {
     @IBOutlet weak var addressPickerStackViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
+    @IBOutlet weak var AddressLabelSuperview: UIView!
     
     let geocoder = CLGeocoder()
     let locationManager = CLLocationManager()
@@ -30,6 +31,7 @@ class LocationModalViewController: UIViewController {
     var addresses: [Int: String] = [:]
     var addressesSorted = [Dictionary<Int, String>.Element]()
     var firstTimeOpeningApp = true
+    var tapGestures: [UITapGestureRecognizer]?
     var selectedAddress: AddressData? {
         didSet {
             updateSaveButton()
@@ -88,14 +90,20 @@ class LocationModalViewController: UIViewController {
     }
     
     func searchForAddress() {
+        removeGestureRecognisers()
         
-        guard let postcodeToSearch = searchField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+        guard let postcode = searchField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode error", and: "Please try entering your postcode again")
             hidePickerView()
             return
         }
         
-        guard postcodeToSearch.count > 4 else {
+        let trimmedString = postcode.replacingOccurrences(of: " ", with: "")
+        let incode = trimmedString.suffix(3)
+        let outcode = trimmedString.dropLast(3)
+        let postcodeToSearch = String(outcode + " " + incode)
+        
+        guard postcode.count > 4 else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode too short", and: "Please enter your full postcode")
             hidePickerView()
             return
@@ -151,6 +159,28 @@ class LocationModalViewController: UIViewController {
         }
     }
     
+    func addTapGestureRecogniser() {
+        removeGestureRecognisers()
+        let tap = UITapGestureRecognizer(target: self, action: #selector(LocationModalViewController.addressLabelTapped))
+        tap.cancelsTouchesInView = false
+        tapGestures?.append(tap)
+        AddressLabelSuperview.addGestureRecognizer(tap)
+    }
+    
+    func removeGestureRecognisers() {
+        if let tapGestures = tapGestures {
+            for tapGesture in tapGestures {
+                AddressLabelSuperview.removeGestureRecognizer(tapGesture)
+            }
+        }
+        tapGestures?.removeAll()
+    }
+    
+    @objc func addressLabelTapped() {
+        searchField.resignFirstResponder()
+        searchForAddress()
+    }
+    
     @IBAction func locationButtonPresses(_ sender: UIButton) {
         locationManager.delegate = self
         searchField.resignFirstResponder()
@@ -176,6 +206,10 @@ class LocationModalViewController: UIViewController {
     
     @IBAction func searchFieldEditted(_ sender: UITextField) {
         locationButton.setImage(UIImage(systemName: "location"), for: .normal)
+    }
+    
+    @IBAction func searchFieldTapped(_ sender: Any) {
+        addTapGestureRecogniser()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

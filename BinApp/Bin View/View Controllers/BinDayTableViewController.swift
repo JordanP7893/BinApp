@@ -107,11 +107,16 @@ class BinDayTableViewController: UITableViewController {
         let binDay = binDays[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "BinDayCell", for: indexPath) as! BinDayTableViewCell
         
-        let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "EEEE, d MMMM"
-        
-        cell.dateLabel.text = "\(dateFormatterPrint.string(from: binDay.date))"
-        
+        if Calendar.current.isDateInToday(binDay.date) {
+            cell.dateLabel.text = "Today"
+        } else if Calendar.current.isDateInTomorrow(binDay.date) {
+            cell.dateLabel.text = "Tomorrow"
+        } else {
+            let dateFormatterPrint = DateFormatter()
+            dateFormatterPrint.dateFormat = "EEEE, d MMMM"
+            cell.dateLabel.text = "\(dateFormatterPrint.string(from: binDay.date))"
+        }
+            
         let binType = binDay.type
         
         if let binImage = UIImage(named: String(binType.description).lowercased()) {
