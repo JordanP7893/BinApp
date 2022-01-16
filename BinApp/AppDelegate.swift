@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
         UIApplication.shared.applicationIconBadgeNumber = 0
+        NotificationCenter.default.post(name: NSNotification.Name("ReloadNotification"), object: nil)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

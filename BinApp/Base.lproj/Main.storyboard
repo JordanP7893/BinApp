@@ -382,10 +382,14 @@
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="384-et-awp" firstAttribute="top" secondItem="1iD-e6-gbP" secondAttribute="top" constant="30" id="Vel-vS-xNR"/>
                                     <constraint firstItem="384-et-awp" firstAttribute="centerX" secondItem="1iD-e6-gbP" secondAttribute="centerX" id="i8f-mO-5IL"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="0ns-Yu-SFJ" appends="YES" id="9EM-gQ-F8W"/>
+                                </connections>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rkT-vU-uXr"/>
@@ -429,6 +433,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZY-wQ-xIp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="NIY-9t-OQ5" userLabel="Exit" sceneMemberID="exit"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="0ns-Yu-SFJ">
+                    <connections>
+                        <action selector="didTapLabelSuperview:" destination="eLs-si-WLi" id="VWh-v3-T29"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1490" y="2035"/>
         </scene>

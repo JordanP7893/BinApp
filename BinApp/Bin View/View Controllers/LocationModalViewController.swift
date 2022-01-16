@@ -31,7 +31,7 @@ class LocationModalViewController: UIViewController {
     var addresses: [Int: String] = [:]
     var addressesSorted = [Dictionary<Int, String>.Element]()
     var firstTimeOpeningApp = true
-    var tapGestures: [UITapGestureRecognizer]?
+    var textFieldActive = false
     var selectedAddress: AddressData? {
         didSet {
             updateSaveButton()
@@ -90,7 +90,7 @@ class LocationModalViewController: UIViewController {
     }
     
     func searchForAddress() {
-        removeGestureRecognisers()
+        textFieldActive = false
         
         guard let postcode = searchField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode error", and: "Please try entering your postcode again")
@@ -159,26 +159,11 @@ class LocationModalViewController: UIViewController {
         }
     }
     
-    func addTapGestureRecogniser() {
-        removeGestureRecognisers()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(LocationModalViewController.addressLabelTapped))
-        tap.cancelsTouchesInView = false
-        tapGestures?.append(tap)
-        AddressLabelSuperview.addGestureRecognizer(tap)
-    }
-    
-    func removeGestureRecognisers() {
-        if let tapGestures = tapGestures {
-            for tapGesture in tapGestures {
-                AddressLabelSuperview.removeGestureRecognizer(tapGesture)
-            }
-        }
-        tapGestures?.removeAll()
-    }
-    
     @objc func addressLabelTapped() {
-        searchField.resignFirstResponder()
-        searchForAddress()
+        if textFieldActive {
+            searchField.resignFirstResponder()
+            searchForAddress()
+        }
     }
     
     @IBAction func locationButtonPresses(_ sender: UIButton) {
@@ -209,7 +194,11 @@ class LocationModalViewController: UIViewController {
     }
     
     @IBAction func searchFieldTapped(_ sender: Any) {
-        addTapGestureRecogniser()
+        textFieldActive = true
+    }
+    
+    @IBAction func didTapLabelSuperview(_ sender: UITapGestureRecognizer) {
+        addressLabelTapped()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

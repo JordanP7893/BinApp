@@ -18,6 +18,7 @@ class BinDayTableViewController: UITableViewController {
     
     var addressID: Int?
     var binDays = [BinDays]()
+    var lastTableReloadDate: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,9 +38,21 @@ class BinDayTableViewController: UITableViewController {
             updateBinLocation()
         }
         
+        NotificationCenter.default.addObserver(self, selector: #selector(checkIfNewDay), name: NSNotification.Name("ReloadNotification"), object: nil)
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
         updateUI()
+    }
+    
+    @objc func checkIfNewDay() {
+        if let lastTableReloadDate = lastTableReloadDate {
+            let currentDate = Date()
+            if currentDate.stripTime() > lastTableReloadDate.stripTime() {
+                updateUI()
+            }
+        } else {
+            updateUI()
+        }
     }
 
     @objc func updateUI() {
@@ -52,6 +65,7 @@ class BinDayTableViewController: UITableViewController {
             return $0.date >= Date().addingTimeInterval(-86400)
         }
         
+        lastTableReloadDate = Date()
         tableView.reloadData()
     }
     
@@ -156,6 +170,16 @@ class BinDayTableViewController: UITableViewController {
             manuallyShowRefreshControl()
             updateBinLocation()
         }
+    }
+
+}
+
+extension Date {
+
+    func stripTime() -> Date {
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: self)
+        let date = Calendar.current.date(from: components)
+        return date!
     }
 
 }
