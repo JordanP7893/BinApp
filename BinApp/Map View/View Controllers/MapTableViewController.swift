@@ -13,7 +13,7 @@ class MapTableViewController: UITableViewController {
 
     let recyclingMarker = RecyclingAnnotation()
     
-    var selectedMapPins: [MapPin]?
+    var selectedRecyclingLocations: [RecyclingLocation]?
     var selectedRecyclingType: RecyclingType?
     
     override func viewDidLoad() {
@@ -30,7 +30,7 @@ class MapTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let mapPins = selectedMapPins else {return 0}
+        guard let mapPins = selectedRecyclingLocations else {return 0}
         return mapPins.count
     }
 
@@ -40,23 +40,30 @@ class MapTableViewController: UITableViewController {
 
         let index = indexPath.row
         
-        guard let mapPins = selectedMapPins else {return cell}
-        let mapPin = mapPins[index]
+        guard let selectedRecyclingLocations = selectedRecyclingLocations else {return cell}
+        let recyclingLocation = selectedRecyclingLocations[index]
         
-        cell.textLabel?.text = mapPin.title
-        cell.detailTextLabel?.text = mapPin.subtitle
+        cell.textLabel?.text = recyclingLocation.name
+        if let distance = recyclingLocation.distance {
+            let travelDistanceInMetres = distance
+            let travelDistance = (travelDistanceInMetres * 0.000621371).rounded(toPlaces: 1)
+            
+            cell.detailTextLabel?.text = String("\(travelDistance) miles")
+        } else {
+            cell.detailTextLabel?.text = ""
+        }
         
         return cell
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SelectTableCell" {
-            guard let mapPins = selectedMapPins else {return}
+            guard let selectedRecyclingLocations = selectedRecyclingLocations else {return}
             
             let indexPath = tableView.indexPathForSelectedRow!
-            let selectedPin = mapPins[indexPath.row]
+            let selectedLocation = selectedRecyclingLocations[indexPath.row]
             let detailViewController = segue.destination as! DetailViewController
-            detailViewController.selectedMapPin = selectedPin
+            detailViewController.selectedLocation = selectedLocation
         }
     }
 }

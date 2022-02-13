@@ -16,6 +16,7 @@ class RecyclingLocation: NSObject, Codable {
     var latitude: Double
     var address: String?
     var postcode: String?
+    var distance: Double?
     
     init(name: String, type: String, typeDescription: String, longitude: Double, latitude: Double, address: String?, postcode: String?) {
         self.name = name
