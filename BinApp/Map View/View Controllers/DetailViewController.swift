@@ -32,8 +32,7 @@ class DetailViewController: UITableViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         
         if let location = selectedLocation {
-            let coordinates = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-            getMapImage(centeredOn: coordinates)
+            getMapImage(centeredOn: location.coordinates)
         }
         
     }
@@ -45,8 +44,15 @@ class DetailViewController: UITableViewController {
         if let location = selectedLocation {
             self.title = location.name
             
-            let coordinates = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-            calculateETA(destination: coordinates)
+            if let drivingDistance = location.drivingDistance, let drivingTime = location.drivingTime {
+                let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
+                
+                let travelTimeInMinutes = Int((drivingTime/60).rounded(.up))
+                
+                self.directionsButton.setTitle("Directions\n\(drivingDistanceInMiles) miles    \(travelTimeInMinutes) mins", for: .normal)
+            } else {
+                calculateETA(destination: location.coordinates)
+            }
             
             guard var addressText = location.address else {return}
             if let postcodeText = location.postcode {
@@ -56,7 +62,7 @@ class DetailViewController: UITableViewController {
             
             titleLabel.text = location.typeDescription
             addressLabel.text = addressText
-            getMapImage(centeredOn: coordinates)
+            getMapImage(centeredOn: location.coordinates)
         }
         
         directionsButton.titleLabel?.textAlignment = .center
@@ -108,8 +114,7 @@ class DetailViewController: UITableViewController {
     @IBAction func NavigateButtonPressed(_ sender: UIButton) {
         guard let location = selectedLocation else { return }
         
-        let coordinates = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-        let placemark = MKPlacemark(coordinate: coordinates)
+        let placemark = MKPlacemark(coordinate: location.coordinates)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = location.name
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving])

@@ -14,8 +14,8 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    var allRecyclingLocations: [MapPin]?
-    var selectedRecyclingLocations: [RecyclingLocation]?
+    var allRecyclingLocations: [RecyclingLocation]?
+    var tableViewRecyclingLocations: [RecyclingLocation]?
     var selectedRecyclingType = RecyclingType(rawValue: "glass")
     var selectedLocation: RecyclingLocation?
     
@@ -38,7 +38,7 @@ class MapViewController: UIViewController {
         
         setupUserTrackingButton()
         registerForAnnotationViewClasses()
-        getMapPins()
+        getRecyclingLocations()
         
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
@@ -97,9 +97,10 @@ class MapViewController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
-    func getMapPins() {
+    func getRecyclingLocations() {
         if let locationData = locationDataController.getLocalLocationData() {
-            self.createMapAnnotations(locations: locationData)
+            self.calculateDistanceForLocations(locationData)
+            self.addAnnotationsToMap()
         } else  {
             locationDataController.fetchLocations { (locations) in
                 guard let locations = locations else {
@@ -107,87 +108,84 @@ class MapViewController: UIViewController {
                     return
                 }
                 DispatchQueue.main.async {
-                    self.createMapAnnotations(locations: locations)
+                    self.calculateDistanceForLocations(locations)
+                    self.addAnnotationsToMap()
                 }
             }
         }
     }
     
-    func createMapAnnotations(locations: [RecyclingLocation]) {
-        var recyclingMapPins: [MapPin] = []
-
-        for location in locations {
-            let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-            let recyclingPin = MapPin(coordinate: coordinate, title: location.name, subtitle: location.typeDescription, type: location.type, address: location.address, postcode: location.postcode)
-            recyclingMapPins.append(recyclingPin)
+    private func calculateDistanceForLocations(_ locations: [RecyclingLocation]) {
+        guard let currentLocation = locationManager.location else { return }
+        
+        allRecyclingLocations = locations.map { (location) -> RecyclingLocation in
+            location.distance = distance(from: currentLocation, to: location.coordinates)
+            return location
         }
-        self.allRecyclingLocations = recyclingMapPins
-        addAnnotationsToMap()
+    }
+    
+    private func convertToMapPins(_ locations: [RecyclingLocation]) -> [MapPin] {
+        return locations.map { location in
+            let mapPin = MapPin(coordinate: location.coordinates, title: location.name, subtitle: location.typeDescription, type: location.type, address: location.address, postcode: location.postcode)
+            mapPin.distance = location.distance
+            mapPin.drivingDistance = location.drivingDistance
+            mapPin.drivingTime = location.drivingTime
+            return mapPin
+        }
     }
     
     private func convertToRecyclingLocation(_ pin: MapPin) -> RecyclingLocation {
-        let location = RecyclingLocation(name: pin.title ?? "", type: pin.type, typeDescription: pin.subtitle ?? "", longitude: pin.coordinate.longitude, latitude: pin.coordinate.latitude, address: pin.address, postcode: pin.postcode)
+        let location = RecyclingLocation(name: pin.title ?? "", type: pin.type, typeDescription: pin.subtitle ?? "", coordinates: pin.coordinate, address: pin.address, postcode: pin.postcode)
+        location.distance = pin.distance
+        location.drivingDistance = pin.drivingDistance
+        location.drivingTime = pin.drivingTime
         return location
     }
     
-    private func retrieveLocationsFrom(_ sortedMapPins: [MapPin], upTo maxNumberOfPins: Int) -> [RecyclingLocation] {
-        var count = 0
-        var locations: [RecyclingLocation] = []
-        for pin in sortedMapPins {
-            if count < maxNumberOfPins {
-                let location = convertToRecyclingLocation(pin)
-                locations.append(location)
-            }
-            count += 1
-        }
-        return locations
-    }
-    
     func addAnnotationsToMap() {
-        guard let currentLocation = locationManager.location else {return}
+        guard let allRecyclingLocations = allRecyclingLocations else { return }
+        guard let currentLocation = locationManager.location else { return }
+            
+        mapView.removeAnnotations(mapView.annotations)
         
-        if let allRecyclingLocions = allRecyclingLocations {
-            mapView.removeAnnotations(allRecyclingLocions)
-            
-            guard let sortedMapPins = orderMap(pins: allRecyclingLocions, asDistancefrom: currentLocation) else {return}
-            
-            let locations = retrieveLocationsFrom(sortedMapPins, upTo: 10)
-            
-            self.selectedRecyclingLocations = locations
-            mapView.addAnnotations(sortedMapPins)
-            calculateDrivingDistances(from: currentLocation)
+        let filteredLocations = filterLocations(allRecyclingLocations, by: selectedRecyclingType)
+        let sortedLocations = orderLocations(filteredLocations, asDistancefrom: currentLocation)
+        
+        let mapPins = convertToMapPins(sortedLocations)
+        mapView.addAnnotations(mapPins)
+        
+        var count = 0
+        self.tableViewRecyclingLocations = sortedLocations.filter { location in
+            count += 1
+            return count <= 10
         }
+        calculateDrivingDistances(from: currentLocation)
     }
     
     private func calculateDrivingDistances(from currentLocation: CLLocation) {
-        guard let recyclingLocations = selectedRecyclingLocations else { return }
+        guard let recyclingLocations = tableViewRecyclingLocations else { return }
         
         let mapTableViewController = MapTableViewController()
         let dispatchGroup = DispatchGroup()
         
         for location in recyclingLocations {
-            if let locationDistance = location.distance {
-                print(locationDistance)
-            }
+            guard location.drivingDistance == nil else { continue }
             dispatchGroup.enter()
-            let coordinates = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-            self.directionsController.getDirections(from: currentLocation.coordinate, to: coordinates) { route in
+            self.directionsController.getDirections(from: currentLocation.coordinate, to: location.coordinates) { route in
                 if let route = route {
-                    location.distance = route.distance
-                    print(route.distance)
+                    location.drivingDistance = route.distance
+                    location.drivingTime = route.expectedTravelTime
                 }
-                print(location.name)
                 dispatchGroup.leave()
             }
         }
         
         dispatchGroup.notify(queue: .main) {
-            print("notify")
             let sortedRecyclingLocations = recyclingLocations.sorted { (location1, location2) -> Bool in
-                guard let distance1 = location1.distance, let distance2 = location2.distance else { return false }
+                guard let distance1 = location1.drivingDistance, let distance2 = location2.drivingDistance else { return false }
                 return distance1 < distance2
             }
-            self.selectedRecyclingLocations = sortedRecyclingLocations
+            self.tableViewRecyclingLocations = sortedRecyclingLocations
             
             DispatchQueue.main.async {
                 mapTableViewController.tableView.reloadData()
@@ -195,18 +193,16 @@ class MapViewController: UIViewController {
         }
     }
     
-    func orderMap(pins: [MapPin], asDistancefrom location: CLLocation) -> [MapPin]? {
-        var recyclingMapPins: [MapPin] = []
-        
-        for pin in pins {
-            if pin.type == selectedRecyclingType.description {
-                pin.distance = distance(from: location, to: pin.coordinate)
-                recyclingMapPins.append(pin)
-            }
+    func filterLocations(_ locations: [RecyclingLocation], by recyclingType: RecyclingType) -> [RecyclingLocation] {
+        return locations.filter { location in
+            location.type == recyclingType.description
         }
+    }
+    
+    func orderLocations(_ locations: [RecyclingLocation], asDistancefrom currentLocation: CLLocation) -> [RecyclingLocation] {
         
-        let sortedMapPins = recyclingMapPins.sorted { (pin1, pin2) -> Bool in
-            guard let distance1 = pin1.distance, let distance2 = pin2.distance else { return false }
+        let sortedMapPins = locations.sorted { (location1, location2) -> Bool in
+            guard let distance1 = location1.distance, let distance2 = location2.distance else { return false }
             return distance1 < distance2
         }
         
@@ -227,11 +223,13 @@ class MapViewController: UIViewController {
         
         guard let allRecyclingLocations = allRecyclingLocations else {return}
 
-        guard let orderedMapPins = orderMap(pins: allRecyclingLocations, asDistancefrom: centerOfMap) else {return}
+        let filteredLocations = filterLocations(allRecyclingLocations, by: selectedRecyclingType)
+        let orderedMapPins = orderLocations(filteredLocations, asDistancefrom: centerOfMap)
         
         let furthestPinInRegion = orderedMapPins[4]
-        let furthestPinLatitude = CLLocation(latitude: furthestPinInRegion.coordinate.latitude, longitude: 0)
-        let furthestPinLongitude = CLLocation(latitude: 0, longitude: furthestPinInRegion.coordinate.longitude)
+        print(furthestPinInRegion.name)
+        let furthestPinLatitude = CLLocation(latitude: furthestPinInRegion.coordinates.latitude, longitude: 0)
+        let furthestPinLongitude = CLLocation(latitude: 0, longitude: furthestPinInRegion.coordinates.longitude)
         
         let centerOfMapLatitude = CLLocation(latitude: centerOfMap.coordinate.latitude, longitude: 0)
         let centerOfMapLongitude = CLLocation(latitude: 0, longitude: centerOfMap.coordinate.longitude)
@@ -255,7 +253,7 @@ class MapViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ViewMapTable" {
             let mapTableViewController = segue.destination as! MapTableViewController
-            mapTableViewController.selectedRecyclingLocations = selectedRecyclingLocations
+            mapTableViewController.selectedRecyclingLocations = tableViewRecyclingLocations
             mapTableViewController.selectedRecyclingType = selectedRecyclingType
         } else if segue.identifier == "MapPinSelected" {
             guard let selectedLocation = sender as? RecyclingLocation else {return}

@@ -55,6 +55,8 @@ class MapPin: NSObject, MKAnnotation {
         }
     }
     var distance: Double?
+    var drivingDistance: Double?
+    var drivingTime: Double?
     
     init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String, type: String, address: String?, postcode: String?) {
         self.coordinate = coordinate

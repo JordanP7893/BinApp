@@ -8,6 +8,7 @@
 
 import Foundation
 import CSwiftV
+import CoreLocation
 
 struct LocationDataController {
     
@@ -58,7 +59,8 @@ struct LocationDataController {
                 
                 for type in locationTypes {
                     if type.value {
-                        let location = RecyclingLocation(name: name, type: type.key, typeDescription: typeDescription , longitude: longitude, latitude: latitude, address: address, postcode: postcode)
+                        let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                        let location = RecyclingLocation(name: name, type: type.key, typeDescription: typeDescription, coordinates: coordinates, address: address, postcode: postcode)
                         
                         locations.append(location)
                     }
