@@ -68,10 +68,6 @@ class NotificationDataController: NSObject, UNUserNotificationCenterDelegate {
             date = Calendar.current.date(byAdding: .day, value: -1, to: date)!
         }
         
-        if NSTimeZone.system.isDaylightSavingTime() {
-            date = Calendar.current.date(byAdding: .hour, value: -1, to: date)!
-        }
-        
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
