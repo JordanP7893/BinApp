@@ -20,7 +20,7 @@ class DetailViewController: UITableViewController {
     let locationManager = CLLocationManager()
     let directionsController = DirectionDataController()
     
-    var selectedMapPin: MapPin?
+    var selectedLocation: RecyclingLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,8 +31,8 @@ class DetailViewController: UITableViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        if let mapPin = selectedMapPin {
-            getMapImage(centeredOn: mapPin.coordinate)
+        if let location = selectedLocation {
+            getMapImage(centeredOn: location.coordinates)
         }
         
     }
@@ -41,21 +41,28 @@ class DetailViewController: UITableViewController {
         mapActivityIndicator.isHidden = false
         mapActivityIndicator.startAnimating()
         
-        if let mapPin = selectedMapPin {
-            self.title = mapPin.title
+        if let location = selectedLocation {
+            self.title = location.name
             
-            let destination = mapPin.coordinate
-            calculateETA(destination: destination)
+            if let drivingDistance = location.drivingDistance, let drivingTime = location.drivingTime {
+                let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
+                
+                let travelTimeInMinutes = Int((drivingTime/60).rounded(.up))
+                
+                self.directionsButton.setTitle("Directions\n\(drivingDistanceInMiles) miles    \(travelTimeInMinutes) mins", for: .normal)
+            } else {
+                calculateETA(destination: location.coordinates)
+            }
             
-            guard var addressText = mapPin.address else {return}
-            if let postcodeText = mapPin.postcode {
+            guard var addressText = location.address else {return}
+            if let postcodeText = location.postcode {
                 addressText = "\(addressText.trimmingCharacters(in: .whitespacesAndNewlines)), \(postcodeText)"
                 addressText = addressText.replacingOccurrences(of: ", ", with: "\n")
             }
             
-            titleLabel.text = mapPin.subtitle
+            titleLabel.text = location.typeDescription
             addressLabel.text = addressText
-            getMapImage(centeredOn: mapPin.coordinate)
+            getMapImage(centeredOn: location.coordinates)
         }
         
         directionsButton.titleLabel?.textAlignment = .center
@@ -90,7 +97,9 @@ class DetailViewController: UITableViewController {
         guard let location = locationManager.location?.coordinate else { return }
         
         directionsController.getDirections(from: location, to: destination) { (firstRoute) in
-            
+            guard let firstRoute = firstRoute else {
+                return
+            }
             let travelDistanceInMetres = firstRoute.distance
             let travelDistance = (travelDistanceInMetres * 0.000621371).rounded(toPlaces: 1)
             
@@ -103,11 +112,11 @@ class DetailViewController: UITableViewController {
     }
     
     @IBAction func NavigateButtonPressed(_ sender: UIButton) {
-        guard let mapPin = selectedMapPin else { return }
+        guard let location = selectedLocation else { return }
         
-        let placemark = MKPlacemark(coordinate: mapPin.coordinate)
+        let placemark = MKPlacemark(coordinate: location.coordinates)
         let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = mapPin.title
+        mapItem.name = location.name
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving])
     }
     

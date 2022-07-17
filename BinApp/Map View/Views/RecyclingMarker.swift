@@ -19,7 +19,7 @@ class RecyclingAnnotation: MKMarkerAnnotationView {
                 markerTintColor = mapPin.color
                 canShowCallout = true
                 let button  = UIButtonLocation(type: .detailDisclosure)
-                button.location = mapPin
+                button.mapPin = mapPin
                 button.addTarget(self, action: #selector(directionButtonPressed), for: .touchUpInside)
                 rightCalloutAccessoryView = button
             }
@@ -32,7 +32,7 @@ class RecyclingAnnotation: MKMarkerAnnotationView {
 }
 
 class UIButtonLocation: UIButton {
-    var location: MapPin?
+    var mapPin: MapPin?
 }
 
 class MapPin: NSObject, MKAnnotation {
@@ -55,6 +55,8 @@ class MapPin: NSObject, MKAnnotation {
         }
     }
     var distance: Double?
+    var drivingDistance: Double?
+    var drivingTime: Double?
     
     init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String, type: String, address: String?, postcode: String?) {
         self.coordinate = coordinate
