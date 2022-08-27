@@ -26,7 +26,6 @@
 		178F7547245D9EF80035AD68 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 178F7546245D9EF80035AD68 /* Settings.bundle */; };
 		1799743924313C4A00F1944E /* UserLocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179974362431371100F1944E /* UserLocationController.swift */; };
 		17A306F822CD47A20074343A /* RecyclingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A306F722CD47A20074343A /* RecyclingType.swift */; };
-		17A35B7027F5D6ED00210465 /* BinDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A35B6F27F5D6ED00210465 /* BinDetailViewController.swift */; };
 		17E026BD2411952E008E9292 /* BinDays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E026BC2411952E008E9292 /* BinDays.swift */; };
 		17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */; };
 		17E064562444975900789B9A /* BinNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E064552444975900789B9A /* BinNotifications.swift */; };
@@ -60,7 +59,6 @@
 		178F7546245D9EF80035AD68 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
 		179974362431371100F1944E /* UserLocationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLocationController.swift; sourceTree = "<group>"; };
 		17A306F722CD47A20074343A /* RecyclingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingType.swift; sourceTree = "<group>"; };
-		17A35B6F27F5D6ED00210465 /* BinDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailViewController.swift; sourceTree = "<group>"; };
 		17E026BC2411952E008E9292 /* BinDays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDays.swift; sourceTree = "<group>"; };
 		17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterMarker.swift; sourceTree = "<group>"; };
 		17E064552444975900789B9A /* BinNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BinNotifications.swift; path = "BinApp/Bin View/Models/BinNotifications.swift"; sourceTree = SOURCE_ROOT; };
@@ -182,7 +180,6 @@
 				17EBBE39243B7F8A00911B21 /* NotificationsTableViewController.swift */,
 				17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */,
 				172088D6242E201D0085ACF8 /* LocationModalViewController.swift */,
-				17A35B6F27F5D6ED00210465 /* BinDetailViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -370,7 +367,6 @@
 				17E4BAAB2416DE6A00FF08EF /* BinDaysDataController.swift in Sources */,
 				1734D0A8225D27D200FB61C8 /* AppDelegate.swift in Sources */,
 				170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */,
-				17A35B7027F5D6ED00210465 /* BinDetailViewController.swift in Sources */,
 				177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */,
 				172B48DC23F1F5BF009A7CA0 /* MapTableViewController.swift in Sources */,
 				17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */,
