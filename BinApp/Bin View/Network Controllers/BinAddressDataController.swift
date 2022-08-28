@@ -10,48 +10,11 @@ import Foundation
 
 class BinAddressDataController {
     
-    static func getPostString(params:[String:Any]) -> String
-    {
-        var data = [String]()
-        for(key, value) in params
-        {
-            data.append(key + "=\(value)")
-        }
-        return data.map { String($0) }.joined(separator: "&")
-    }
-    
-
-    static func callPost(url:URL, params:[String:Any], finish: @escaping ((message:String, data:Data?)) -> Void)
-    {
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-
-        let postString = self.getPostString(params: params)
-        request.httpBody = postString.data(using: .utf8)
-
-        var result:(message:String, data:Data?) = (message: "Fail", data: nil)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-
-            if(error != nil)
-            {
-                result.message = "Fail Error not null : \(error.debugDescription)"
-            }
-            else
-            {
-                result.message = "Success"
-                result.data = data
-            }
-
-            finish(result)
-        }
-        task.resume()
-    }
-    
     func fetchAddress(postcode: String, completion: @escaping ([StoreAddress]?) -> Void) {
-        let addressUrl = URL(string: "https://www.imactivate.com/leedsbinsfeedback/addressSearch.php")!
+        let paramString = BinAddressDataController.getParamString(params: ["postcode": postcode])
+        let addressUrl = URL(string: "https://bins.azurewebsites.net/api/getaddress?" + paramString)!
         var success = false
-        
-        BinAddressDataController.callPost(url: addressUrl, params: ["postcode": postcode]) { message, data in
+        BinAddressDataController.callGet(url: addressUrl) { message, data in
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
                 if !success {
@@ -67,10 +30,41 @@ class BinAddressDataController {
                     success = true
                     completion(addresses)
                 } catch {
-                    print(error.localizedDescription)
+                    print(error)
                 }
             }
         }
+    }
+    
+    static func getParamString(params:[String:Any]) -> String {
+        var data = [String]()
+        for(key, value) in params
+        {
+            data.append(key + "=\(value)")
+        }
+        return data.map { String($0) }.joined(separator: "&")
+    }
+
+    static func callGet(url:URL, complete: @escaping ((message:String, data:Data?)) -> Void) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        var result:(message:String, data:Data?) = (message: "Fail", data: nil)
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+
+            if(error != nil)
+            {
+                result.message = "Fail Error not null : \(error.debugDescription)"
+            }
+            else
+            {
+                result.message = "Success"
+                result.data = data
+            }
+
+            complete(result)
+        }
+        task.resume()
     }
     
     func saveAddressData(_ addresses: AddressData) {

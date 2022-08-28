@@ -98,10 +98,7 @@ class LocationModalViewController: UIViewController {
             return
         }
         
-        let trimmedString = postcode.replacingOccurrences(of: " ", with: "")
-        let incode = trimmedString.suffix(3)
-        let outcode = trimmedString.dropLast(3)
-        let postcodeToSearch = String(outcode + " " + incode)
+        let postcodeToSearch = postcode.replacingOccurrences(of: " ", with: "")
         
         guard postcode.count > 4 else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode too short", and: "Please enter your full postcode")
@@ -127,7 +124,8 @@ class LocationModalViewController: UIViewController {
             }
             
             for address in addresses {
-                self.addresses[address.premisesId] = address.addressJoined
+                let streetNameAndNumber = [address.address1 + ",", address.address2, address.street]
+                self.addresses[address.premisesId] = streetNameAndNumber.filter({$0 != "" && $0 != ","}).joined(separator: " ")
             }
             
             self.addressesSorted = self.addresses.sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }

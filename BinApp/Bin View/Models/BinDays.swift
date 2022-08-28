@@ -14,7 +14,7 @@ struct BinDays: Codable {
     var date: Date
     
     enum CodingKeys: String, CodingKey {
-        case type = "Type"
+        case type = "BinType"
         case date = "CollectionDate"
     }
 }
