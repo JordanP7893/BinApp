@@ -12,10 +12,11 @@ import Foundation
 class BinDaysDataController {
     
     func fetchBinDates(id: Int, completion: @escaping ([BinDays]?) -> Void) {
-        let binDatesUrl = URL(string: "https://imactivate.com/leedsbinsfeedback/returnDatesDataNew.php")!
+        let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
+        let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
         var success = false
         
-        BinAddressDataController.callPost(url: binDatesUrl, params: ["premisesID": id]) { message, data in
+        BinAddressDataController.callGet(url: binDatesUrl) { message, data in
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
                 if !success {
@@ -25,7 +26,7 @@ class BinDaysDataController {
             
             if let jsonData = data {
                 let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                formatter.dateFormat = "yyyy-MM-dd"
                 formatter.timeZone = TimeZone.current
                 
                 let decoder = JSONDecoder()
@@ -37,7 +38,7 @@ class BinDaysDataController {
                     success = true
                     completion(binDates)
                 } catch {
-                    print(error.localizedDescription)
+                    print(error)
                 }
             }
         }
