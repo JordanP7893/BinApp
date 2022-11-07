@@ -34,6 +34,7 @@
 		17ED544F241047CD00FD0643 /* BinDayTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */; };
 		17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */; };
 		17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */; };
+		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
 		D50AF96AA0F5DC3704D40F06 /* Pods_BinApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6D275F032C56D7AAD70952 /* Pods_BinApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewController.swift; sourceTree = "<group>"; };
 		17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewCell.swift; sourceTree = "<group>"; };
 		17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
 		8CF2F1D375D20108F7201AB9 /* Pods-BinApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.debug.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C466F459261CDA002A0BF1B1 /* Pods-BinApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.release.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.release.xcconfig"; sourceTree = "<group>"; };
 		CD6D275F032C56D7AAD70952 /* Pods_BinApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BinApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */,
+				4F841D1B291914F7003A35F7 /* BinDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
+				4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */,
 				17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */,
 				178705732265013F0047E348 /* LocationDataController.swift in Sources */,
 				17E4BAAB2416DE6A00FF08EF /* BinDaysDataController.swift in Sources */,

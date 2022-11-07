@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class BinDayTableViewController: UITableViewController {
     
@@ -121,15 +122,7 @@ class BinDayTableViewController: UITableViewController {
         let binDay = binDays[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "BinDayCell", for: indexPath) as! BinDayTableViewCell
         
-        if Calendar.current.isDateInToday(binDay.date) {
-            cell.dateLabel.text = "Today"
-        } else if Calendar.current.isDateInTomorrow(binDay.date) {
-            cell.dateLabel.text = "Tomorrow"
-        } else {
-            let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = "EEEE, d MMMM"
-            cell.dateLabel.text = "\(dateFormatterPrint.string(from: binDay.date))"
-        }
+        cell.dateLabel.text = binDay.date.formatDateTodayTomorrowOrActual()
             
         let binType = binDay.type
         
@@ -155,6 +148,14 @@ class BinDayTableViewController: UITableViewController {
                 notificationController.firstTimeOpeningApp = false
             }
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let binDay = binDays[indexPath.row]
+        
+        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: binDay))
+        binDetailViewController.title = binDay.type.description
+        self.navigationController?.pushViewController(binDetailViewController, animated: true)
     }
     
     @IBAction func rewindToBinTable(segue: UIStoryboardSegue) {
