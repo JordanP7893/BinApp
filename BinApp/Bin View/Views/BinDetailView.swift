@@ -12,6 +12,11 @@ struct BinDetailView: View {
     var bin: BinDays
     
     var body: some View {
+        let binListTypeText: BinTypeList = {
+            let binListData = BinTypeListData().binTypeList
+            return binListData[bin.type.rawValue] ?? BinTypeList()
+        }()
+        
         ScrollView {
             VStack {
                 HStack {
@@ -29,9 +34,9 @@ struct BinDetailView: View {
                 }
                 .padding()
                 VStack {
-                    BinListComponent(title: "Yes Please", listText: yesText, markType: .check)
+                    BinListComponent(title: "Yes Please", listText: binListTypeText.yes, markType: .check)
                     Spacer(minLength: 30)
-                    BinListComponent(title: "No Thanks", listText: noText, markType: .cross)
+                    BinListComponent(title: "No Thanks", listText: binListTypeText.no, markType: .cross)
                 }
                 .padding(.trailing, 10)
             }
@@ -123,32 +128,3 @@ enum MarkType {
         }
     }
 }
-
-let yesText = """
-• aluminium
-• aerosols
-• bubble wrap
-• cardboard
-• carrier bags
-• cartons and Tetra Paks
-• foil including food containers and takeaway trays
-• metal cans
-• paper
-• plastic bottles, tubs and pots
-• plastic types 1 (PET), 2 (HDPE), 4 (LDPE) and 5 (PP)
-• stretchy plastic bags and wrapping
-"""
-
-let noText = """
-• black or brown plastic
-• black bin bags
-• compostable or biodegradable plastic
-• electrical items
-• food waste
-• garden waste
-• glass (find your nearest bottle bank external link)
-• polystyrene
-• shredded paper (this causes problems with recycling machinery)
-• syringes or needles
-• wood or timber
-"""
