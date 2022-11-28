@@ -21,7 +21,7 @@ struct BinDetailView: View {
         
         ScrollView {
             VStack {
-                if showPopup {
+                if showPopup && bin.isPending{
                     BinDuePopupView(showPopup: $showPopup)
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .top)))
                 }
@@ -71,9 +71,21 @@ extension Date {
         } else if Calendar.current.isDateInTomorrow(self) {
             return "Tomorrow"
         } else {
-            let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = "EEEE, d MMMM"
-            return "\(dateFormatterPrint.string(from: self))"
+            let calendar = Calendar.current
+            let dateComponents = calendar.component(.day, from: self)
+            
+            let numberFormatter = NumberFormatter()
+            
+            numberFormatter.numberStyle = .ordinal
+            let day = numberFormatter.string(from: dateComponents as NSNumber)
+            
+            let weekDayFormatterPrint = DateFormatter()
+            weekDayFormatterPrint.dateFormat = "EEEE"
+            
+            let monthFormatterPrint = DateFormatter()
+            monthFormatterPrint.dateFormat = "MMMM"
+            
+            return "\(weekDayFormatterPrint.string(from: self)), \(day!) \(monthFormatterPrint.string(from: self))"
         }
     }
 }

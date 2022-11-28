@@ -39,13 +39,25 @@ class BinDayTableViewController: UITableViewController {
             updateBinLocation()
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(checkIfNewDay), name: NSNotification.Name("ReloadNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appEntersForground), name: UIApplication.willEnterForegroundNotification, object: nil)
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
         updateUI()
     }
     
-    @objc func checkIfNewDay() {
+    @objc func appEntersForground() {
+        
+        //Run bin data through notification controller to see if any have been triggered
+        notificationDataController.getTriggeredNotifications(binDays: binDays) { binDays in
+            if let binDays = binDays {
+                self.binDays = binDays
+                DispatchQueue.main.async {
+                    self.updateUI()
+                }
+            }
+        }
+        
+        //Check if list is out of date and refresh UI is so, only show bins from today onwards - not yesterday etc.
         if let lastTableReloadDate = lastTableReloadDate {
             let currentDate = Date()
             if currentDate.stripTime() > lastTableReloadDate.stripTime() {
@@ -64,6 +76,17 @@ class BinDayTableViewController: UITableViewController {
         
         binDays = binDays.filter {
             return $0.date >= Date().addingTimeInterval(-86400)
+        }
+        
+        if let tabItems = tabBarController?.tabBar.items {
+            let tabItem = tabItems[0]
+            let pendingBins = binDays.filter({$0.isPending})
+            
+            if pendingBins.count > 0 {
+                tabItem.badgeValue = "1"
+            } else {
+                tabItem.badgeValue = nil
+            }
         }
         
         lastTableReloadDate = Date()
@@ -131,6 +154,17 @@ class BinDayTableViewController: UITableViewController {
         } else {
             cell.binIcon.tintColor = binType.color
         }
+        
+        if binDay.isPending {
+            cell.badgeLabel.text = "1"
+            cell.badgeLabel.backgroundColor = .systemRed
+            cell.badgeLabel.layer.cornerRadius = cell.badgeLabel.frame.width / 2
+            cell.badgeLabel.clipsToBounds = true
+        } else {
+            cell.badgeLabel.text = ""
+            cell.badgeLabel.backgroundColor = .none
+        }
+        
         cell.binTypeLabel.text = binType.description
         
         return cell

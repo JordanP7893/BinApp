@@ -11,7 +11,29 @@ import UserNotifications
 
 class NotificationDataController: NSObject, UNUserNotificationCenterDelegate {
     
+    let binDaysDataController = BinDaysDataController()
     private let notificationCenter = UNUserNotificationCenter.current()
+    
+    public func getTriggeredNotifications(binDays: [BinDays],completion: @escaping  ([BinDays]?) -> Void) {
+        var binDays = binDays
+        
+        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
+            
+            if !didAllow {
+                completion(nil)
+            } else {
+                self.notificationCenter.getDeliveredNotifications { notifications in
+                    for notification in notifications {
+                        if let index = binDays.firstIndex(where: {"\($0.date.description) \($0.type)" == notification.request.identifier}) {
+                            binDays[index].isPending = true
+                        }
+                    }
+                    self.binDaysDataController.saveBinData(binDays)
+                    completion(binDays)
+                }
+            }
+        }
+    }
     
     public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications, completion: @escaping (Bool) -> Void) {
         var notificationTimes = [String: Date]()
