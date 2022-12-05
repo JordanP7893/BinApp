@@ -15,6 +15,7 @@ class BinDayTableViewController: UITableViewController {
     let binAddressDataController = BinAddressDataController()
     let notificationDataController = NotificationDataController()
     let errorAlertController = ErrorAlertController()
+    let binDaysProvider = BinDaysProvider()
     let binRefreshControl = UIRefreshControl()
     
     var addressID: Int?
@@ -24,29 +25,31 @@ class BinDayTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let address = binAddressDataController.fetchAddressData()
+        performSetupOnInitialLoad()
         
-        if let address = address{
-            navigationItem.title = address.title
-            addressID = address.id
-        } else {
-            performSegue(withIdentifier: "LocationSegue", sender: nil)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadBinData), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadBinData), name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(notificationTapped), name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil)
         
-        if let binDays = binDaysDataController.fetchBinData() {
-            self.binDays = binDays
-        } else {
-            updateBinLocation()
-        }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(appEntersForground), name: UIApplication.willEnterForegroundNotification, object: nil)
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
-        updateUI()
     }
     
-    @objc func appEntersForground() {
+    @objc func notificationTapped() {
+        binDays = notificationDataController.getTappedNotification(binDays: binDays)
         
+        if let tappedNotificationId = self.notificationDataController.tappedNotificationId {
+            guard let chosenBinIndex = binDays.firstIndex(where: {$0.id == tappedNotificationId}) else { return }
+            self.notificationDataController.tappedNotificationId = nil
+            
+            DispatchQueue.main.async {
+                self.updateUI()
+                self.goToDetailsPage(forIndex: chosenBinIndex)
+            }
+        }
+    }
+    
+    @objc func reloadBinData() {
         //Run bin data through notification controller to see if any have been triggered
         notificationDataController.getTriggeredNotifications(binDays: binDays) { binDays in
             if let binDays = binDays {
@@ -57,7 +60,7 @@ class BinDayTableViewController: UITableViewController {
             }
         }
         
-        //Check if list is out of date and refresh UI is so, only show bins from today onwards - not yesterday etc.
+        //Check if list is out of date and refresh UI so only show bins from today onwards - not yesterday etc.
         if let lastTableReloadDate = lastTableReloadDate {
             let currentDate = Date()
             if currentDate.stripTime() > lastTableReloadDate.stripTime() {
@@ -86,6 +89,7 @@ class BinDayTableViewController: UITableViewController {
                 tabItem.badgeValue = "1"
             } else {
                 tabItem.badgeValue = nil
+                UIApplication.shared.applicationIconBadgeNumber = 0
             }
         }
         
@@ -96,30 +100,58 @@ class BinDayTableViewController: UITableViewController {
     @objc func updateBinLocation(){
         guard let addressID = addressID else { return }
         
-        binDaysDataController.fetchBinDates(id: addressID) { binDays in
-            guard let binDays = binDays else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve bin data. Please check your connection and try again")
-                self.binRefreshControl.endRefreshing()
-                return
+        Task {
+            do {
+                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
+                binDaysProvider.binDays = binDays
+                updateNotifications()
+                updateUI()
+                binRefreshControl.endRefreshing()
+            } catch {
+                binRefreshControl.endRefreshing()
+                if let error = error as? AlertError {
+                    self.errorAlertController.showErrorAlertView(in: self, with: error.title, and: error.body)
+                }
             }
-            self.binDays = binDays
+        }
+        
+    }
+    
+    func performSetupOnInitialLoad() {
+        let address = binAddressDataController.fetchAddressData()
+        
+        if let address = address{
+            navigationItem.title = address.title
+            addressID = address.id
             
-            let notificationState = self.notificationDataController.fetchNotificationState()
-            
-            if let notificationState = notificationState {
-                self.notificationDataController.setupBinNotification(for: binDays, at: notificationState) { result in
-                    if !result {
-                        DispatchQueue.main.async {
-                            self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
-                            self.binRefreshControl.endRefreshing()
-                        }
+            Task {
+                do {
+                    binDays = try await binDaysProvider.fetchBinDays(addressID: address.id)
+                    updateUI()
+                } catch {
+                    if let error = error as? AlertError {
+                        errorAlertController.showErrorAlertView(in: self, with: error.title, and: error.body)
                     }
                 }
             }
             
-            DispatchQueue.main.async {
-                self.updateUI()
-                self.binRefreshControl.endRefreshing()
+        } else {
+            performSegue(withIdentifier: "LocationSegue", sender: nil)
+        }
+    }
+    
+    func updateNotifications() {
+        
+        let notificationState = self.notificationDataController.fetchNotificationState()
+        
+        if let notificationState = notificationState {
+            self.notificationDataController.setupBinNotification(for: binDays, at: notificationState) { result in
+                if !result {
+                    DispatchQueue.main.async {
+                        self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
+                        self.binRefreshControl.endRefreshing()
+                    }
+                }
             }
         }
     }
@@ -129,6 +161,19 @@ class BinDayTableViewController: UITableViewController {
         let y = self.binRefreshControl.frame.maxY + top
         self.tableView.setContentOffset(CGPoint(x: 0, y: -y), animated:true)
         self.binRefreshControl.beginRefreshing()
+    }
+    
+    func goToDetailsPage(forIndex index: Array<BinDays>.Index) {
+        let bin = binDays[index]
+        
+        func doneButtonPressed() {
+            binDays[index].isPending = false
+            updateUI()
+        }
+        
+        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed))
+        binDetailViewController.title = bin.type.description
+        self.navigationController?.pushViewController(binDetailViewController, animated: true)
     }
     
     // MARK: - Table view data source
@@ -185,11 +230,7 @@ class BinDayTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let binDay = binDays[indexPath.row]
-        
-        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: binDay))
-        binDetailViewController.title = binDay.type.description
-        self.navigationController?.pushViewController(binDetailViewController, animated: true)
+        goToDetailsPage(forIndex: indexPath.row)
     }
     
     @IBAction func rewindToBinTable(segue: UIStoryboardSegue) {

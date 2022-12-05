@@ -11,36 +11,27 @@ import Foundation
 
 class BinDaysDataController {
     
-    func fetchBinDates(id: Int, completion: @escaping ([BinDays]?) -> Void) {
+    func fetchBinDates(id: Int) async throws -> [BinDays] {
         let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
-        var success = false
         
-        BinAddressDataController.callGet(url: binDatesUrl) { message, data in
+        do {
+            let data = try await asyncGET(url: binDatesUrl)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-                if !success {
-                    completion(nil)
-                }
-            })
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            formatter.timeZone = TimeZone.current
             
-            if let jsonData = data {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd"
-                formatter.timeZone = TimeZone.current
-                
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .formatted(formatter)
-                
-                do {
-                    let binDates = try decoder.decode([BinDays].self, from: jsonData)
-                    self.saveBinData(binDates)
-                    success = true
-                    completion(binDates)
-                } catch {
-                    print(error)
-                }
-            }
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(formatter)
+            
+            let binDates = try decoder.decode([BinDays].self, from: data)
+            self.saveBinData(binDates)
+            return binDates
+            
+        } catch {
+            
+            throw error
         }
     }
     
@@ -71,4 +62,20 @@ class BinDaysDataController {
         }
     }
     
+    func asyncGET(url: URL) async throws -> Data {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 5.0
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
+            }
+            return data
+        } catch {
+            throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
+        }
+    }
 }
+
