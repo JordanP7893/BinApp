@@ -8,10 +8,10 @@
 
 import Foundation
 import UserNotifications
+import UIKit
 
 class NotificationDataController: NSObject {
     
-    let binDaysDataController = BinDaysDataController()
     private let notificationCenter = UNUserNotificationCenter.current()
     public var tappedNotificationId: String?
     
@@ -30,7 +30,6 @@ class NotificationDataController: NSObject {
                             binDays[index].isPending = true
                         }
                     }
-                    self.binDaysDataController.saveBinData(binDays)
                     completion(binDays)
                 }
             }
@@ -69,6 +68,7 @@ class NotificationDataController: NSObject {
                 completion(false)
             } else {
                 self.notificationCenter.delegate = self
+                self.registerActions()
                 self.createNotificationForDays(binDays, at: notificationTimes, for: state.types)
                 completion(true)
             }
@@ -78,6 +78,7 @@ class NotificationDataController: NSObject {
     private func createNotificationForDays(_ binDays: [BinDays], at times: [String: Date], for types: [Int: Bool]) {
         
         notificationCenter.removeAllPendingNotificationRequests()
+        notificationCenter.removeAllDeliveredNotifications()
         
         for (title, time) in times {
             
@@ -174,18 +175,80 @@ class NotificationDataController: NSObject {
         }
     }
     
+    public func copyDeliveredNotification(andSnoozeFor timePeriod: TimeInterval) {
+        notificationCenter.getDeliveredNotifications { notification in
+            guard let firstNotificationRequest = notification.first?.request else { return }
+            self.snoozeNotification(from: firstNotificationRequest.content, withId: firstNotificationRequest.identifier, for: timePeriod)
+        }
+    }
+    
+    private func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval) {
+        
+        notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
+        DispatchQueue.main.async {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+        
+        let newContent = content.mutableCopy() as! UNMutableNotificationContent
+        let newTrigger = UNTimeIntervalNotificationTrigger(timeInterval: snoozeTime, repeats: false)
+        let request = UNNotificationRequest(identifier: id, content: newContent, trigger: newTrigger)
+        notificationCenter.add(request)
+    }
+    
 }
 
 extension NotificationDataController: UNUserNotificationCenterDelegate {
+    
+    func registerActions() {
+        let snooze10MinAction = UNNotificationAction(identifier: "snooze10Min", title: "Remind me in 10 minutes")
+        let snooze1HourAction = UNNotificationAction(identifier: "snooze1Hour", title: "Remind me in 1 hour")
+        let snooze2HourAction = UNNotificationAction(identifier: "snooze2Hour", title: "Remind me in 2 hours")
+        let snooze5HourAction = UNNotificationAction(identifier: "snooze5Hour", title: "Remind me in 5 hours")
+        let snoozeCategroy = UNNotificationCategory(identifier: "Bin Reminder", actions: [snooze10MinAction, snooze1HourAction, snooze2HourAction, snooze5HourAction], intentIdentifiers: [])
+        notificationCenter.setNotificationCategories([snoozeCategroy])
+    }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil, userInfo: nil)
         return [.sound, .banner]
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        let id = response.notification.request.identifier
-        tappedNotificationId = id
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil, userInfo: nil)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        switch response.actionIdentifier {
+        case "snooze10Min":
+            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 10 * 60)
+        case "snooze1Hour":
+            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
+        case "snooze2Hour":
+            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
+        case "snooze5Hour":
+            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
+        default:
+            let id = response.notification.request.identifier
+            tappedNotificationId = id
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil, userInfo: nil)
+        }
+        completionHandler()
     }
+    
+//    //For some reason calling this async rather than using a completing handler causes it to freeze when adding actions!!!!!!!!! Why?!?!?!
+//    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+//
+//        if response.actionIdentifier == "snooze10" {
+//            print(response.actionIdentifier)
+//            let content = response.notification.request.content
+//            let newContent = content.mutableCopy() as! UNMutableNotificationContent
+//            let newTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+//            let request = UNNotificationRequest(identifier: UUID().uuidString, content: newContent, trigger: newTrigger)
+//            do {
+//                try await notificationCenter.add(request)
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//        } else {
+//            let id = response.notification.request.identifier
+//            tappedNotificationId = id
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil, userInfo: nil)
+//        }
+//    }
 }

@@ -13,6 +13,7 @@ struct BinDetailView: View {
     
     var bin: BinDays
     var donePressed: () -> Void
+    var remindPressed: (TimeInterval) -> Void
     
     var body: some View {
         let binListTypeText: BinTypeList = {
@@ -23,7 +24,7 @@ struct BinDetailView: View {
         ScrollView {
             VStack {
                 if showPopup && bin.isPending{
-                    BinDuePopupView(showPopup: $showPopup, donePressed: donePressed)
+                    BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed)
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .top)))
                 }
                 
@@ -61,7 +62,7 @@ struct BinDetailView: View {
 struct BinDetailView_Previews: PreviewProvider {
     
     static var previews: some View {
-        BinDetailView(bin: BinDays(type: BinType(rawValue: "GREEN")!, date: Date(timeIntervalSinceNow: 10000), isPending: true), donePressed: {})
+        BinDetailView(bin: BinDays(type: BinType(rawValue: "GREEN")!, date: Date(timeIntervalSinceNow: 10000), isPending: true), donePressed: {}, remindPressed: {_ in })
     }
 }
 

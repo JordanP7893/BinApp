@@ -54,6 +54,7 @@ class BinDayTableViewController: UITableViewController {
         notificationDataController.getTriggeredNotifications(binDays: binDays) { binDays in
             if let binDays = binDays {
                 self.binDays = binDays
+                self.binDaysDataController.saveBinData(binDays)
                 DispatchQueue.main.async {
                     self.updateUI()
                 }
@@ -171,7 +172,13 @@ class BinDayTableViewController: UITableViewController {
             updateUI()
         }
         
-        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed))
+        func remindButtonPresses(snoozeFor time: TimeInterval) {
+            binDays[index].isPending = false
+            notificationDataController.copyDeliveredNotification(andSnoozeFor: time)
+            updateUI()
+        }
+        
+        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed, remindPressed: remindButtonPresses))
         binDetailViewController.title = bin.type.description
         self.navigationController?.pushViewController(binDetailViewController, animated: true)
     }

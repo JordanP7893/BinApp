@@ -10,8 +10,10 @@ import SwiftUI
 
 struct BinDuePopupView: View {
     @Binding var showPopup: Bool
+    @State var showConfirmation = false
     
     var donePressed: () -> Void
+    var remindPressed: (TimeInterval) -> Void
     
     var body: some View {
         VStack {
@@ -19,9 +21,48 @@ struct BinDuePopupView: View {
                 .font(.headline)
                 .foregroundColor(.white)
             HStack(){
-                BinDueButtonView(showPopup: $showPopup, buttonPressed: donePressed, buttonText: "Done")
+                Button(action: {
+                    withAnimation {
+                        showPopup = false
+                        donePressed()
+                    }
+                }, label: {
+                    Label("Done", systemImage: "checkmark.square")
+                })
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .center)
+                .background(Color(UIColor(named: "AppColour")!).brightness(-0.1))
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
                 
-                BinDueButtonView(showPopup: $showPopup, buttonPressed: donePressed, buttonText: "Remind Me Later")
+                Button(action: {
+                    showConfirmation = true
+                }, label: {
+                    Label("Later...", systemImage: "alarm")
+                })
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .center)
+                .background(Color(UIColor(named: "AppColour")!).brightness(-0.1))
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .confirmationDialog("Remind me in:", isPresented: $showConfirmation, titleVisibility: .visible) {
+                    Button("10 minutes") {
+                        showPopup = false
+                        remindPressed(10 * 60)
+                    }
+                    Button("1 hour") {
+                        showPopup = false
+                        remindPressed(60 * 60)
+                    }
+                    Button("2 hours") {
+                        showPopup = false
+                        remindPressed(2 * 60 * 60)
+                    }
+                    Button("5 hours") {
+                        showPopup = false
+                        remindPressed(5 * 60 * 60)
+                    }
+                }
             }
         }
         .padding()
@@ -35,27 +76,6 @@ struct BinDuePopupView: View {
 
 struct BinDuePopupView_Previews: PreviewProvider {
     static var previews: some View {
-        BinDuePopupView(showPopup: .constant(true), donePressed: {})
-    }
-}
-
-struct BinDueButtonView: View {
-    @Binding var showPopup: Bool
-    var buttonPressed: () -> Void
-    var buttonText: String
-    
-    var body: some View {
-        Button(buttonText) {
-            withAnimation {
-                showPopup = false
-                buttonPressed()
-            }
-        }
-        .font(.callout)
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(UIColor(named: "AppColour")!).brightness(-0.1))
-        .foregroundColor(.white)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        BinDuePopupView(showPopup: .constant(true), donePressed: {}, remindPressed: {_ in })
     }
 }
