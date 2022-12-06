@@ -12,6 +12,11 @@ import UIKit
 struct BinDays: Codable {
     var type: BinType
     var date: Date
+    var isPending = false
+    
+    var id: String {
+        return "\(date.description) \(type.description)"
+    }
     
     enum CodingKeys: String, CodingKey {
         case type = "BinType"

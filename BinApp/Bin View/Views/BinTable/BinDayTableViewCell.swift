@@ -13,6 +13,7 @@ class BinDayTableViewCell: UITableViewCell {
     @IBOutlet weak var binIcon: UIImageView!
     @IBOutlet weak var binTypeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var badgeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

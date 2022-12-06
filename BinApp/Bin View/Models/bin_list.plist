@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FOOD</key>
+	<dict>
+		<key>no</key>
+		<string>Please do not put items in your bin that are hazardous, too large or heavy, for example:
+
+• packaging of any sort
+• plastic bags or wrapping
+• pet waste</string>
+		<key>yes</key>
+		<string>• all dairy products such as cheese and eggs (including shells)
+• breads, pastries and cakes
+• cooked and uncooked food
+• meat, fish and poultry (including bones)
+• out of date food
+• pasta, rice and beans
+• teabags and coffee grounds
+• uneaten leftovers from dishes and plates including uneaten takeaway food
+• vegetables and fruit (including peelings)</string>
+	</dict>
+	<key>BROWN</key>
+	<dict>
+		<key>no</key>
+		<string>• branches over 3cm thick
+• food waste, including fruit and vegetable peelings
+• Giant Hogweed
+• Himalyan Balsam
+• Japanese knotweed
+• pet bedding, pet waste or cat litter
+• plastic of any kind, including compostable and biodegradable plastics
+• Ragwort
+• rubble
+• soil or compost</string>
+		<key>yes</key>
+		<string>• flowers and plants
+• grass cuttings
+• hedge clippings
+• leaves
+• twigs and small branches (no more than 3cm thick)
+• windfall fruit</string>
+	</dict>
+	<key>BLACK</key>
+	<dict>
+		<key>no</key>
+		<string>We will not collect your bin if you put items in that are hazardous, too large or heavy. This includes:
+
+• batteries or low energy light bulbs
+• gas bottles
+• motor vehicle parts
+• paint
+• rubble or bricks
+• soil or large branches
+• syringes or needles</string>
+		<key>yes</key>
+		<string>Your black bin is for general household waste only. Try to recycle as much as you can in your green recycling bin.
+
+Your household waste should be placed inside the bin with the lid closed. We do not collect extra bags on top of or near your bin.</string>
+	</dict>
+	<key>GREEN</key>
+	<dict>
+		<key>no</key>
+		<string>• black or brown plastic
+• black bin bags
+• compostable or biodegradable plastic
+• electrical items
+• food waste
+• garden waste
+• glass
+• polystyrene
+• shredded paper (this causes problems with recycling machinery)
+• syringes or needles
+• wood or timber</string>
+		<key>yes</key>
+		<string>• aluminium
+• aerosols
+• bubble wrap
+• cardboard
+• carrier bags
+• cartons and Tetra Paks
+• foil including food containers and takeaway trays
+• metal cans
+• paper
+• plastic bottles, tubs and pots
+• plastic types 1 (PET), 2 (HDPE), 4 (LDPE) and 5 (PP)
+• stretchy plastic bags and wrapping
+
+Make sure that your recycling is clean and dry before you put it into your green bin.</string>
+	</dict>
+</dict>
+</plist>
