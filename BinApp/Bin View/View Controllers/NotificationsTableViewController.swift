@@ -64,8 +64,9 @@ class NotificationsTableViewController: UITableViewController {
         notificationState = BinNotifications(morning: morningSwitch.isOn, morningTime: morningDatePicker.date, evening: eveningSwitch.isOn, eveningTime: eveningDatePicker.date, types: notificationTypes)
         
         if let notificationState = notificationState {
-            notificationController.setupBinNotification(for: binDays, at: notificationState) { (result) in
-                if !result {
+            Task {
+                let isAuthorized = await notificationController.setupBinNotification(for: binDays, at: notificationState)
+                if !isAuthorized {
                     DispatchQueue.main.async {
                         self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
                     }

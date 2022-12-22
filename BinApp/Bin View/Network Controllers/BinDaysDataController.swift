@@ -36,6 +36,8 @@ class BinDaysDataController {
     }
     
     func saveBinData(_ binDays: [BinDays]) {
+        if binDays.isEmpty { return }
+        
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
         
@@ -56,6 +58,8 @@ class BinDaysDataController {
         
         let propertyListDecoder = PropertyListDecoder()
         if let retrievedBinDays = try? Data(contentsOf: archiveURL), let decodedBinDays = try? propertyListDecoder.decode([BinDays].self, from: retrievedBinDays){
+            if decodedBinDays.isEmpty { return nil }
+            
             return decodedBinDays
         } else {
             return nil

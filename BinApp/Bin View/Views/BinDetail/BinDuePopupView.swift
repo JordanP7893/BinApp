@@ -47,20 +47,28 @@ struct BinDuePopupView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .confirmationDialog("Remind me in:", isPresented: $showConfirmation, titleVisibility: .visible) {
                     Button("10 minutes") {
-                        showPopup = false
-                        remindPressed(10 * 60)
+                        withAnimation {
+                            showPopup = false
+                            remindPressed(10 * 60)
+                        }
                     }
                     Button("1 hour") {
-                        showPopup = false
-                        remindPressed(60 * 60)
+                        withAnimation {
+                            showPopup = false
+                            remindPressed(60 * 60)
+                        }
                     }
                     Button("2 hours") {
-                        showPopup = false
-                        remindPressed(2 * 60 * 60)
+                        withAnimation {
+                            showPopup = false
+                            remindPressed(2 * 60 * 60)
+                        }
                     }
                     Button("5 hours") {
-                        showPopup = false
-                        remindPressed(5 * 60 * 60)
+                        withAnimation {
+                            showPopup = false
+                            remindPressed(5 * 60 * 60)
+                        }
                     }
                 }
             }

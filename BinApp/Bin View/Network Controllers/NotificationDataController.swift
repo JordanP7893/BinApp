@@ -12,42 +12,22 @@ import UIKit
 
 class NotificationDataController: NSObject {
     
-    private let notificationCenter = UNUserNotificationCenter.current()
-    public var tappedNotificationId: String?
+    public let notificationCenter = UNUserNotificationCenter.current()
     
-    public func getTriggeredNotifications(binDays: [BinDays],completion: @escaping  ([BinDays]?) -> Void) {
+    public func getTriggeredNotifications(binDays: [BinDays]) async -> [BinDays] {
         var binDays = binDays
         
-        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
-            
-            if !didAllow {
-                completion(nil)
-            } else {
-                //Set bin state for all delivered notifications since the app was last opened
-                self.notificationCenter.getDeliveredNotifications { notifications in
-                    for notification in notifications {
-                        if let index = binDays.firstIndex(where: {$0.id == notification.request.identifier}) {
-                            binDays[index].isPending = true
-                        }
-                    }
-                    completion(binDays)
-                }
+        let deliveredNotifications = await notificationCenter.deliveredNotifications()
+        for notification in deliveredNotifications {
+            if let index = binDays.firstIndex(where: {$0.id == notification.request.identifier}) {
+                binDays[index].isPending = true
             }
-        }
-    }
-    
-    public func getTappedNotification(binDays: [BinDays]) -> [BinDays] {
-        var binDays = binDays
-        
-        //Set bin state for any tapped notifications
-        if let index = binDays.firstIndex(where: {$0.id == self.tappedNotificationId}) {
-            binDays[index].isPending = true
         }
         
         return binDays
     }
     
-    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications, completion: @escaping (Bool) -> Void) {
+    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async -> Bool {
         var notificationTimes = [String: Date]()
         
         if (state.evening) {
@@ -62,16 +42,17 @@ class NotificationDataController: NSObject {
             notificationTimes.removeValue(forKey: "morning")
         }
         
-        notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { (didAllow, error) in
-            
-            if !didAllow {
-                completion(false)
+        do {
+            let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
+            if isAuthorized {
+                registerActions()
+                createNotificationForDays(binDays, at: notificationTimes, for: state.types)
+                return true
             } else {
-                self.notificationCenter.delegate = self
-                self.registerActions()
-                self.createNotificationForDays(binDays, at: notificationTimes, for: state.types)
-                completion(true)
+                return false
             }
+        } catch {
+            return false
         }
     }
     
@@ -99,21 +80,21 @@ class NotificationDataController: NSObject {
         }
     }
     
-//    private func createTestNotification(for binDay: BinDays) {
-//        let content = setNotificationContent(withCategory: "Bin Reminder", title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
-//
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
-//
-//        let request = UNNotificationRequest(identifier: binDay.id, content: content, trigger: trigger)
-//
-//        notificationCenter.add(request) { (error) in
-//            if let error = error {
-//                //error handle
-//                print(error)
-//                return
-//            }
-//        }
-//    }
+    private func createTestNotification(for binDay: BinDays) {
+        let content = setNotificationContent(withCategory: "Bin Reminder", title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+
+        let request = UNNotificationRequest(identifier: binDay.id, content: content, trigger: trigger)
+
+        notificationCenter.add(request) { (error) in
+            if let error = error {
+                //error handle
+                print(error)
+                return
+            }
+        }
+    }
     
     private func createNotification(at time: DateComponents, for binDay: BinDays, previousDay: Bool) {
         let content = setNotificationContent(withCategory: "Bin Reminder", title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
@@ -175,14 +156,17 @@ class NotificationDataController: NSObject {
         }
     }
     
-    public func copyDeliveredNotification(andSnoozeFor timePeriod: TimeInterval) {
-        notificationCenter.getDeliveredNotifications { notification in
-            guard let firstNotificationRequest = notification.first?.request else { return }
-            self.snoozeNotification(from: firstNotificationRequest.content, withId: firstNotificationRequest.identifier, for: timePeriod)
-        }
+    public func removeDeliveredNotification(withIdentifier id: String) {
+        notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
     }
     
-    private func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval) {
+    public func snoozeBin(_ bin: BinDays, for time: TimeInterval) {
+        let content = setNotificationContent(withCategory: "Bin Reminder", title: "Bin Day", body: "Put out \(bin.type.description) Bin")
+        
+        snoozeNotification(from: content, withId: bin.id, for: time)
+    }
+    
+    public func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval) {
         
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
         DispatchQueue.main.async {
@@ -195,60 +179,12 @@ class NotificationDataController: NSObject {
         notificationCenter.add(request)
     }
     
-}
-
-extension NotificationDataController: UNUserNotificationCenterDelegate {
-    
     func registerActions() {
         let snooze10MinAction = UNNotificationAction(identifier: "snooze10Min", title: "Remind me in 10 minutes")
         let snooze1HourAction = UNNotificationAction(identifier: "snooze1Hour", title: "Remind me in 1 hour")
         let snooze2HourAction = UNNotificationAction(identifier: "snooze2Hour", title: "Remind me in 2 hours")
         let snooze5HourAction = UNNotificationAction(identifier: "snooze5Hour", title: "Remind me in 5 hours")
-        let snoozeCategroy = UNNotificationCategory(identifier: "Bin Reminder", actions: [snooze10MinAction, snooze1HourAction, snooze2HourAction, snooze5HourAction], intentIdentifiers: [])
-        notificationCenter.setNotificationCategories([snoozeCategroy])
+        let snoozeCategory = UNNotificationCategory(identifier: "Bin Reminder", actions: [snooze10MinAction, snooze1HourAction, snooze2HourAction, snooze5HourAction], intentIdentifiers: [])
+        notificationCenter.setNotificationCategories([snoozeCategory])
     }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil, userInfo: nil)
-        return [.sound, .banner]
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        switch response.actionIdentifier {
-        case "snooze10Min":
-            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 10 * 60)
-        case "snooze1Hour":
-            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
-        case "snooze2Hour":
-            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
-        case "snooze5Hour":
-            snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
-        default:
-            let id = response.notification.request.identifier
-            tappedNotificationId = id
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil, userInfo: nil)
-        }
-        completionHandler()
-    }
-    
-//    //For some reason calling this async rather than using a completing handler causes it to freeze when adding actions!!!!!!!!! Why?!?!?!
-//    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-//
-//        if response.actionIdentifier == "snooze10" {
-//            print(response.actionIdentifier)
-//            let content = response.notification.request.content
-//            let newContent = content.mutableCopy() as! UNMutableNotificationContent
-//            let newTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
-//            let request = UNNotificationRequest(identifier: UUID().uuidString, content: newContent, trigger: newTrigger)
-//            do {
-//                try await notificationCenter.add(request)
-//            } catch {
-//                print(error.localizedDescription)
-//            }
-//        } else {
-//            let id = response.notification.request.identifier
-//            tappedNotificationId = id
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil, userInfo: nil)
-//        }
-//    }
 }

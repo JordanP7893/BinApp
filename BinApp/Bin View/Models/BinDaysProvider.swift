@@ -15,12 +15,15 @@ class BinDaysProvider: ObservableObject {
     
     let binDaysDataController = BinDaysDataController()
     let errorAlertController = ErrorAlertController()
+    let notificationDataController = NotificationDataController()
     
     func fetchBinDays(addressID: Int) async throws -> [BinDays] {
         if let binDays = binDaysDataController.fetchBinData() {
             return binDays
         } else {
-            return try await fetchDataFromTheNetwork(usingId: addressID)
+            let binDays = try await fetchDataFromTheNetwork(usingId: addressID)
+            let _ = await updateNotifications(binDays: binDays)
+            return binDays
         }
     }
     
@@ -29,5 +32,15 @@ class BinDaysProvider: ObservableObject {
         return binDays
     }
     
+    func updateNotifications(binDays: [BinDays]) async -> Bool {
+        
+        let notificationState = self.notificationDataController.fetchNotificationState()
+        
+        if let notificationState = notificationState {
+            return await notificationDataController.setupBinNotification(for: binDays, at: notificationState)
+        } else {
+            return false
+        }
+    }
     
 }

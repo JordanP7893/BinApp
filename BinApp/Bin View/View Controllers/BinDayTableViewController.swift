@@ -25,40 +25,37 @@ class BinDayTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        performSetupOnInitialLoad()
+        Task {
+            await performSetupOnInitialLoad()
+        }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadBinData), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadBinData), name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(notificationTapped), name: NSNotification.Name(rawValue: "NotificationTapped"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil)
         
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
     }
     
-    @objc func notificationTapped() {
-        binDays = notificationDataController.getTappedNotification(binDays: binDays)
-        
-        if let tappedNotificationId = self.notificationDataController.tappedNotificationId {
-            guard let chosenBinIndex = binDays.firstIndex(where: {$0.id == tappedNotificationId}) else { return }
-            self.notificationDataController.tappedNotificationId = nil
+    func notificationTapped(withId id: String) {
+        Task {
+            await performSetupOnInitialLoad()
             
-            DispatchQueue.main.async {
-                self.updateUI()
-                self.goToDetailsPage(forIndex: chosenBinIndex)
-            }
+            guard let chosenBinIndex = binDays.firstIndex(where: {$0.id == id}) else { return }
+            
+            binDays[chosenBinIndex].isPending = true
+            binDaysDataController.saveBinData(binDays)
+            
+            updateUI()
+            goToDetailsPage(forIndex: chosenBinIndex)
         }
     }
     
-    @objc func reloadBinData() {
-        //Run bin data through notification controller to see if any have been triggered
-        notificationDataController.getTriggeredNotifications(binDays: binDays) { binDays in
-            if let binDays = binDays {
-                self.binDays = binDays
-                self.binDaysDataController.saveBinData(binDays)
-                DispatchQueue.main.async {
-                    self.updateUI()
-                }
-            }
+    @objc func checkForChangesInData() {
+        Task {
+            let binDays = await notificationDataController.getTriggeredNotifications(binDays: binDays)
+            self.binDays = binDays
+            self.binDaysDataController.saveBinData(binDays)
+            self.updateUI()
         }
         
         //Check if list is out of date and refresh UI so only show bins from today onwards - not yesterday etc.
@@ -90,7 +87,6 @@ class BinDayTableViewController: UITableViewController {
                 tabItem.badgeValue = "1"
             } else {
                 tabItem.badgeValue = nil
-                UIApplication.shared.applicationIconBadgeNumber = 0
             }
         }
         
@@ -105,7 +101,7 @@ class BinDayTableViewController: UITableViewController {
             do {
                 binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
                 binDaysProvider.binDays = binDays
-                updateNotifications()
+                await updateNotifications(binDays: binDays)
                 updateUI()
                 binRefreshControl.endRefreshing()
             } catch {
@@ -118,21 +114,19 @@ class BinDayTableViewController: UITableViewController {
         
     }
     
-    func performSetupOnInitialLoad() {
+    func performSetupOnInitialLoad() async {
         let address = binAddressDataController.fetchAddressData()
         
         if let address = address{
             navigationItem.title = address.title
             addressID = address.id
             
-            Task {
-                do {
-                    binDays = try await binDaysProvider.fetchBinDays(addressID: address.id)
-                    updateUI()
-                } catch {
-                    if let error = error as? AlertError {
-                        errorAlertController.showErrorAlertView(in: self, with: error.title, and: error.body)
-                    }
+            do {
+                binDays = try await binDaysProvider.fetchBinDays(addressID: address.id)
+                updateUI()
+            } catch {
+                if let error = error as? AlertError {
+                    errorAlertController.showErrorAlertView(in: self, with: error.title, and: error.body)
                 }
             }
             
@@ -141,18 +135,18 @@ class BinDayTableViewController: UITableViewController {
         }
     }
     
-    func updateNotifications() {
+    func updateNotifications(binDays: [BinDays]) async {
         
-        let notificationState = self.notificationDataController.fetchNotificationState()
+        let isAuthorized = await binDaysProvider.updateNotifications(binDays: binDays)
         
-        if let notificationState = notificationState {
-            self.notificationDataController.setupBinNotification(for: binDays, at: notificationState) { result in
-                if !result {
-                    DispatchQueue.main.async {
-                        self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
-                        self.binRefreshControl.endRefreshing()
-                    }
-                }
+        if isAuthorized {
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
+                self.binRefreshControl.endRefreshing()
             }
         }
     }
@@ -169,12 +163,16 @@ class BinDayTableViewController: UITableViewController {
         
         func doneButtonPressed() {
             binDays[index].isPending = false
+            notificationDataController.removeDeliveredNotification(withIdentifier: bin.id)
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            }
             updateUI()
         }
         
         func remindButtonPresses(snoozeFor time: TimeInterval) {
             binDays[index].isPending = false
-            notificationDataController.copyDeliveredNotification(andSnoozeFor: time)
+            notificationDataController.snoozeBin(bin, for: time)
             updateUI()
         }
         

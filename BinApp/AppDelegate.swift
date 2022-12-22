@@ -12,11 +12,13 @@ import CoreLocation
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    let notificationDataController = NotificationDataController()
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        //locationManager.requestWhenInUseAuthorization()
+        
+        notificationDataController.notificationCenter.delegate = self
         return true
     }
 
@@ -45,3 +47,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil, userInfo: nil)
+        return [.sound, .banner, .badge]
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        switch response.actionIdentifier {
+        case "snooze10Min":
+            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 10 * 60)
+        case "snooze1Hour":
+            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
+        case "snooze2Hour":
+            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
+        case "snooze5Hour":
+            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
+        default:
+            let id = response.notification.request.identifier
+            
+            guard let tabBarController = self.window?.rootViewController as? UITabBarController else { return }
+            tabBarController.selectedIndex = 0
+            
+            guard let navigationController = tabBarController.viewControllers?.first as? UINavigationController,
+                    let binTableViewController = navigationController.viewControllers.first as? BinDayTableViewController else {
+                return
+            }
+            
+            binTableViewController.notificationTapped(withId: id)
+        }
+        completionHandler()
+    }
+}
