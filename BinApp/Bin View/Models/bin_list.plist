@@ -45,7 +45,7 @@
 	<key>BLACK</key>
 	<dict>
 		<key>no</key>
-		<string>We will not collect your bin if you put items in that are hazardous, too large or heavy. This includes:
+		<string>If you put items in your bin that are hazardous, too large or heavy these will not be collected. This includes:
 
 • batteries or low energy light bulbs
 • gas bottles
@@ -57,7 +57,7 @@
 		<key>yes</key>
 		<string>Your black bin is for general household waste only. Try to recycle as much as you can in your green recycling bin.
 
-Your household waste should be placed inside the bin with the lid closed. We do not collect extra bags on top of or near your bin.</string>
+Your household waste should be placed inside the bin with the lid closed. Extra bags on top of or near your bin are not collected.</string>
 	</dict>
 	<key>GREEN</key>
 	<dict>

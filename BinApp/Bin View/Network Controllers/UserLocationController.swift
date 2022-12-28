@@ -10,40 +10,47 @@ import Foundation
 import CoreLocation
 import UIKit
 
-class UserLocationController: CLLocationManager, CLLocationManagerDelegate {
+class UserLocationController: NSObject {
     
-    public func checkLocationSerivces(completion: @escaping (Bool) -> Void){
+    var locationManager: CLLocationManager?
+    let errorAlertController = ErrorAlertController()
+    
+    public func checkLocationSerivces() async {
         if CLLocationManager.locationServicesEnabled() {
-            setupLocationManager()
-            checkLocationAuthorization { (result) in
-                if result {
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            }
+            locationManager = CLLocationManager()
+            locationManager!.delegate = self
+            locationManager!.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager!.startUpdatingLocation()
+            checkLocationAuthorization()
         } else {
-            completion(false)
+            errorAlertController.showErrorAlertInTopViewController(withTitle: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
         }
     }
 
-    private func setupLocationManager() {
-        self.delegate = self
-        self.desiredAccuracy = kCLLocationAccuracyHundredMeters
-    }
-
-    private func checkLocationAuthorization(completion: @escaping (Bool) -> Void) {
-        switch CLLocationManager.authorizationStatus() {
+    private func checkLocationAuthorization() {
+        guard let locationManager = locationManager else { return }
+        switch locationManager.authorizationStatus {
         case .authorizedWhenInUse:
             fallthrough
         case .authorizedAlways:
-            completion(true)
+            break
         case .denied:
             fallthrough
         case .restricted:
-            completion(false)
+            errorAlertController.showErrorAlertInTopViewController(withTitle: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
         default:
-            self.requestWhenInUseAuthorization()
+            locationManager.requestWhenInUseAuthorization()
         }
+    }
+    
+    public func getUsersCurrentLocation() -> CLLocation? {
+        guard let locationManager = locationManager else { return nil }
+        return locationManager.location
+    }
+}
+
+extension UserLocationController: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
     }
 }

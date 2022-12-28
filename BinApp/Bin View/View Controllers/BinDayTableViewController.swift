@@ -143,11 +143,6 @@ class BinDayTableViewController: UITableViewController {
             DispatchQueue.main.async {
                 UIApplication.shared.applicationIconBadgeNumber = 0
             }
-        } else {
-            DispatchQueue.main.async {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
-                self.binRefreshControl.endRefreshing()
-            }
         }
     }
     

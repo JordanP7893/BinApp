@@ -20,7 +20,6 @@ class MapViewController: UIViewController {
     var selectedLocation: RecyclingLocation?
     
     let locationDataController = LocationDataController()
-    let locationManager = CLLocationManager()
     let directionsController = DirectionDataController()
     let userLocationController = UserLocationController()
     let errorAlertController = ErrorAlertController()
@@ -28,17 +27,14 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        userLocationController.checkLocationSerivces { (success) in
-            if success {
-                self.centerMapOnUser()
-            } else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-            }
+        Task {
+            await userLocationController.checkLocationSerivces()
+            centerMapOnUser()
+            getRecyclingLocations()
         }
         
         setupUserTrackingButton()
         registerForAnnotationViewClasses()
-        getRecyclingLocations()
         
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
@@ -83,13 +79,11 @@ class MapViewController: UIViewController {
     
     func centerMapOnUser() {
         mapView.showsUserLocation = true
-        locationManager.startUpdatingLocation()
-        
-        guard let currentLocation: CLLocationCoordinate2D = locationManager.location?.coordinate else {
+        guard let userLocation = userLocationController.getUsersCurrentLocation() else {
             errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
             return
         }
-        centerMap(on: currentLocation)
+        centerMap(on: userLocation.coordinate)
     }
     
     func centerMap(on location: CLLocationCoordinate2D) {
@@ -116,7 +110,10 @@ class MapViewController: UIViewController {
     }
     
     private func calculateDistanceForLocations(_ locations: [RecyclingLocation]) {
-        guard let currentLocation = locationManager.location else { return }
+        guard let currentLocation = userLocationController.getUsersCurrentLocation() else {
+            allRecyclingLocations = locations
+            return
+        }
         
         allRecyclingLocations = locations.map { (location) -> RecyclingLocation in
             location.distance = distance(from: currentLocation, to: location.coordinates)
@@ -144,22 +141,26 @@ class MapViewController: UIViewController {
     
     func addAnnotationsToMap() {
         guard let allRecyclingLocations = allRecyclingLocations else { return }
-        guard let currentLocation = locationManager.location else { return }
+        var filteredLocations = filterLocations(allRecyclingLocations, by: selectedRecyclingType)
+        
+        if let currentLocation = userLocationController.getUsersCurrentLocation() {
+            filteredLocations = orderLocations(filteredLocations, asDistancefrom: currentLocation)
+        }
             
         mapView.removeAnnotations(mapView.annotations)
         
-        let filteredLocations = filterLocations(allRecyclingLocations, by: selectedRecyclingType)
-        let sortedLocations = orderLocations(filteredLocations, asDistancefrom: currentLocation)
-        
-        let mapPins = convertToMapPins(sortedLocations)
+        let mapPins = convertToMapPins(filteredLocations)
         mapView.addAnnotations(mapPins)
         
         var count = 0
-        self.tableViewRecyclingLocations = sortedLocations.filter { location in
+        self.tableViewRecyclingLocations = filteredLocations.filter { location in
             count += 1
             return count <= 10
         }
-        calculateDrivingDistances(from: currentLocation)
+        
+        if let currentLocation = userLocationController.getUsersCurrentLocation() {
+            calculateDrivingDistances(from: currentLocation)
+        }
     }
     
     private func calculateDrivingDistances(from currentLocation: CLLocation) {
@@ -200,16 +201,10 @@ class MapViewController: UIViewController {
     }
     
     func orderLocations(_ locations: [RecyclingLocation], asDistancefrom currentLocation: CLLocation) -> [RecyclingLocation] {
-        
-        let sortedMapPins = locations.sorted { (location1, location2) -> Bool in
-            guard let distance1 = location1.distance, let distance2 = location2.distance else { return false }
-            return distance1 < distance2
-        }
-        
-        return sortedMapPins
+        return locations.sorted { distance(from: currentLocation, to: $0.coordinates) < distance(from: currentLocation, to: $1.coordinates) }
     }
     
-    func distance(from location: CLLocation, to coordinates: CLLocationCoordinate2D) -> CLLocationDistance? {
+    func distance(from location: CLLocation, to coordinates: CLLocationCoordinate2D) -> CLLocationDistance {
         let latitude = coordinates.latitude
         let longitude = coordinates.longitude
         
@@ -227,7 +222,6 @@ class MapViewController: UIViewController {
         let orderedMapPins = orderLocations(filteredLocations, asDistancefrom: centerOfMap)
         
         let furthestPinInRegion = orderedMapPins[4]
-        print(furthestPinInRegion.name)
         let furthestPinLatitude = CLLocation(latitude: furthestPinInRegion.coordinates.latitude, longitude: 0)
         let furthestPinLongitude = CLLocation(latitude: 0, longitude: furthestPinInRegion.coordinates.longitude)
         
@@ -237,7 +231,7 @@ class MapViewController: UIViewController {
         let latitudeDistance = centerOfMapLatitude.distance(from: furthestPinLatitude)
         let longitudeDistance = centerOfMapLongitude.distance(from: furthestPinLongitude)
         
-        let region = MKCoordinateRegion(center: centerOfMap.coordinate, latitudinalMeters: latitudeDistance * 1.9, longitudinalMeters: longitudeDistance * 1.9)
+        let region = MKCoordinateRegion(center: centerOfMap.coordinate, latitudinalMeters: latitudeDistance * 2.2, longitudinalMeters: longitudeDistance * 1.9)
         mapView.userTrackingMode = .none
         mapView.setRegion(region, animated: true)
     }
@@ -267,16 +261,6 @@ class MapViewController: UIViewController {
         guard let detailButton = notification.userInfo?["location"] as? UIButtonLocation, let mapPin = detailButton.mapPin else {return}
         let location = convertToRecyclingLocation(mapPin)
         self.performSegue(withIdentifier: "MapPinSelected", sender: location)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        userLocationController.checkLocationSerivces { (success) in
-            if success {
-                self.centerMapOnUser()
-            } else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-            }
-        }
     }
 }
 

@@ -9,19 +9,14 @@
 import Foundation
 import MapKit
 
-var count = 0
-
 class DirectionDataController {
     
-    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D, completion: @escaping (MKRoute?) -> Void){
+    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D, completion: @escaping (MKDirections.ETAResponse?) -> Void){
         
         let directionRequest = createDirectionRequest(startingPoint: startPoint, endPoint: endPoint)
         let directions = MKDirections(request: directionRequest)
         
-        count += 1
-        print("Request Count = \(count)")
-        
-        directions.calculate { (response, error) in
+        directions.calculateETA { response, error in
             if let _ = error {
                 return completion(nil)
             }
@@ -30,9 +25,7 @@ class DirectionDataController {
                 return completion(nil)
             }
             
-            let firstRoute = response.routes[0]
-            
-            return completion(firstRoute)
+            return completion(response)
         }
     }
     

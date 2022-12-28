@@ -23,7 +23,6 @@ class LocationModalViewController: UIViewController {
     @IBOutlet weak var AddressLabelSuperview: UIView!
     
     let geocoder = CLGeocoder()
-    let locationManager = CLLocationManager()
     let userLocationController = UserLocationController()
     let binAddressDataController = BinAddressDataController()
     let errorAlertController = ErrorAlertController()
@@ -60,7 +59,7 @@ class LocationModalViewController: UIViewController {
     }
     
     func calculateCurrentAddress() {
-        guard let currentLocation = locationManager.location else {
+        guard let currentLocation = userLocationController.getUsersCurrentLocation() else {
             errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
             hidePickerView()
             return
@@ -165,15 +164,10 @@ class LocationModalViewController: UIViewController {
     }
     
     @IBAction func locationButtonPresses(_ sender: UIButton) {
-        locationManager.delegate = self
         searchField.resignFirstResponder()
-        userLocationController.checkLocationSerivces { (success) in
-            if success{
-                self.calculateCurrentAddress()
-            } else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-                self.hidePickerView()
-            }
+        Task {
+            await userLocationController.checkLocationSerivces()
+            calculateCurrentAddress()
         }
         locationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
     }
@@ -203,20 +197,6 @@ class LocationModalViewController: UIViewController {
         super.prepare(for: segue, sender: sender)
         
         guard segue.identifier == "saveUnwind" else { return }
-    }
-    
-}
-
-extension LocationModalViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        userLocationController.checkLocationSerivces { (success) in
-            if success{
-                self.calculateCurrentAddress()
-            } else {
-                self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-                self.hidePickerView()
-            }
-        }
     }
     
 }
