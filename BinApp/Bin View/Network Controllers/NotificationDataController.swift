@@ -180,11 +180,14 @@ class NotificationDataController: NSObject {
     }
     
     func registerActions() {
-        let snooze10MinAction = UNNotificationAction(identifier: "snooze10Min", title: "Remind me in 10 minutes")
-        let snooze1HourAction = UNNotificationAction(identifier: "snooze1Hour", title: "Remind me in 1 hour")
-        let snooze2HourAction = UNNotificationAction(identifier: "snooze2Hour", title: "Remind me in 2 hours")
-        let snooze5HourAction = UNNotificationAction(identifier: "snooze5Hour", title: "Remind me in 5 hours")
-        let snoozeCategory = UNNotificationCategory(identifier: "Bin Reminder", actions: [snooze10MinAction, snooze1HourAction, snooze2HourAction, snooze5HourAction], intentIdentifiers: [])
+        let doneIcon = UNNotificationActionIcon(systemImageName: "checkmark.square")
+        let snoozeIcon = UNNotificationActionIcon(systemImageName: "alarm")
+        
+        let doneAction = UNNotificationAction(identifier: "done", title: "Done", icon: doneIcon)
+        let snooze10MinAction = UNNotificationAction(identifier: "snooze10Min", title: "Remind me in 10 minutes", icon: snoozeIcon)
+        let snooze1HourAction = UNNotificationAction(identifier: "snooze1Hour", title: "Remind me in 1 hour", icon: snoozeIcon)
+        let snooze2HourAction = UNNotificationAction(identifier: "snooze2Hour", title: "Remind me in 2 hours", icon: snoozeIcon)
+        let snoozeCategory = UNNotificationCategory(identifier: "Bin Reminder", actions: [doneAction, snooze10MinAction, snooze1HourAction, snooze2HourAction], intentIdentifiers: [])
         notificationCenter.setNotificationCategories([snoozeCategory])
     }
 }

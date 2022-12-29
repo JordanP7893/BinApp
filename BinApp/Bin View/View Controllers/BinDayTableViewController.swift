@@ -31,6 +31,7 @@ class BinDayTableViewController: UITableViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(markDoneFromNotification), name: NSNotification.Name(rawValue: "NotificationMarkedDone"), object: nil)
         
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
@@ -47,6 +48,19 @@ class BinDayTableViewController: UITableViewController {
             
             updateUI()
             goToDetailsPage(forIndex: chosenBinIndex)
+        }
+    }
+    
+    @objc func markDoneFromNotification(notification: Notification) {
+        guard let id = notification.userInfo?["id"] as? String else { return }
+        
+        guard let chosenBinIndex = binDays.firstIndex(where: {$0.id == id}) else { return }
+        
+        binDays[chosenBinIndex].isPending = false
+        binDaysDataController.saveBinData(binDays)
+        
+        DispatchQueue.main.async {
+            self.updateUI()
         }
     }
     
