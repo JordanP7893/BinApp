@@ -66,9 +66,9 @@ class NotificationDataController: NSObject {
             let previousDay = title == "evening" ? true : false
             let timeComponent = Calendar.current.dateComponents([.hour, .minute], from: time)
             
-            var binDays = binDays
-            createTestNotification(for: binDays[0])
-            binDays.remove(at: 0)
+//            var binDays = binDays
+//            createTestNotification(for: binDays[0])
+//            binDays.remove(at: 0)
             
             for binDay in binDays {
                 for (type, isAllowed) in types {
@@ -173,6 +173,12 @@ class NotificationDataController: NSObject {
         snoozeNotification(from: content, withId: bin.id, for: time)
     }
     
+    public func tonightBin(_ bin: BinDays) {
+        let content = setNotificationContent(withCategory: NotificationCategoryIdentifier.standard.rawValue, title: "Bin Day", body: "Put out \(bin.type.description) Bin")
+        
+        remindTonightNotification(from: content, withId: bin.id)
+    }
+    
     public func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval) {
         let intervalTrigger = UNTimeIntervalNotificationTrigger(timeInterval: snoozeTime, repeats: false)
         
@@ -194,6 +200,12 @@ class NotificationDataController: NSObject {
     
     public func remindTonightNotification(from content: UNNotificationContent, withId id: String) {
         
+        //Only snooze for tonight if before 18:00, else just delay for 1 hour
+        guard Calendar.current.component(.hour, from: Date()) < 18 else {
+            snoozeNotification(from: content, withId: id, for: 60 * 60)
+            return
+        }
+        
         let todaysDate = Calendar.current.dateComponents([.year, .month, .day], from: Date())
         let sevenEveningTime = DateComponents(hour: 19, minute: 0)
         
@@ -208,6 +220,7 @@ class NotificationDataController: NSObject {
     
     private func copyNotification(from content: UNNotificationContent, withId id: String, withTrigger trigger: UNNotificationTrigger) {
         
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationsCleared"), object: nil, userInfo: ["id": id])
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
         DispatchQueue.main.async {
             UIApplication.shared.applicationIconBadgeNumber = 0

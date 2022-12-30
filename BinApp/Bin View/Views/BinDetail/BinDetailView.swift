@@ -14,6 +14,7 @@ struct BinDetailView: View {
     var bin: BinDays
     var donePressed: () -> Void
     var remindPressed: (TimeInterval) -> Void
+    var tonightPressed: () -> Void
     
     var body: some View {
         let binListTypeText: BinTypeList = {
@@ -24,28 +25,23 @@ struct BinDetailView: View {
         ScrollView {
             VStack {
                 if showPopup && bin.isPending{
-                    BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed)
-                        .transition(AnyTransition.opacity.combined(with: .move(edge: .top)))
+                    BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed, tonightPressed: tonightPressed)
+                        .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+                        .padding(.bottom)
                 }
                 
                 HStack {
-                    VStack(alignment: .leading) {
-                        Text(bin.type.description)
-                            .font(.title)
-                            .bold()
-                        Spacer()
-                        Text(bin.date.formatDateTodayTomorrowOrActual())
-                            .font(.subheadline)
-                        Spacer()
-                    }
+                    Text(bin.date.formatDateTodayTomorrowOrActual())
+                            .font(.headline)
                     
                     Spacer()
                     Image(bin.type.rawValue.lowercased())
                         .resizable()
                         .scaledToFit()
                         .frame(width: 50, height: 80)
+                        .padding(.trailing)
                 }
-                .padding()
+                .padding(.bottom)
                 
                 VStack {
                     BinWhatGoesInView(title: "Yes Please", listText: binListTypeText.yes, markType: .check)
@@ -54,7 +50,7 @@ struct BinDetailView: View {
                 }
                 .padding(.trailing, 10)
             }
-            .padding()
+            .padding(.horizontal)
         }
     }
 }
@@ -62,7 +58,7 @@ struct BinDetailView: View {
 struct BinDetailView_Previews: PreviewProvider {
     
     static var previews: some View {
-        BinDetailView(bin: BinDays(type: BinType(rawValue: "GREEN")!, date: Date(timeIntervalSinceNow: 10000), isPending: true), donePressed: {}, remindPressed: {_ in })
+        BinDetailView(bin: BinDays(type: BinType(rawValue: "GREEN")!, date: Date(timeIntervalSinceNow: 10000), isPending: true), donePressed: {}, remindPressed: {_ in }, tonightPressed: {})
     }
 }
 
