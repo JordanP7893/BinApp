@@ -30,7 +30,7 @@
                             <constraint firstItem="XKy-GL-Dcc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="aXs-ME-23y"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="E0Y-lW-SZ9">
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="E0Y-lW-SZ9">
                         <nil key="title"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="A0N-iS-I70">
                             <rect key="frame" x="20" y="5.5" width="330.5" height="33"/>
@@ -126,14 +126,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2TF-5n-RnC">
-                                                    <rect key="frame" x="24" y="12" width="370" height="20.5"/>
+                                                    <rect key="frame" x="20" y="12" width="374" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="2TF-5n-RnC" firstAttribute="leading" secondItem="s0e-lw-Ka7" secondAttribute="leadingMargin" constant="4" id="45G-ef-qho"/>
+                                                <constraint firstItem="2TF-5n-RnC" firstAttribute="leading" secondItem="s0e-lw-Ka7" secondAttribute="leadingMargin" id="45G-ef-qho"/>
                                                 <constraint firstItem="2TF-5n-RnC" firstAttribute="centerY" secondItem="s0e-lw-Ka7" secondAttribute="centerY" id="K6D-Xr-vOY"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="2TF-5n-RnC" secondAttribute="trailing" id="t34-h7-sjh"/>
                                             </constraints>
@@ -784,8 +784,8 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WZs-CH-2cb" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Bin Days" image="waste" selectedImage="waste" id="1UY-1n-6PU"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qwY-nz-aDR">
-                        <rect key="frame" x="0.0" y="48" width="414" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="qwY-nz-aDR">
+                        <rect key="frame" x="0.0" y="48" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -835,13 +835,13 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="ad5-wK-v48"/>
+        <segue reference="c4Z-Fw-e2e"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.058823529411764705" green="0.45098039215686275" blue="0.59215686274509804" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="bell.fill" catalog="system" width="123" height="128"/>
         <image name="black" width="82" height="130"/>
-        <image name="list.bullet" catalog="system" width="128" height="87"/>
+        <image name="list.bullet" catalog="system" width="32" height="32"/>
         <image name="location" catalog="system" width="128" height="121"/>
         <image name="location.fill" catalog="system" width="128" height="119"/>
         <image name="recycle" width="30" height="30"/>

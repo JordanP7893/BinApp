@@ -31,6 +31,7 @@ class BinDayTableViewController: UITableViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(checkForChangesInData), name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(clearNotification), name: NSNotification.Name(rawValue: "NotificationsCleared"), object: nil)
         
         binRefreshControl.addTarget(self, action: #selector(updateBinLocation), for: .valueChanged)
         tableView.refreshControl = binRefreshControl
@@ -47,6 +48,19 @@ class BinDayTableViewController: UITableViewController {
             
             updateUI()
             goToDetailsPage(forIndex: chosenBinIndex)
+        }
+    }
+    
+    @objc func clearNotification(notification: Notification) {
+        guard let id = notification.userInfo?["id"] as? String else { return }
+        
+        if let chosenBinIndex = binDays.firstIndex(where: {$0.id == id}) {
+            binDays[chosenBinIndex].isPending = false
+            binDaysDataController.saveBinData(binDays)
+        }
+        
+        DispatchQueue.main.async {
+            self.updateUI()
         }
     }
     
@@ -171,7 +185,13 @@ class BinDayTableViewController: UITableViewController {
             updateUI()
         }
         
-        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed, remindPressed: remindButtonPresses))
+        func tonightButtonPressed() {
+            binDays[index].isPending = false
+            notificationDataController.tonightBin(bin)
+            updateUI()
+        }
+        
+        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed, remindPressed: remindButtonPresses, tonightPressed: tonightButtonPressed))
         binDetailViewController.title = bin.type.description
         self.navigationController?.pushViewController(binDetailViewController, animated: true)
     }

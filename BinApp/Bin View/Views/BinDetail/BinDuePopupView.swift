@@ -14,6 +14,7 @@ struct BinDuePopupView: View {
     
     var donePressed: () -> Void
     var remindPressed: (TimeInterval) -> Void
+    var tonightPressed: () -> Void
     
     var body: some View {
         VStack {
@@ -25,12 +26,16 @@ struct BinDuePopupView: View {
                     withAnimation {
                         showPopup = false
                         donePressed()
+                        Task {
+                            try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
+                            AppReviewRequest.requestReviewIfNeeded()
+                        }
                     }
                 }, label: {
                     Label("Done", systemImage: "checkmark.square")
                 })
                 .padding()
-                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .background(Color(UIColor(named: "AppColour")!).brightness(-0.1))
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -45,7 +50,7 @@ struct BinDuePopupView: View {
                 .background(Color(UIColor(named: "AppColour")!).brightness(-0.1))
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
-                .confirmationDialog("Remind me in:", isPresented: $showConfirmation, titleVisibility: .visible) {
+                .confirmationDialog("Remind me:", isPresented: $showConfirmation, titleVisibility: .visible) {
                     Button("10 minutes") {
                         withAnimation {
                             showPopup = false
@@ -64,10 +69,10 @@ struct BinDuePopupView: View {
                             remindPressed(2 * 60 * 60)
                         }
                     }
-                    Button("5 hours") {
+                    Button("Tonight") {
                         withAnimation {
                             showPopup = false
-                            remindPressed(5 * 60 * 60)
+                            tonightPressed()
                         }
                     }
                 }
@@ -84,6 +89,6 @@ struct BinDuePopupView: View {
 
 struct BinDuePopupView_Previews: PreviewProvider {
     static var previews: some View {
-        BinDuePopupView(showPopup: .constant(true), donePressed: {}, remindPressed: {_ in })
+        BinDuePopupView(showPopup: .constant(true), donePressed: {}, remindPressed: {_ in }, tonightPressed: {})
     }
 }

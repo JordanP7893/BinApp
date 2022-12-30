@@ -57,12 +57,21 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         switch response.actionIdentifier {
+        case "done":
+            notificationDataController.removeDeliveredNotification(withIdentifier: response.notification.request.identifier)
+            DispatchQueue.main.async {
+                UIApplication.shared.applicationIconBadgeNumber = 0
+            }
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationsCleared"), object: nil, userInfo: ["id": response.notification.request.identifier])
         case "snooze10Min":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 10 * 60)
         case "snooze1Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
         case "snooze2Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
+        case "tonight":
+            notificationDataController.remindTonightNotification(from: response.notification.request.content, withId: response.notification.request.identifier)
+        //5 hour snooze deprecated, removed in future revision
         case "snooze5Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
         default:

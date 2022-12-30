@@ -27,6 +27,8 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        mapView.setRegion(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 53.799660, longitude: -1.549790), latitudinalMeters: 7000, longitudinalMeters: 7000), animated: false)
+        
         Task {
             await userLocationController.checkLocationSerivces()
             centerMapOnUser()
@@ -152,24 +154,25 @@ class MapViewController: UIViewController {
         let mapPins = convertToMapPins(filteredLocations)
         mapView.addAnnotations(mapPins)
         
-        var count = 0
-        self.tableViewRecyclingLocations = filteredLocations.filter { location in
-            count += 1
-            return count <= 10
-        }
+        self.tableViewRecyclingLocations = filteredLocations
         
         if let currentLocation = userLocationController.getUsersCurrentLocation() {
-            calculateDrivingDistances(from: currentLocation)
+            var count = 0
+            let subsetOfLocations = filteredLocations.filter { location in
+                count += 1
+                return count <= 12
+            }
+            
+            calculateDrivingDistances(from: currentLocation, for: subsetOfLocations)
         }
     }
     
-    private func calculateDrivingDistances(from currentLocation: CLLocation) {
-        guard let recyclingLocations = tableViewRecyclingLocations else { return }
+    private func calculateDrivingDistances(from currentLocation: CLLocation, for locations: [RecyclingLocation]) {
         
         let mapTableViewController = MapTableViewController()
         let dispatchGroup = DispatchGroup()
         
-        for location in recyclingLocations {
+        for location in locations {
             guard location.drivingDistance == nil else { continue }
             dispatchGroup.enter()
             self.directionsController.getDirections(from: currentLocation.coordinate, to: location.coordinates) { route in
@@ -182,7 +185,7 @@ class MapViewController: UIViewController {
         }
         
         dispatchGroup.notify(queue: .main) {
-            let sortedRecyclingLocations = recyclingLocations.sorted { (location1, location2) -> Bool in
+            let sortedRecyclingLocations = locations.sorted { (location1, location2) -> Bool in
                 guard let distance1 = location1.drivingDistance, let distance2 = location2.drivingDistance else { return false }
                 return distance1 < distance2
             }

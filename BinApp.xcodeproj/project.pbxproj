@@ -40,6 +40,7 @@
 		4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */; };
 		4F812080293522B900D7F793 /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207F293522B900D7F793 /* AlertError.swift */; };
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
+		4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */; };
 		4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF5700329225462005361C4 /* BinWhatGoesInView.swift */; };
 		D50AF96AA0F5DC3704D40F06 /* Pods_BinApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6D275F032C56D7AAD70952 /* Pods_BinApp.framework */; };
 /* End PBXBuildFile section */
@@ -80,6 +81,7 @@
 		4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysProvider.swift; sourceTree = "<group>"; };
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
+		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		4FF5700329225462005361C4 /* BinWhatGoesInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinWhatGoesInView.swift; sourceTree = "<group>"; };
 		8CF2F1D375D20108F7201AB9 /* Pods-BinApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.debug.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C466F459261CDA002A0BF1B1 /* Pods-BinApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.release.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */,
 				17E064552444975900789B9A /* BinNotifications.swift */,
 				174A36FC24A7885E0091847F /* AddressData.swift */,
+				4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */,
 				4F4C3BB929197EA7004EA04F /* bin_list.plist */,
 			);
 			path = Models;
@@ -391,6 +394,7 @@
 			files = (
 				4F812080293522B900D7F793 /* AlertError.swift in Sources */,
 				1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */,
+				4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */,
 				4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */,
 				1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */,
 				1754C6122688C52500F7F05E /* BinAddressDataController.swift in Sources */,
