@@ -26,6 +26,10 @@ struct BinDuePopupView: View {
                     withAnimation {
                         showPopup = false
                         donePressed()
+                        Task {
+                            try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
+                            AppReviewRequest.requestReviewIfNeeded()
+                        }
                     }
                 }, label: {
                     Label("Done", systemImage: "checkmark.square")
