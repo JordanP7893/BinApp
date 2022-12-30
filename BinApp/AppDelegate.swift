@@ -69,6 +69,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
         case "snooze2Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
+        case "tonight":
+            let currentHour = Calendar.current.component(.hour, from: Date())
+            
+            //Only snooze for tonight if before 18:00, else just delay for 1 hour
+            if currentHour < 18 {
+                notificationDataController.remindTonightNotification(from: response.notification.request.content, withId: response.notification.request.identifier)
+            } else {
+                notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
+            }
+        //5 hour snooze deprecated, removed in future revision
         case "snooze5Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
         default:
