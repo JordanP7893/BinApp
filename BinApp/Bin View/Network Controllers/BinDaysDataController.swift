@@ -26,9 +26,10 @@ class BinDaysDataController {
             decoder.dateDecodingStrategy = .formatted(formatter)
             
             let binDates = try decoder.decode([BinDays].self, from: data)
-            self.saveBinData(binDates)
+            let binsWithPending = updateFetchedBinsWithPendingStates(binDates)
+            self.saveBinData(binsWithPending)
             UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
-            return binDates
+            return binsWithPending
             
         } catch {
             
@@ -51,12 +52,14 @@ class BinDaysDataController {
         try? encodedBinDays?.write(to: archiveURL, options: .noFileProtection)
     }
     
-    func fetchBinData() -> [BinDays]? {
+    func fetchBinData(skipDateCheck: Bool = false) -> [BinDays]? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
         
-        let binDaysLastFetchedDate = UserDefaults.standard.value(forKey: "binDaysLastFetchedDate") as? Date
-        guard let binDaysLastFetchedDate = binDaysLastFetchedDate, binDaysLastFetchedDate.addDay(noOfDays: 7) > Date() else { return nil }
+        if !skipDateCheck {
+            let binDaysLastFetchedDate = UserDefaults.standard.value(forKey: "binDaysLastFetchedDate") as? Date
+            guard let binDaysLastFetchedDate = binDaysLastFetchedDate, binDaysLastFetchedDate.addDay(noOfDays: 7) > Date() else { return nil }
+        }
         
         let propertyListDecoder = PropertyListDecoder()
         if let retrievedBinDays = try? Data(contentsOf: archiveURL), let decodedBinDays = try? propertyListDecoder.decode([BinDays].self, from: retrievedBinDays){
@@ -83,5 +86,19 @@ class BinDaysDataController {
             throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
         }
     }
+    
+    private func updateFetchedBinsWithPendingStates(_ fetchedBins: [BinDays]) -> [BinDays] {
+        var newBins = fetchedBins
+        guard let currentBins = fetchBinData(skipDateCheck: true) else { return newBins }
+        
+        let pendingBinIds = currentBins.filter({ $0.isPending }).map({$0.id})
+        
+        pendingBinIds.forEach { id in
+            if let index = newBins.firstIndex(where: {$0.id == id}) {
+                newBins[index].isPending = true
+            }
+        }
+        
+        return newBins
+    }
 }
-

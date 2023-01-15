@@ -12,7 +12,7 @@ import UIKit
 struct BinDays: Codable {
     var type: BinType
     var date: Date
-    var isPending = false
+    var isPending: Bool
     
     var id: String {
         return "\(date.description) \(type.description)"
@@ -21,6 +21,29 @@ struct BinDays: Codable {
     enum CodingKeys: String, CodingKey {
         case type = "BinType"
         case date = "CollectionDate"
+        case isPending
+        case id
+    }
+    
+    init(type: BinType, date: Date, isPending: Bool) {
+        self.type = type
+        self.date = date
+        self.isPending = isPending
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.type = try container.decode(BinType.self, forKey: .type)
+        self.date = try container.decode(Date.self, forKey: .date)
+        self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? false
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(date, forKey: .date)
+        try container.encode(isPending, forKey: .isPending)
+        try container.encode(id, forKey: .id)
     }
 }
 

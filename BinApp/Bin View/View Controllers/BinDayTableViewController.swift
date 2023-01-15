@@ -65,20 +65,22 @@ class BinDayTableViewController: UITableViewController {
     }
     
     @objc func checkForChangesInData() {
-        Task {
-            let binDays = await notificationDataController.getTriggeredNotifications(binDays: binDays)
-            self.binDays = binDays
-            self.binDaysDataController.saveBinData(binDays)
-            self.updateUI()
-        }
-        
         //Check if list is out of date and refresh UI so only show bins from today onwards - not yesterday etc.
-        if let lastTableReloadDate = lastTableReloadDate {
-            let currentDate = Date()
-            if currentDate.stripTime() > lastTableReloadDate.stripTime() {
-                updateUI()
+        if let lastTableReloadDate = lastTableReloadDate, Date().stripTime() > lastTableReloadDate.stripTime() {
+            guard let addressID = addressID else { return }
+            Task {
+                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
+                refreshBinListWithNotifications()
             }
         } else {
+            refreshBinListWithNotifications()
+        }
+    }
+    
+    func refreshBinListWithNotifications() {
+        Task {
+            binDays = await notificationDataController.getTriggeredNotifications(binDays: binDays)
+            binDaysDataController.saveBinData(binDays)
             updateUI()
         }
     }
@@ -172,6 +174,7 @@ class BinDayTableViewController: UITableViewController {
         
         func doneButtonPressed() {
             binDays[index].isPending = false
+            binDaysDataController.saveBinData(binDays)
             notificationDataController.removeDeliveredNotification(withIdentifier: bin.id)
             DispatchQueue.main.async {
                 UIApplication.shared.applicationIconBadgeNumber = 0
