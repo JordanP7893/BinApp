@@ -27,6 +27,7 @@ class BinDaysDataController {
             
             let binDates = try decoder.decode([BinDays].self, from: data)
             self.saveBinData(binDates)
+            UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
             return binDates
             
         } catch {
@@ -54,7 +55,8 @@ class BinDaysDataController {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
         
-        guard (archiveURL.isThisURL(lessThanDaysOld: 7)) else { return nil }
+        let binDaysLastFetchedDate = UserDefaults.standard.value(forKey: "binDaysLastFetchedDate") as? Date
+        guard let binDaysLastFetchedDate = binDaysLastFetchedDate, binDaysLastFetchedDate.addDay(noOfDays: 7) > Date() else { return nil }
         
         let propertyListDecoder = PropertyListDecoder()
         if let retrievedBinDays = try? Data(contentsOf: archiveURL), let decodedBinDays = try? propertyListDecoder.decode([BinDays].self, from: retrievedBinDays){
