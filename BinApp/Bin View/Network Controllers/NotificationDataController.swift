@@ -9,6 +9,7 @@
 import Foundation
 import UserNotifications
 import UIKit
+import CloudKit
 
 class NotificationDataController: NSObject {
     
@@ -46,6 +47,7 @@ class NotificationDataController: NSObject {
             let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
             if isAuthorized {
                 registerActions()
+                subscribeToCloudKitNotifications()
                 createNotificationForDays(binDays, at: notificationTimes, for: state.types)
                 return true
             } else {
@@ -245,6 +247,53 @@ class NotificationDataController: NSObject {
         let tonightCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.tonight.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, tonightAction], intentIdentifiers: [])
         
         notificationCenter.setNotificationCategories([snoozeCategory, tonightCategory])
+    }
+    
+    private func subscribeToCloudKitNotifications() {
+        let database = CKContainer.default().publicCloudDatabase
+
+        database.fetchAllSubscriptions { subscriptions, error in
+            if error != nil {
+                print(error!.localizedDescription)
+                return
+            }
+            
+            guard let subscriptions = subscriptions else { return }
+            
+            if subscriptions.first?.subscriptionID != nil {
+                print(" already esixits with ID \(subscriptions.first!.subscriptionID)")
+                return
+            }
+            
+            let predicate = NSPredicate(value: true)
+            let subscription = CKQuerySubscription(recordType: "InfoNotifications", predicate: predicate, options: .firesOnRecordCreation)
+            
+            let notification = CKSubscription.NotificationInfo()
+            
+            notification.titleLocalizationKey = "%1$@"
+            notification.titleLocalizationArgs = ["title"]
+            
+            notification.alertLocalizationKey = "%1$@"
+            notification.alertLocalizationArgs = ["body"]
+            
+            notification.category = "InfoNotifications"
+            notification.desiredKeys = ["path"]
+            
+            notification.shouldSendContentAvailable = true
+            notification.soundName = "default"
+            
+            subscription.notificationInfo = notification
+            
+            database.save(subscription) { subscription, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                
+                if let subscription = subscription {
+                    print(subscription.subscriptionID)
+                }
+            }
+        }
     }
 }
 

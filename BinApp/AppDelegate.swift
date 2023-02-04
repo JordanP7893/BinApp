@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         notificationDataController.notificationCenter.delegate = self
+        
+        application.registerForRemoteNotifications()
+        
         return true
     }
 
@@ -75,17 +78,36 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         case "snooze5Hour":
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
         default:
-            let id = response.notification.request.identifier
-            
-            guard let tabBarController = self.window?.rootViewController as? UITabBarController else { return }
-            tabBarController.selectedIndex = 0
-            
-            guard let navigationController = tabBarController.viewControllers?.first as? UINavigationController,
-                    let binTableViewController = navigationController.viewControllers.first as? BinDayTableViewController else {
-                return
+            if response.notification.request.content.categoryIdentifier == "InfoNotifications" {
+                guard let userInfo = response.notification.request.content.userInfo as NSDictionary as? [String: NSObject] else { return }
+                if let ck = userInfo["ck"] as? [String: Any] {
+                    if let qry = ck["qry"] as? [String: Any] {
+                        if let af = qry["af"] as? [String: Any] {
+                            if let path = af["path"] as? String {
+                                guard let tabBarController = self.window?.rootViewController as? UITabBarController else { return }
+                                tabBarController.selectedIndex = 1
+                                guard let navigationController = tabBarController.viewControllers?[1] as? UINavigationController,
+                                        let mapViewController = navigationController.viewControllers.first as? MapViewController else {
+                                    return
+                                }
+                                
+                                mapViewController.notificationTappedWithRecyclingType(path)
+                            }
+                        }
+                    }
+                }
+            } else {
+                guard let tabBarController = self.window?.rootViewController as? UITabBarController else { return }
+                tabBarController.selectedIndex = 0
+                
+                guard let navigationController = tabBarController.viewControllers?.first as? UINavigationController,
+                        let binTableViewController = navigationController.viewControllers.first as? BinDayTableViewController else {
+                    return
+                }
+                
+                let id = response.notification.request.identifier
+                binTableViewController.notificationTapped(withId: id)
             }
-            
-            binTableViewController.notificationTapped(withId: id)
         }
         completionHandler()
     }

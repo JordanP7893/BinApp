@@ -27,6 +27,19 @@ enum RecyclingType: CustomStringConvertible {
         }
     }
     
+    var pickerIndex: Int {
+        switch self {
+        case .glass:
+            return 0
+        case .paper:
+            return 1
+        case .textiles:
+            return 2
+        case .electronics:
+            return 3
+        }
+    }
+    
     init(rawValue: String) {
         switch rawValue {
         case "paper": self = .paper

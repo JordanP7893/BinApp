@@ -82,6 +82,7 @@
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
 		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
+		4FCB969B297DAA6300462320 /* BinApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BinApp.entitlements; sourceTree = "<group>"; };
 		4FF5700329225462005361C4 /* BinWhatGoesInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinWhatGoesInView.swift; sourceTree = "<group>"; };
 		8CF2F1D375D20108F7201AB9 /* Pods-BinApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.debug.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C466F459261CDA002A0BF1B1 /* Pods-BinApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.release.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -227,6 +228,7 @@
 		1734D0A6225D27D200FB61C8 /* BinApp */ = {
 			isa = PBXGroup;
 			children = (
+				4FCB969B297DAA6300462320 /* BinApp.entitlements */,
 				178F7546245D9EF80035AD68 /* Settings.bundle */,
 				1734D0A7225D27D200FB61C8 /* AppDelegate.swift */,
 				170C9CC12422C19E00DD586E /* Map View */,
@@ -569,6 +571,7 @@
 			baseConfigurationReference = 8CF2F1D375D20108F7201AB9 /* Pods-BinApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BinApp/BinApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
@@ -590,6 +593,7 @@
 			baseConfigurationReference = C466F459261CDA002A0BF1B1 /* Pods-BinApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BinApp/BinApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;

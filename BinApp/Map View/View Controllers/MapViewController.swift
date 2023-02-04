@@ -13,6 +13,7 @@ import CoreLocation
 class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var recyclingTypePicker: UISegmentedControl!
     
     var allRecyclingLocations: [RecyclingLocation]?
     var tableViewRecyclingLocations: [RecyclingLocation]?
@@ -61,6 +62,11 @@ class MapViewController: UIViewController {
         }
         
         setupUserTrackingButton()
+    }
+    
+    func notificationTappedWithRecyclingType(_ type: String) {
+        selectedRecyclingType = RecyclingType(rawValue: type)
+        recyclingTypePicker.selectedSegmentIndex = selectedRecyclingType.pickerIndex
     }
     
     func setupUserTrackingButton() {

@@ -53,6 +53,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="XKy-GL-Dcc" id="dog-2C-RaT"/>
+                        <outlet property="recyclingTypePicker" destination="A0N-iS-I70" id="W8r-oO-cfa"/>
                         <segue destination="dn0-vY-Adt" kind="show" identifier="MapPinSelected" id="ad5-wK-v48"/>
                     </connections>
                 </viewController>
@@ -835,13 +836,13 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="c4Z-Fw-e2e"/>
+        <segue reference="ad5-wK-v48"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.058823529411764705" green="0.45098039215686275" blue="0.59215686274509804" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="bell.fill" catalog="system" width="123" height="128"/>
         <image name="black" width="82" height="130"/>
-        <image name="list.bullet" catalog="system" width="32" height="32"/>
+        <image name="list.bullet" catalog="system" width="128" height="87"/>
         <image name="location" catalog="system" width="128" height="121"/>
         <image name="location.fill" catalog="system" width="128" height="119"/>
         <image name="recycle" width="30" height="30"/>
