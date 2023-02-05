@@ -90,7 +90,7 @@ class MapViewController: UIViewController {
     
     func centerMap(on location: CLLocationCoordinate2D) {
         let region = MKCoordinateRegion(center: location, latitudinalMeters: 2000, longitudinalMeters: 2000)
-        mapView.setRegion(region, animated: true)
+        mapView.setRegion(region, animated: false)
     }
     
     func getRecyclingLocations() {
