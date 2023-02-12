@@ -258,13 +258,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="VOr-sT-E5e">
                                                     <rect key="frame" x="92" y="0.0" width="251.5" height="46.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="raW-Et-NJm">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="raW-Et-NJm">
                                                             <rect key="frame" x="0.0" y="0.0" width="251.5" height="20.5"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNa-jT-n3v">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNa-jT-n3v">
                                                             <rect key="frame" x="0.0" y="28.5" width="251.5" height="18"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -395,11 +395,16 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="b68-2b-GbX">
+                                        <rect key="frame" x="188.5" y="58.5" width="37" height="37"/>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <gestureRecognizers/>
                                 <constraints>
+                                    <constraint firstItem="b68-2b-GbX" firstAttribute="top" secondItem="384-et-awp" secondAttribute="bottom" constant="8" symbolic="YES" id="JiZ-4m-XwC"/>
                                     <constraint firstItem="384-et-awp" firstAttribute="top" secondItem="1iD-e6-gbP" secondAttribute="top" constant="30" id="Vel-vS-xNR"/>
+                                    <constraint firstItem="b68-2b-GbX" firstAttribute="centerX" secondItem="1iD-e6-gbP" secondAttribute="centerX" id="c0I-bf-1YG"/>
                                     <constraint firstItem="384-et-awp" firstAttribute="centerX" secondItem="1iD-e6-gbP" secondAttribute="centerX" id="i8f-mO-5IL"/>
                                 </constraints>
                                 <connections>
@@ -441,6 +446,7 @@
                         <outlet property="addressPickerStackView" destination="Pg9-Bz-ZYF" id="0tz-gU-VMk"/>
                         <outlet property="addressPickerStackViewBottomConstraint" destination="e9V-Lg-Luw" id="EJN-fc-eCI"/>
                         <outlet property="cancelButton" destination="sWH-Gd-0Ty" id="Ys3-Wq-Md8"/>
+                        <outlet property="loadingIndicator" destination="b68-2b-GbX" id="Nai-Br-odW"/>
                         <outlet property="locationButton" destination="rZz-lt-YVb" id="XGM-Md-QVd"/>
                         <outlet property="saveButton" destination="cXg-SH-cix" id="fuV-bU-1ss"/>
                         <outlet property="searchField" destination="Xnm-xl-Wo7" id="TVo-zt-t6T"/>
@@ -841,7 +847,7 @@
     <resources>
         <image name="bell.fill" catalog="system" width="123" height="128"/>
         <image name="black" width="82" height="130"/>
-        <image name="list.bullet" catalog="system" width="32" height="32"/>
+        <image name="list.bullet" catalog="system" width="128" height="87"/>
         <image name="location" catalog="system" width="128" height="121"/>
         <image name="location.fill" catalog="system" width="128" height="119"/>
         <image name="recycle" width="30" height="30"/>

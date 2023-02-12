@@ -71,9 +71,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
         case "tonight":
             notificationDataController.remindTonightNotification(from: response.notification.request.content, withId: response.notification.request.identifier)
-        //5 hour snooze deprecated, removed in future revision
-        case "snooze5Hour":
-            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
         default:
             let id = response.notification.request.identifier
             
