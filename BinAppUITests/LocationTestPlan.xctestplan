@@ -1,0 +1,26 @@
+{
+  "configurations" : [
+    {
+      "id" : "23DC5EFD-86D2-4CBF-9161-33AC2A163245",
+      "name" : "Configuration 1",
+      "options" : {
+        "locationScenario" : {
+          "identifier" : "..\/BinAppUITests\/BrudenellMountLocation.gpx"
+        }
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:BinApp.xcodeproj",
+        "identifier" : "4F52EE6429A284B400AF8C8D",
+        "name" : "BinAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
