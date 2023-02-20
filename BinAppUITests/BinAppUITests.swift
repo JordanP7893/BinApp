@@ -24,8 +24,6 @@ final class BinAppUITests: XCTestCase {
     func testMakeScreenshot() throws {
         app.launch()
 
-
-        let app = XCUIApplication()
         takeScreenshot(named: "Bin List")
         app.tables.cells.staticTexts["Green"].firstMatch.tap()
         takeScreenshot(named: "Green Bin")
@@ -54,13 +52,5 @@ final class BinAppUITests: XCTestCase {
 
         screenshotAttachment.lifetime = .keepAlways
         add(screenshotAttachment)
-    }
-
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
     }
 }
