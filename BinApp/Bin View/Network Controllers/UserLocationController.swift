@@ -15,42 +15,32 @@ class UserLocationController: NSObject {
     var locationManager: CLLocationManager?
     let errorAlertController = ErrorAlertController()
     
-    public func checkLocationSerivces() async {
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager = CLLocationManager()
-            locationManager!.delegate = self
-            locationManager!.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager!.startUpdatingLocation()
-            checkLocationAuthorization()
-        } else {
-            errorAlertController.showErrorAlertInTopViewController(withTitle: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-        }
+    public func setupLocationManager(vc: CLLocationManagerDelegate) {
+        locationManager = CLLocationManager()
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager?.startUpdatingLocation()
+        locationManager?.delegate = vc
+        locationManager?.requestWhenInUseAuthorization()
     }
 
-    private func checkLocationAuthorization() {
-        guard let locationManager = locationManager else { return }
+    public func checkLocationAuthorization(forViewController viewController: CLLocationManagerDelegate) -> Bool? {
+        guard let locationManager = locationManager else {
+            setupLocationManager(vc: viewController)
+            return nil
+        }
         switch locationManager.authorizationStatus {
-        case .authorizedWhenInUse:
-            fallthrough
-        case .authorizedAlways:
-            break
-        case .denied:
-            fallthrough
-        case .restricted:
-            errorAlertController.showErrorAlertInTopViewController(withTitle: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
+        case .authorizedWhenInUse, .authorizedAlways:
+            return true
+        case .denied, .restricted:
+            return false
         default:
             locationManager.requestWhenInUseAuthorization()
+            return nil
         }
     }
     
     public func getUsersCurrentLocation() -> CLLocation? {
         guard let locationManager = locationManager else { return nil }
         return locationManager.location
-    }
-}
-
-extension UserLocationController: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
     }
 }

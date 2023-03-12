@@ -30,9 +30,13 @@ class MapViewController: UIViewController {
         mapView.setRegion(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 53.799660, longitude: -1.549790), latitudinalMeters: 7000, longitudinalMeters: 7000), animated: false)
         
         Task {
-            await userLocationController.checkLocationSerivces()
-            centerMapOnUser()
-            getRecyclingLocations()
+            guard let isLocationAuthorized = userLocationController.checkLocationAuthorization(forViewController: self) else { return }
+            if isLocationAuthorized {
+                centerMapOnUser()
+                getRecyclingLocations()
+            } else {
+                errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
+            }
         }
         
         setupUserTrackingButton()
@@ -90,7 +94,7 @@ class MapViewController: UIViewController {
     
     func centerMap(on location: CLLocationCoordinate2D) {
         let region = MKCoordinateRegion(center: location, latitudinalMeters: 2000, longitudinalMeters: 2000)
-        mapView.setRegion(region, animated: true)
+        mapView.setRegion(region, animated: false)
     }
     
     func getRecyclingLocations() {
@@ -280,4 +284,16 @@ extension MapViewController: MKMapViewDelegate {
         }
     }
     
+}
+
+extension MapViewController: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard let isLocationAuthorized = userLocationController.checkLocationAuthorization(forViewController: self) else { return }
+        if isLocationAuthorized {
+            centerMapOnUser()
+            getRecyclingLocations()
+        } else {
+            errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
+        }
+    }
 }

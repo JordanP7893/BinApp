@@ -37,6 +37,8 @@
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */; };
 		4F4C3BBA29197EA7004EA04F /* bin_list.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB929197EA7004EA04F /* bin_list.plist */; };
+		4F52EE6829A284B400AF8C8D /* BinAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */; };
+		4F52EE6A29A284B400AF8C8D /* BinAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */; };
 		4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */; };
 		4F812080293522B900D7F793 /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207F293522B900D7F793 /* AlertError.swift */; };
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
@@ -44,6 +46,16 @@
 		4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF5700329225462005361C4 /* BinWhatGoesInView.swift */; };
 		D50AF96AA0F5DC3704D40F06 /* Pods_BinApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6D275F032C56D7AAD70952 /* Pods_BinApp.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4F52EE6B29A284B400AF8C8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1734D09C225D27D100FB61C8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1734D0A3225D27D200FB61C8;
+			remoteInfo = BinApp;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		170C9CC62422C25C00DD586E /* DirectionDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataController.swift; sourceTree = "<group>"; };
@@ -78,6 +90,11 @@
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinTypeListData.swift; sourceTree = "<group>"; };
 		4F4C3BB929197EA7004EA04F /* bin_list.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = bin_list.plist; sourceTree = "<group>"; };
+		4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITests.swift; sourceTree = "<group>"; };
+		4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4F52EE7029A2996100AF8C8D /* BrudenellMountLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BrudenellMountLocation.gpx; sourceTree = "<group>"; };
+		4F52EE7129A299FB00AF8C8D /* LocationTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LocationTestPlan.xctestplan; sourceTree = "<group>"; };
 		4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysProvider.swift; sourceTree = "<group>"; };
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
@@ -95,6 +112,13 @@
 			files = (
 				1744EA48244B21EE0054218D /* MapKit.framework in Frameworks */,
 				D50AF96AA0F5DC3704D40F06 /* Pods_BinApp.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F52EE6229A284B400AF8C8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				1734D0A6225D27D200FB61C8 /* BinApp */,
+				4F52EE6629A284B400AF8C8D /* BinAppUITests */,
 				1734D0A5225D27D200FB61C8 /* Products */,
 				1744EA46244B21EE0054218D /* Frameworks */,
 				246EC84B06DF52A8BC4BC463 /* Pods */,
@@ -220,6 +245,7 @@
 			isa = PBXGroup;
 			children = (
 				1734D0A4225D27D200FB61C8 /* Bins & Recycling.app */,
+				4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -275,6 +301,17 @@
 			path = BinTable;
 			sourceTree = "<group>";
 		};
+		4F52EE6629A284B400AF8C8D /* BinAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */,
+				4F52EE7129A299FB00AF8C8D /* LocationTestPlan.xctestplan */,
+				4F52EE7029A2996100AF8C8D /* BrudenellMountLocation.gpx */,
+				4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */,
+			);
+			path = BinAppUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -297,18 +334,40 @@
 			productReference = 1734D0A4225D27D200FB61C8 /* Bins & Recycling.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4F52EE6429A284B400AF8C8D /* BinAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F52EE6F29A284B400AF8C8D /* Build configuration list for PBXNativeTarget "BinAppUITests" */;
+			buildPhases = (
+				4F52EE6129A284B400AF8C8D /* Sources */,
+				4F52EE6229A284B400AF8C8D /* Frameworks */,
+				4F52EE6329A284B400AF8C8D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4F52EE6C29A284B400AF8C8D /* PBXTargetDependency */,
+			);
+			name = BinAppUITests;
+			productName = BinAppUITests;
+			productReference = 4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		1734D09C225D27D100FB61C8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Jordan Porter";
 				TargetAttributes = {
 					1734D0A3225D27D200FB61C8 = {
 						CreatedOnToolsVersion = 10.2;
+					};
+					4F52EE6429A284B400AF8C8D = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 1734D0A3225D27D200FB61C8;
 					};
 				};
 			};
@@ -326,6 +385,7 @@
 			projectRoot = "";
 			targets = (
 				1734D0A3225D27D200FB61C8 /* BinApp */,
+				4F52EE6429A284B400AF8C8D /* BinAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -340,6 +400,13 @@
 				1734D0B2225D27D300FB61C8 /* LaunchScreen.storyboard in Resources */,
 				1734D0AF225D27D300FB61C8 /* Assets.xcassets in Resources */,
 				1734D0AD225D27D200FB61C8 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F52EE6329A284B400AF8C8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,7 +491,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4F52EE6129A284B400AF8C8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F52EE6A29A284B400AF8C8D /* BinAppUITestsLaunchTests.swift in Sources */,
+				4F52EE6829A284B400AF8C8D /* BinAppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4F52EE6C29A284B400AF8C8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1734D0A3225D27D200FB61C8 /* BinApp */;
+			targetProxy = 4F52EE6B29A284B400AF8C8D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		1734D0AB225D27D200FB61C8 /* Main.storyboard */ = {
@@ -577,7 +661,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.JordanPorter.BinApp;
 				PRODUCT_NAME = "Bins & Recycling";
 				SWIFT_VERSION = 5.0;
@@ -598,11 +682,49 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.JordanPorter.BinApp;
 				PRODUCT_NAME = "Bins & Recycling";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4F52EE6D29A284B400AF8C8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A67HQMEUP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.JordanP7893.BinAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BinApp;
+			};
+			name = Debug;
+		};
+		4F52EE6E29A284B400AF8C8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A67HQMEUP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.JordanP7893.BinAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BinApp;
 			};
 			name = Release;
 		};
@@ -623,6 +745,15 @@
 			buildConfigurations = (
 				1734D0B7225D27D300FB61C8 /* Debug */,
 				1734D0B8225D27D300FB61C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4F52EE6F29A284B400AF8C8D /* Build configuration list for PBXNativeTarget "BinAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F52EE6D29A284B400AF8C8D /* Debug */,
+				4F52EE6E29A284B400AF8C8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -69,10 +69,12 @@ struct BinDuePopupView: View {
                             remindPressed(2 * 60 * 60)
                         }
                     }
-                    Button("Tonight") {
-                        withAnimation {
-                            showPopup = false
-                            tonightPressed()
+                    if Calendar.current.component(.hour, from: Date()) < 18 {
+                        Button("Tonight") {
+                            withAnimation {
+                                showPopup = false
+                                tonightPressed()
+                            }
                         }
                     }
                 }

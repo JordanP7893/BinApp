@@ -21,7 +21,8 @@ class LocationModalViewController: UIViewController {
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var AddressLabelSuperview: UIView!
-    
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+
     let geocoder = CLGeocoder()
     let userLocationController = UserLocationController()
     let binAddressDataController = BinAddressDataController()
@@ -62,6 +63,7 @@ class LocationModalViewController: UIViewController {
         guard let currentLocation = userLocationController.getUsersCurrentLocation() else {
             errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
             hidePickerView()
+            loadingIndicator.stopAnimating()
             return
         }
         
@@ -70,12 +72,14 @@ class LocationModalViewController: UIViewController {
             if let _ = error {
                 self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
                 self.hidePickerView()
+                self.loadingIndicator.stopAnimating()
                 return
             }
             
             guard let placemark = placemarks?.first else {
                 self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
                 self.hidePickerView()
+                self.loadingIndicator.stopAnimating()
                 return
             }
             
@@ -83,17 +87,20 @@ class LocationModalViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.searchField.text = postcode
+                self.locationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
                 self.searchForAddress()
             }
         }
     }
     
     func searchForAddress() {
+        addressLabel.text = ""
         textFieldActive = false
         
         guard let postcode = searchField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode error", and: "Please try entering your postcode again")
             hidePickerView()
+            loadingIndicator.stopAnimating()
             return
         }
         
@@ -102,6 +109,7 @@ class LocationModalViewController: UIViewController {
         guard postcode.count > 4 else {
             errorAlertController.showErrorAlertView(in: self, with: "Postcode too short", and: "Please enter your full postcode")
             hidePickerView()
+            loadingIndicator.stopAnimating()
             return
         }
         
@@ -110,6 +118,7 @@ class LocationModalViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve address data. Please check your connection and try again")
                 }
+                self.loadingIndicator.stopAnimating()
                 return
             }
             self.addresses.removeAll()
@@ -118,6 +127,7 @@ class LocationModalViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.errorAlertController.showErrorAlertView(in: self, with: "Postcode not found", and: "Please check that your postcode is valid for Leeds")
                     self.hidePickerView()
+                    self.loadingIndicator.stopAnimating()
                 }
                 return
             }
@@ -134,6 +144,7 @@ class LocationModalViewController: UIViewController {
                 self.addressPicker.selectRow(0, inComponent: 0, animated: false)
                 self.selectedAddress = AddressData(id: self.addressesSorted[0].key, title: self.addressesSorted[0].value)
                 self.addressLabel.text = self.selectedAddress?.title
+                self.loadingIndicator.stopAnimating()
             
                 self.addressPickerStackViewBottomConstraint.constant = 0
                 UIView.animate(withDuration: 0.2) {
@@ -158,18 +169,22 @@ class LocationModalViewController: UIViewController {
     
     @objc func addressLabelTapped() {
         if textFieldActive {
+            loadingIndicator.stopAnimating()
             searchField.resignFirstResponder()
             searchForAddress()
         }
     }
     
     @IBAction func locationButtonPresses(_ sender: UIButton) {
+        loadingIndicator.startAnimating()
         searchField.resignFirstResponder()
-        Task {
-            await userLocationController.checkLocationSerivces()
+        guard let isLocationAuthorized = userLocationController.checkLocationAuthorization(forViewController: self) else { return }
+        if isLocationAuthorized {
             calculateCurrentAddress()
+        } else {
+            loadingIndicator.stopAnimating()
+            errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
         }
-        locationButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
     }
     
     @IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
@@ -177,6 +192,7 @@ class LocationModalViewController: UIViewController {
     }
     
     @IBAction func returnKeyPressed(_ sender: UITextField) {
+        loadingIndicator.startAnimating()
         searchField.resignFirstResponder()
         searchForAddress()
     }
@@ -219,4 +235,15 @@ extension LocationModalViewController: UIPickerViewDelegate, UIPickerViewDataSou
         addressLabel.text = selectedAddress?.title
     }
     
+}
+
+extension LocationModalViewController: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard let isLocationAuthorized = userLocationController.checkLocationAuthorization(forViewController: self) else { return }
+        if isLocationAuthorized {
+            calculateCurrentAddress()
+        } else {
+            errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
+        }
+    }
 }
