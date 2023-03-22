@@ -26,7 +26,8 @@ class BinDaysDataController {
             decoder.dateDecodingStrategy = .formatted(formatter)
             
             let binDates = try decoder.decode([BinDays].self, from: data)
-            let binsWithPending = updateFetchedBinsWithPendingStates(binDates)
+            let uniqueBinDates = Array(Set(binDates))
+            let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
             self.saveBinData(binsWithPending)
             UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
             return binsWithPending
