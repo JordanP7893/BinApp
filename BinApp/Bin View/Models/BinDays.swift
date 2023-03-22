@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct BinDays: Codable {
+struct BinDays: Codable, Hashable {
     var type: BinType
     var date: Date
     var isPending: Bool
