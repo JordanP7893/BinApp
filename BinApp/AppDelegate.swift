@@ -74,9 +74,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
         case "tonight":
             notificationDataController.remindTonightNotification(from: response.notification.request.content, withId: response.notification.request.identifier)
-        //5 hour snooze deprecated, removed in future revision
-        case "snooze5Hour":
-            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 5 * 60 * 60)
         default:
             if response.notification.request.content.categoryIdentifier == "InfoNotifications" {
                 guard let userInfo = response.notification.request.content.userInfo as NSDictionary as? [String: NSObject] else { return }

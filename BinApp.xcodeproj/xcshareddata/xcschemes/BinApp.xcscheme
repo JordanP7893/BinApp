@@ -36,7 +36,24 @@
             ReferencedContainer = "container:BinApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:BinAppUITests/LocationTestPlan.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4F52EE6429A284B400AF8C8D"
+               BuildableName = "BinAppUITests.xctest"
+               BlueprintName = "BinAppUITests"
+               ReferencedContainer = "container:BinApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
