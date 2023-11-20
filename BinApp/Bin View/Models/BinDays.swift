@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct BinDays: Codable, Hashable {
+struct BinDays: Codable, Hashable, Identifiable {
     var type: BinType
     var date: Date
     var isPending: Bool
@@ -45,6 +45,22 @@ struct BinDays: Codable, Hashable {
         try container.encode(isPending, forKey: .isPending)
         try container.encode(id, forKey: .id)
     }
+
+    mutating func donePressed() {
+        isPending = false
+    }
+
+    static let testBin = BinDays(type: .green, date: Date(timeIntervalSinceNow: 10000), isPending: true)
+    static let testBinsArray: [BinDays] = [
+        .init(type: .green, date: Date(timeIntervalSinceNow: 1), isPending: true),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 100000), isPending: false),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 200000), isPending: false),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 300000), isPending: false),
+        .init(type: .brown, date: Date(timeIntervalSinceNow: 400000), isPending: false),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 500000), isPending: false),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 600000), isPending: false),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 700000), isPending: false),
+    ]
 }
 
 enum BinType: String, Codable{

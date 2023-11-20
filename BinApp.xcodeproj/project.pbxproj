@@ -42,7 +42,11 @@
 		4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */; };
 		4F812080293522B900D7F793 /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207F293522B900D7F793 /* AlertError.swift */; };
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
+		4F864A002A9CC44100FAC4AE /* BinApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8649FF2A9CC44100FAC4AE /* BinApp.swift */; };
+		4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F864A012A9CF47F00FAC4AE /* BinView.swift */; };
 		4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */; };
+		4FE6BD162A6D8DAE002447D6 /* BinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD152A6D8DAE002447D6 /* BinListView.swift */; };
+		4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD172A6D920B002447D6 /* BinCellView.swift */; };
 		4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF5700329225462005361C4 /* BinWhatGoesInView.swift */; };
 		D50AF96AA0F5DC3704D40F06 /* Pods_BinApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6D275F032C56D7AAD70952 /* Pods_BinApp.framework */; };
 /* End PBXBuildFile section */
@@ -98,7 +102,11 @@
 		4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysProvider.swift; sourceTree = "<group>"; };
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
+		4F8649FF2A9CC44100FAC4AE /* BinApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinApp.swift; sourceTree = "<group>"; };
+		4F864A012A9CF47F00FAC4AE /* BinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinView.swift; sourceTree = "<group>"; };
 		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
+		4FE6BD152A6D8DAE002447D6 /* BinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinListView.swift; sourceTree = "<group>"; };
+		4FE6BD172A6D920B002447D6 /* BinCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinCellView.swift; sourceTree = "<group>"; };
 		4FF5700329225462005361C4 /* BinWhatGoesInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinWhatGoesInView.swift; sourceTree = "<group>"; };
 		8CF2F1D375D20108F7201AB9 /* Pods-BinApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.debug.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C466F459261CDA002A0BF1B1 /* Pods-BinApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinApp.release.xcconfig"; path = "Target Support Files/Pods-BinApp/Pods-BinApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -188,8 +196,10 @@
 		170C9CC32422C1C000DD586E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4FE6BD142A6D8D9D002447D6 /* BinList */,
 				4F4541A12922668600458127 /* BinTable */,
 				4F4541A02922667D00458127 /* BinDetail */,
+				4F864A012A9CF47F00FAC4AE /* BinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -255,6 +265,7 @@
 			children = (
 				178F7546245D9EF80035AD68 /* Settings.bundle */,
 				1734D0A7225D27D200FB61C8 /* AppDelegate.swift */,
+				4F8649FF2A9CC44100FAC4AE /* BinApp.swift */,
 				170C9CC12422C19E00DD586E /* Map View */,
 				170C9CC22422C1B300DD586E /* Bin View */,
 				1734D0AB225D27D200FB61C8 /* Main.storyboard */,
@@ -310,6 +321,15 @@
 				4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */,
 			);
 			path = BinAppUITests;
+			sourceTree = "<group>";
+		};
+		4FE6BD142A6D8D9D002447D6 /* BinList */ = {
+			isa = PBXGroup;
+			children = (
+				4FE6BD152A6D8DAE002447D6 /* BinListView.swift */,
+				4FE6BD172A6D920B002447D6 /* BinCellView.swift */,
+			);
+			path = BinList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -460,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F812080293522B900D7F793 /* AlertError.swift in Sources */,
+				4F864A002A9CC44100FAC4AE /* BinApp.swift in Sources */,
 				1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */,
 				4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */,
 				4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */,
@@ -470,6 +491,7 @@
 				172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
+				4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */,
 				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
@@ -483,10 +505,12 @@
 				170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */,
 				4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */,
 				177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */,
+				4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */,
 				172B48DC23F1F5BF009A7CA0 /* MapTableViewController.swift in Sources */,
 				17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */,
 				174A36FD24A7885E0091847F /* AddressData.swift in Sources */,
 				17ED544F241047CD00FD0643 /* BinDayTableViewController.swift in Sources */,
+				4FE6BD162A6D8DAE002447D6 /* BinListView.swift in Sources */,
 				17E026BD2411952E008E9292 /* BinDays.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -656,7 +680,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -677,7 +701,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

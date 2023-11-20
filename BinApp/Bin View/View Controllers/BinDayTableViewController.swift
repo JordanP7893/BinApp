@@ -69,7 +69,7 @@ class BinDayTableViewController: UITableViewController {
         if let lastTableReloadDate = lastTableReloadDate, Date().stripTime() > lastTableReloadDate.stripTime() {
             guard let addressID = addressID else { return }
             Task {
-                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
+//                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
                 refreshBinListWithNotifications()
             }
         } else {
@@ -115,7 +115,7 @@ class BinDayTableViewController: UITableViewController {
         
         Task {
             do {
-                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
+//                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
                 binDaysProvider.binDays = binDays
                 await updateNotifications(binDays: binDays)
                 updateUI()
@@ -138,7 +138,7 @@ class BinDayTableViewController: UITableViewController {
             addressID = address.id
             
             do {
-                binDays = try await binDaysProvider.fetchBinDays(addressID: address.id)
+//                binDays = try await binDaysProvider.fetchBinDays(addressID: address.id)
                 updateUI()
             } catch {
                 if let error = error as? AlertError {
@@ -194,7 +194,7 @@ class BinDayTableViewController: UITableViewController {
             updateUI()
         }
         
-        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: bin, donePressed: doneButtonPressed, remindPressed: remindButtonPresses, tonightPressed: tonightButtonPressed))
+        let binDetailViewController = UIHostingController(rootView: BinDetailView(bin: .constant(bin), donePressed: doneButtonPressed, remindPressed: remindButtonPresses, tonightPressed: tonightButtonPressed))
         binDetailViewController.title = bin.type.description
         self.navigationController?.pushViewController(binDetailViewController, animated: true)
     }
