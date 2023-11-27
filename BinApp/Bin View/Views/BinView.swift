@@ -10,6 +10,7 @@ import SwiftUI
 
 struct BinView: View {
     @EnvironmentObject var binProvider: BinDaysProvider
+    @State var showNotificationSheet = false
 
     var body: some View {
         BinListView(bins: $binProvider.binDays)
@@ -27,7 +28,7 @@ struct BinView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-
+                    showNotificationSheet = true
                 } label: {
                     Image(systemName: "bell.fill")
                 }
@@ -36,8 +37,23 @@ struct BinView: View {
         })
         .navigationTitle("6 Cragg Terrace")
         .task {
+            binProvider.fetchNotifications()
             try? await binProvider.fetchBinDays(addressID: 740711)
         }
+        .onChange(of: binProvider.binNotifications) { _ in
+            Task {
+                await binProvider.updateNotifications()
+            }
+        }
+        .sheet(isPresented: $showNotificationSheet,
+               content: {
+            NavigationView {
+                BinNotificationList(
+                    showNotificationSheet: $showNotificationSheet,
+                    notifications: binProvider.binNotifications
+                )
+            }
+        })
     }
 }
 

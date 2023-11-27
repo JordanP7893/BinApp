@@ -153,13 +153,13 @@ class BinDayTableViewController: UITableViewController {
     
     func updateNotifications(binDays: [BinDays]) async {
         
-        let isAuthorized = await binDaysProvider.updateNotifications(binDays: binDays)
-        
-        if isAuthorized {
-            DispatchQueue.main.async {
-                UIApplication.shared.applicationIconBadgeNumber = 0
-            }
-        }
+//        let isAuthorized = await binDaysProvider.updateNotifications(binDays: binDays)
+//        
+//        if isAuthorized {
+//            DispatchQueue.main.async {
+//                UIApplication.shared.applicationIconBadgeNumber = 0
+//            }
+//        }
     }
     
     func manuallyShowRefreshControl() {

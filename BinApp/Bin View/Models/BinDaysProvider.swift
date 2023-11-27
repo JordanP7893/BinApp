@@ -12,7 +12,14 @@ import Foundation
 class BinDaysProvider: ObservableObject {
     
     @Published var binDays: [BinDays] = []
-    
+    @Published var binNotifications: BinNotifications = BinNotifications(
+        morning: false,
+        morningTime: .now,
+        evening: false,
+        eveningTime: .now,
+        types: [0: false, 1: false, 2: false]
+    )
+
     let binDaysDataController = BinDaysDataController()
     let notificationDataController = NotificationDataController()
     
@@ -23,22 +30,21 @@ class BinDaysProvider: ObservableObject {
             try await fetchDataFromTheNetwork(usingId: addressID)
         }
     }
-    
+
     func fetchDataFromTheNetwork(usingId addressID: Int) async throws {
         self.binDays = try await binDaysDataController.fetchBinDates(id: addressID)
-        let _ = await updateNotifications(binDays: binDays)
         self.binDays = binDays.sorted { $0.date < $1.date }
+        let _ = await updateNotifications()
     }
-    
-    func updateNotifications(binDays: [BinDays]) async -> Bool {
-        
-        let notificationState = self.notificationDataController.fetchNotificationState()
-        
-        if let notificationState = notificationState {
-            return await notificationDataController.setupBinNotification(for: binDays, at: notificationState)
-        } else {
-            return false
+
+    func fetchNotifications() {
+        if let binNotifications = notificationDataController.fetchNotificationState() {
+            self.binNotifications = binNotifications
         }
+    }
+
+    func updateNotifications() async -> Bool {
+        return await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
     }
     
 }

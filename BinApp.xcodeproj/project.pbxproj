@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -39,6 +39,7 @@
 		4F4C3BBA29197EA7004EA04F /* bin_list.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB929197EA7004EA04F /* bin_list.plist */; };
 		4F52EE6829A284B400AF8C8D /* BinAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */; };
 		4F52EE6A29A284B400AF8C8D /* BinAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */; };
+		4F76836B2B0B73B200EA9BB3 /* BinNotificationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */; };
 		4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */; };
 		4F812080293522B900D7F793 /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207F293522B900D7F793 /* AlertError.swift */; };
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
@@ -99,6 +100,7 @@
 		4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4F52EE7029A2996100AF8C8D /* BrudenellMountLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BrudenellMountLocation.gpx; sourceTree = "<group>"; };
 		4F52EE7129A299FB00AF8C8D /* LocationTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LocationTestPlan.xctestplan; sourceTree = "<group>"; };
+		4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinNotificationList.swift; sourceTree = "<group>"; };
 		4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysProvider.swift; sourceTree = "<group>"; };
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 		170C9CC32422C1C000DD586E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4F7683692B0B738B00EA9BB3 /* BinNotifications */,
 				4FE6BD142A6D8D9D002447D6 /* BinList */,
 				4F4541A12922668600458127 /* BinTable */,
 				4F4541A02922667D00458127 /* BinDetail */,
@@ -321,6 +324,14 @@
 				4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */,
 			);
 			path = BinAppUITests;
+			sourceTree = "<group>";
+		};
+		4F7683692B0B738B00EA9BB3 /* BinNotifications */ = {
+			isa = PBXGroup;
+			children = (
+				4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */,
+			);
+			path = BinNotifications;
 			sourceTree = "<group>";
 		};
 		4FE6BD142A6D8D9D002447D6 /* BinList */ = {
@@ -497,6 +508,7 @@
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
 				4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */,
+				4F76836B2B0B73B200EA9BB3 /* BinNotificationList.swift in Sources */,
 				4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */,
 				17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */,
 				178705732265013F0047E348 /* LocationDataController.swift in Sources */,
