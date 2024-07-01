@@ -9,31 +9,17 @@
 import Foundation
 
 class BinAddressDataController {
-    
-    func fetchAddress(postcode: String, completion: @escaping ([StoreAddress]?) -> Void) {
-        let paramString = BinAddressDataController.getParamString(params: ["postcode": postcode])
+    func fetchAddress(postcode: String) async throws -> [StoreAddress] {
+        let postcodeToSearch = postcode.replacingOccurrences(of: " ", with: "")
+        let paramString = BinAddressDataController.getParamString(params: ["postcode": postcodeToSearch])
         let addressUrl = URL(string: "https://bins.azurewebsites.net/api/getaddress?" + paramString)!
-        var success = false
-        BinAddressDataController.callGet(url: addressUrl) { message, data in
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-                if !success {
-                    completion(nil)
-                }
-             })
-            
-            if let jsonData = data {                
-                let decoder = JSONDecoder()
-                
-                do {
-                    let addresses = try decoder.decode([StoreAddress].self, from: jsonData)
-                    success = true
-                    completion(addresses)
-                } catch {
-                    print(error)
-                }
-            }
-        }
+
+        let data = try await BinDaysDataController.asyncGET(url: addressUrl)
+        
+        let decoder = JSONDecoder()
+        let addresses = try decoder.decode([StoreAddress].self, from: data)
+
+        return addresses
     }
     
     static func getParamString(params:[String:Any]) -> String {
@@ -91,6 +77,5 @@ class BinAddressDataController {
             return nil
         }
     }
-    
 }
 

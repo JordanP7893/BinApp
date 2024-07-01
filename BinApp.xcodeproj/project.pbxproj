@@ -37,9 +37,12 @@
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */; };
 		4F4C3BBA29197EA7004EA04F /* bin_list.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB929197EA7004EA04F /* bin_list.plist */; };
+		4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4FD9A82B1DF18500E49266 /* BinAddressMapView.swift */; };
 		4F52EE6829A284B400AF8C8D /* BinAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */; };
 		4F52EE6A29A284B400AF8C8D /* BinAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */; };
+		4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F60E1632B14E46700518D96 /* BinAddressView.swift */; };
 		4F76836B2B0B73B200EA9BB3 /* BinNotificationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */; };
+		4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7D83AE2B28B860002F9445 /* BinAddressViewModel.swift */; };
 		4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */; };
 		4F812080293522B900D7F793 /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F81207F293522B900D7F793 /* AlertError.swift */; };
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
@@ -95,12 +98,15 @@
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinTypeListData.swift; sourceTree = "<group>"; };
 		4F4C3BB929197EA7004EA04F /* bin_list.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = bin_list.plist; sourceTree = "<group>"; };
+		4F4FD9A82B1DF18500E49266 /* BinAddressMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressMapView.swift; sourceTree = "<group>"; };
 		4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITests.swift; sourceTree = "<group>"; };
 		4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4F52EE7029A2996100AF8C8D /* BrudenellMountLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BrudenellMountLocation.gpx; sourceTree = "<group>"; };
 		4F52EE7129A299FB00AF8C8D /* LocationTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LocationTestPlan.xctestplan; sourceTree = "<group>"; };
+		4F60E1632B14E46700518D96 /* BinAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressView.swift; sourceTree = "<group>"; };
 		4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinNotificationList.swift; sourceTree = "<group>"; };
+		4F7D83AE2B28B860002F9445 /* BinAddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressViewModel.swift; sourceTree = "<group>"; };
 		4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysProvider.swift; sourceTree = "<group>"; };
 		4F81207F293522B900D7F793 /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
@@ -198,6 +204,7 @@
 		170C9CC32422C1C000DD586E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4F60E1622B14E45100518D96 /* BinAddress */,
 				4F7683692B0B738B00EA9BB3 /* BinNotifications */,
 				4FE6BD142A6D8D9D002447D6 /* BinList */,
 				4F4541A12922668600458127 /* BinTable */,
@@ -324,6 +331,16 @@
 				4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */,
 			);
 			path = BinAppUITests;
+			sourceTree = "<group>";
+		};
+		4F60E1622B14E45100518D96 /* BinAddress */ = {
+			isa = PBXGroup;
+			children = (
+				4F60E1632B14E46700518D96 /* BinAddressView.swift */,
+				4F7D83AE2B28B860002F9445 /* BinAddressViewModel.swift */,
+				4F4FD9A82B1DF18500E49266 /* BinAddressMapView.swift */,
+			);
+			path = BinAddress;
 			sourceTree = "<group>";
 		};
 		4F7683692B0B738B00EA9BB3 /* BinNotifications */ = {
@@ -500,11 +517,13 @@
 				4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */,
 				17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */,
 				172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */,
+				4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
 				4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */,
 				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
+				4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */,
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
 				4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */,
@@ -516,6 +535,7 @@
 				1734D0A8225D27D200FB61C8 /* AppDelegate.swift in Sources */,
 				170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */,
 				4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */,
+				4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */,
 				177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */,
 				4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */,
 				172B48DC23F1F5BF009A7CA0 /* MapTableViewController.swift in Sources */,
@@ -692,7 +712,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -713,7 +733,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -16,7 +16,7 @@ class BinDaysDataController {
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
         
         do {
-            let data = try await asyncGET(url: binDatesUrl)
+            let data = try await BinDaysDataController.asyncGET(url: binDatesUrl)
             
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -72,7 +72,7 @@ class BinDaysDataController {
         }
     }
     
-    func asyncGET(url: URL) async throws -> Data {
+    static func asyncGET(url: URL) async throws -> Data {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.timeoutInterval = 5.0

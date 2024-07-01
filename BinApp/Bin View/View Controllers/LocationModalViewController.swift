@@ -113,45 +113,45 @@ class LocationModalViewController: UIViewController {
             return
         }
         
-        binAddressDataController.fetchAddress(postcode: postcodeToSearch) { addresses in
-            guard let addresses = addresses else {
-                DispatchQueue.main.async {
-                    self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve address data. Please check your connection and try again")
-                }
-                self.loadingIndicator.stopAnimating()
-                return
-            }
-            self.addresses.removeAll()
-            
-            if addresses.count == 0 {
-                DispatchQueue.main.async {
-                    self.errorAlertController.showErrorAlertView(in: self, with: "Postcode not found", and: "Please check that your postcode is valid for Leeds")
-                    self.hidePickerView()
-                    self.loadingIndicator.stopAnimating()
-                }
-                return
-            }
-            
-            for address in addresses {
-                let streetNameAndNumber = [address.address1 + ",", address.address2, address.street]
-                self.addresses[address.premisesId] = streetNameAndNumber.filter({$0 != "" && $0 != ","}).joined(separator: " ")
-            }
-            
-            self.addressesSorted = self.addresses.sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }
-            
-            DispatchQueue.main.async {
-                self.addressPicker.reloadAllComponents()
-                self.addressPicker.selectRow(0, inComponent: 0, animated: false)
-                self.selectedAddress = AddressData(id: self.addressesSorted[0].key, title: self.addressesSorted[0].value)
-                self.addressLabel.text = self.selectedAddress?.title
-                self.loadingIndicator.stopAnimating()
-            
-                self.addressPickerStackViewBottomConstraint.constant = 0
-                UIView.animate(withDuration: 0.2) {
-                    self.view.layoutIfNeeded()
-                }
-            }
-        }
+//        binAddressDataController.fetchAddress(postcode: postcodeToSearch) { addresses in
+//            guard let addresses = addresses else {
+//                DispatchQueue.main.async {
+//                    self.errorAlertController.showErrorAlertView(in: self, with: "Network Connection Error", and: "Could not retrieve address data. Please check your connection and try again")
+//                }
+//                self.loadingIndicator.stopAnimating()
+//                return
+//            }
+//            self.addresses.removeAll()
+//            
+//            if addresses.count == 0 {
+//                DispatchQueue.main.async {
+//                    self.errorAlertController.showErrorAlertView(in: self, with: "Postcode not found", and: "Please check that your postcode is valid for Leeds")
+//                    self.hidePickerView()
+//                    self.loadingIndicator.stopAnimating()
+//                }
+//                return
+//            }
+//            
+//            for address in addresses {
+//                let streetNameAndNumber = [address.address1 + ",", address.address2, address.street]
+//                self.addresses[address.premisesId] = streetNameAndNumber.filter({$0 != "" && $0 != ","}).joined(separator: " ")
+//            }
+//            
+//            self.addressesSorted = self.addresses.sorted { $0.1.localizedStandardCompare($1.1) == .orderedAscending }
+//            
+//            DispatchQueue.main.async {
+//                self.addressPicker.reloadAllComponents()
+//                self.addressPicker.selectRow(0, inComponent: 0, animated: false)
+//                self.selectedAddress = AddressData(id: self.addressesSorted[0].key, title: self.addressesSorted[0].value)
+//                self.addressLabel.text = self.selectedAddress?.title
+//                self.loadingIndicator.stopAnimating()
+//            
+//                self.addressPickerStackViewBottomConstraint.constant = 0
+//                UIView.animate(withDuration: 0.2) {
+//                    self.view.layoutIfNeeded()
+//                }
+//            }
+//        }
     }
     
     func updateSaveButton() {

@@ -7,9 +7,11 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct BinView: View {
     @EnvironmentObject var binProvider: BinDaysProvider
+    @State var showAddressSheet = false
     @State var showNotificationSheet = false
 
     var body: some View {
@@ -20,7 +22,7 @@ struct BinView: View {
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
-
+                    showAddressSheet = true
                 } label: {
                     Image(systemName: "location.magnifyingglass")
                 }
@@ -45,6 +47,12 @@ struct BinView: View {
                 await binProvider.updateNotifications()
             }
         }
+        .sheet(isPresented: $showAddressSheet,
+               content: {
+            NavigationView {
+                BinAddressView()
+            }
+        })
         .sheet(isPresented: $showNotificationSheet,
                content: {
             NavigationView {
