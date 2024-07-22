@@ -17,17 +17,17 @@ struct BinAddressView: View {
 
     var body: some View {
         VStack {
-            HStack(spacing: 20.0) {
-                Button(action: {
-                    viewModel.searchText = "LS19 6LF"
-                    Task {
-                        try await viewModel.retrieveRegionFromPostcode()
-                    }
-                }, label: {
-                    Image(systemName: "location")
-                })
+            VStack(alignment: .trailing) {
+                HStack(spacing: 20.0) {
+                    Button(action: {
+                        viewModel.searchText = "LS19 6LF"
+                        Task {
+                            try await viewModel.retrieveRegionFromPostcode()
+                        }
+                    }, label: {
+                        Image(systemName: "location")
+                    })
 
-                VStack(alignment: .trailing) {
                     TextField("Search", text: $viewModel.searchText)
                         .textFieldStyle(.roundedBorder)
                         .textInputAutocapitalization(.characters)
@@ -37,11 +37,11 @@ struct BinAddressView: View {
                                 try await viewModel.retrieveRegionFromPostcode()
                             }
                         }
-                    if let addresses = viewModel.addresses {
-                        Picker("Choose Address", selection: $viewModel.selectedAddressIndex) {
-                            ForEach(addresses.indices, id: \.self) { index in
-                                Text(addresses[index].formattedAddress)
-                            }
+                }
+                if let addresses = viewModel.addresses {
+                    Picker("Choose Address", selection: $viewModel.selectedAddressIndex) {
+                        ForEach(addresses.indices, id: \.self) { index in
+                            Text(addresses[index].formattedAddress)
                         }
                     }
                 }
