@@ -24,9 +24,10 @@ class BinAddressDataController {
             
             if let jsonData = data {                
                 let decoder = JSONDecoder()
-                
+                let escapedData = Data(String(data: jsonData, encoding: .utf8)!.replacingOccurrences(of: "\\u0000", with: "").utf8)
+
                 do {
-                    let addresses = try decoder.decode([StoreAddress].self, from: jsonData)
+                    let addresses = try decoder.decode([StoreAddress].self, from: escapedData)
                     success = true
                     completion(addresses)
                 } catch {
