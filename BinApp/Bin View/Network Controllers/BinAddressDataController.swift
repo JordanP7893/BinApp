@@ -17,7 +17,7 @@ class BinAddressDataController {
         let data = try await BinDaysDataController.asyncGET(url: addressUrl)
         
         let decoder = JSONDecoder()
-        let escapedData = Data(String(data: jsonData, encoding: .utf8)!.replacingOccurrences(of: "\\u0000", with: "").utf8)
+        let escapedData = Data(String(data: data, encoding: .utf8)!.replacingOccurrences(of: "\\u0000", with: "").utf8)
         let addresses = try decoder.decode([StoreAddress].self, from: escapedData)
 
         return addresses
