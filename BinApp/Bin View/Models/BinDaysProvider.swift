@@ -10,7 +10,15 @@ import Foundation
 
 @MainActor
 class BinDaysProvider: ObservableObject {
-    
+    @Published var address: AddressData? {
+        didSet {
+            if let address {
+                Task {
+                    try await fetchDataFromTheNetwork(usingId: address.id)
+                }
+            }
+        }
+    }
     @Published var binDays: [BinDays] = []
     @Published var binNotifications: BinNotifications = BinNotifications(
         morning: false,
@@ -18,11 +26,21 @@ class BinDaysProvider: ObservableObject {
         evening: false,
         eveningTime: .now,
         types: [0: false, 1: false, 2: false]
-    )
+    ) {
+        didSet {
+            Task {
+                await updateNotifications()
+            }
+        }
+    }
 
     let binDaysDataController = BinDaysDataController()
     let notificationDataController = NotificationDataController()
     
+    func updateAddress(newAddress: AddressData) {
+        address = newAddress
+    }
+
     func fetchBinDays(addressID: Int) async throws {
         if let binDays = binDaysDataController.fetchBinData() {
             self.binDays = binDays.sorted { $0.date < $1.date }

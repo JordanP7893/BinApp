@@ -10,10 +10,18 @@ import SwiftUI
 import CoreLocation
 
 struct BinAddressView: View {
+    enum LocationButtonState {
+        case active
+        case loading
+        case notPressed
+    }
+
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var binProvider: BinDaysProvider
 
     @StateObject var viewModel = BinAddressViewModel()
+    @State var locationManager = LocationManager()
+    @State var locationButtonState: LocationButtonState = .notPressed
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -22,13 +30,12 @@ struct BinAddressView: View {
             VStack(alignment: .trailing) {
                 HStack(spacing: 20.0) {
                     Button(action: {
-                        viewModel.searchText = "LS19 6LF"
-                        Task {
-                            try await viewModel.retrieveRegionFromPostcode()
-                        }
+                        locationButtonState = .loading
+                        locationManager.startLocationServices()
                     }, label: {
-                        Image(systemName: "location")
+                        locationButtonLabel
                     })
+                    .disabled(locationButtonState == .loading)
 
                     TextField("Search", text: $viewModel.searchText)
                         .textFieldStyle(.roundedBorder)
@@ -36,7 +43,7 @@ struct BinAddressView: View {
                         .textContentType(.postalCode)
                         .onSubmit {
                             Task {
-                                try await viewModel.retrieveRegionFromPostcode()
+                                try await viewModel.searchFor(postcode: viewModel.searchText)
                             }
                         }
                 }
@@ -59,6 +66,15 @@ struct BinAddressView: View {
         }
         .navigationTitle("Find Your Address")
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: locationManager.userPostcode) {
+            if let userPostcode = locationManager.userPostcode {
+                viewModel.searchText = userPostcode
+                Task {
+                    try await viewModel.searchFor(postcode: userPostcode)
+                    locationButtonState = .active
+                }
+            }
+        }
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
@@ -70,17 +86,31 @@ struct BinAddressView: View {
 
             ToolbarItem {
                 Button(action: {
+                    dismiss()
                     Task {
                         guard let addresses = viewModel.addresses else { return }
-                        try await binProvider.fetchDataFromTheNetwork(usingId: addresses[viewModel.selectedAddressIndex].premisesId)
-                        dismiss()
+                        let address = addresses[viewModel.selectedAddressIndex]
+                        binProvider.updateAddress(newAddress: .init(id: address.premisesId, title: address.formattedAddress))
                     }
                 }, label: {
                     Text("Save")
                         .bold()
                 })
+                .disabled(viewModel.addresses?.isEmpty ?? true)
             }
         })
+    }
+
+    @ViewBuilder
+    var locationButtonLabel: some View {
+        switch locationButtonState {
+        case .active:
+            Image(systemName: "location.fill")
+        case .loading:
+            ProgressView()
+        case .notPressed:
+            Image(systemName: "location")
+        }
     }
 }
 

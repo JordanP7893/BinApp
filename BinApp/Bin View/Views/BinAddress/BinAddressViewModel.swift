@@ -25,21 +25,26 @@ class BinAddressViewModel: ObservableObject {
     let geocoder = CLGeocoder()
     let binAddressDataController = BinAddressDataController()
 
-    func retrieveRegionFromPostcode() async throws {
-        let location = try await geocoder.geocodeAddressString(searchText)
-        let addresses = try await binAddressDataController.fetchAddress(postcode: searchText)
+    func searchFor(postcode: String) async throws {
+        let location = try await geocoder.geocodeAddressString(postcode)
+        let addresses = try await binAddressDataController.fetchAddress(postcode: postcode)
 
-        withAnimation {
-            self.addresses = addresses.sorted { $0.formattedAddress.localizedStandardCompare($1.formattedAddress) == .orderedAscending }
+        if !addresses.isEmpty {
+            withAnimation {
+                self.addresses = addresses.sorted {
+                    $0.formattedAddress.localizedStandardCompare($1.formattedAddress) == .orderedAscending
+                }
+                selectAddress(at: 0)
+            }
+
+            let circularRegion = location.first?.region as? CLCircularRegion
+            guard let region = circularRegion?.center else { return }
+
+            self.mapCamera = .camera(.init(centerCoordinate: region, distance: 1000))
         }
-
-        let circularRegion = location.first?.region as? CLCircularRegion
-        guard let region = circularRegion?.center else { return }
-
-        self.mapCamera = .camera(.init(centerCoordinate: region, distance: 1000))
     }
 
-    func selectAddress(at index: Int) {
+    private func selectAddress(at index: Int) {
         guard let addresses else { return }
 
         let selectedAddress = addresses[index]
@@ -49,7 +54,7 @@ class BinAddressViewModel: ObservableObject {
         }
     }
 
-    func retrievePointFromAddress(_ address: String) async throws {
+    private func retrievePointFromAddress(_ address: String) async throws {
         let location = try await geocoder.geocodeAddressString(address + " " + searchText)
 
         let circularRegion = location.first?.region as? CLCircularRegion

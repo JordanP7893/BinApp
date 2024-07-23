@@ -32,7 +32,7 @@ struct BinView: View {
                 Button {
                     showNotificationSheet = true
                 } label: {
-                    Image(systemName: "bell.fill")
+                    Image(systemName: "bell")
                 }
 
             }
@@ -42,26 +42,19 @@ struct BinView: View {
             binProvider.fetchNotifications()
             try? await binProvider.fetchBinDays(addressID: 740711)
         }
-        .onChange(of: binProvider.binNotifications) { _ in
-            Task {
-                await binProvider.updateNotifications()
-            }
-        }
-        .sheet(isPresented: $showAddressSheet,
-               content: {
+        .sheet(isPresented: $showAddressSheet) {
             NavigationView {
                 BinAddressView()
             }
-        })
-        .sheet(isPresented: $showNotificationSheet,
-               content: {
+        }
+        .sheet(isPresented: $showNotificationSheet) {
             NavigationView {
                 BinNotificationList(
                     showNotificationSheet: $showNotificationSheet,
                     notifications: binProvider.binNotifications
                 )
             }
-        })
+        }
     }
 }
 
