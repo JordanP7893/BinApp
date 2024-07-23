@@ -16,7 +16,9 @@ struct BinAddressView: View {
     @StateObject var viewModel = BinAddressViewModel()
 
     var body: some View {
-        VStack {
+        ZStack(alignment: .top) {
+            BinAddressMapView(mapPosition: $viewModel.mapCamera, point: viewModel.point)
+
             VStack(alignment: .trailing) {
                 HStack(spacing: 20.0) {
                     Button(action: {
@@ -45,13 +47,17 @@ struct BinAddressView: View {
                         }
                     }
                 }
-
             }
             .padding()
-
-            BinAddressMapView(mapPosition: $viewModel.mapCamera, point: viewModel.point)
+            .background(content: {
+                Rectangle()
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .foregroundStyle(.background)
+                    .shadow(radius: 5)
+            })
+            .padding()
         }
-        .navigationTitle("Address")
+        .navigationTitle("Find Your Address")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {

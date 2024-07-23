@@ -29,7 +29,9 @@ class BinAddressViewModel: ObservableObject {
         let location = try await geocoder.geocodeAddressString(searchText)
         let addresses = try await binAddressDataController.fetchAddress(postcode: searchText)
 
-        self.addresses = addresses.sorted { $0.formattedAddress.localizedStandardCompare($1.formattedAddress) == .orderedAscending }
+        withAnimation {
+            self.addresses = addresses.sorted { $0.formattedAddress.localizedStandardCompare($1.formattedAddress) == .orderedAscending }
+        }
 
         let circularRegion = location.first?.region as? CLCircularRegion
         guard let region = circularRegion?.center else { return }
@@ -53,7 +55,9 @@ class BinAddressViewModel: ObservableObject {
         let circularRegion = location.first?.region as? CLCircularRegion
         guard let coordinates = circularRegion?.center else { return }
         self.point = .init(title: address, coordinates: coordinates)
-        self.mapCamera = .camera(.init(centerCoordinate: coordinates, distance: 500))
+        withAnimation {
+            self.mapCamera = .camera(.init(centerCoordinate: coordinates, distance: 500))
+        }
     }
 }
 
