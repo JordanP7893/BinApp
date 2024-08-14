@@ -41,9 +41,11 @@ struct BinView: View {
         })
         .navigationTitle(binProvider.address?.title ?? "Bin Days")
         .task {
+            binProvider.fetchNotifications()
             if let address = binProvider.address {
-                binProvider.fetchNotifications()
                 try? await binProvider.fetchBinDays(addressID: address.id)
+            } else {
+                binProvider.fetchAddress()
             }
         }
         .sheet(isPresented: $showAddressSheet) {

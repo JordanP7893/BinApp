@@ -34,11 +34,17 @@ class BinDaysProvider: ObservableObject {
         }
     }
 
+    let addressDataController = BinAddressDataController()
     let binDaysDataController = BinDaysDataController()
     let notificationDataController = NotificationDataController()
     
     func updateAddress(newAddress: AddressData) {
         address = newAddress
+        addressDataController.saveAddressData(newAddress)
+    }
+    
+    func fetchAddress() {
+        address = addressDataController.fetchAddressData()
     }
 
     func fetchBinDays(addressID: Int) async throws {
