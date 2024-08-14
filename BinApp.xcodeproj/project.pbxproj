@@ -211,6 +211,7 @@
 				4F4541A12922668600458127 /* BinTable */,
 				4F4541A02922667D00458127 /* BinDetail */,
 				4F864A012A9CF47F00FAC4AE /* BinView.swift */,
+				4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -230,7 +231,6 @@
 			isa = PBXGroup;
 			children = (
 				17E026BC2411952E008E9292 /* BinDays.swift */,
-				4F81207B29351A2C00D7F793 /* BinDaysProvider.swift */,
 				4F81207F293522B900D7F793 /* AlertError.swift */,
 				4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */,
 				17E064552444975900789B9A /* BinNotifications.swift */,

@@ -17,7 +17,9 @@ struct BinView: View {
     var body: some View {
         BinListView(bins: $binProvider.binDays)
         .refreshable {
-            _ = try? await binProvider.fetchDataFromTheNetwork(usingId: 740711)
+            if let address = binProvider.address {
+                _ = try? await binProvider.fetchDataFromTheNetwork(usingId: address.id)
+            }
         }
         .toolbar(content: {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -37,10 +39,12 @@ struct BinView: View {
 
             }
         })
-        .navigationTitle("6 Cragg Terrace")
+        .navigationTitle(binProvider.address?.title ?? "Bin Days")
         .task {
-            binProvider.fetchNotifications()
-            try? await binProvider.fetchBinDays(addressID: 740711)
+            if let address = binProvider.address {
+                binProvider.fetchNotifications()
+                try? await binProvider.fetchBinDays(addressID: address.id)
+            }
         }
         .sheet(isPresented: $showAddressSheet) {
             NavigationView {
