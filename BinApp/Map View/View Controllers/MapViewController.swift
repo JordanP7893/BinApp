@@ -98,21 +98,21 @@ class MapViewController: UIViewController {
     }
     
     func getRecyclingLocations() {
-        if let locationData = locationDataController.getLocalLocationData() {
-            self.calculateDistanceForLocations(locationData)
-            self.addAnnotationsToMap()
-        } else  {
-            locationDataController.fetchLocations { (locations) in
-                guard let locations = locations else {
-                    self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.calculateDistanceForLocations(locations)
-                    self.addAnnotationsToMap()
-                }
-            }
-        }
+//        if let locationData = locationDataController.getLocalLocationData() {
+//            self.calculateDistanceForLocations(locationData)
+//            self.addAnnotationsToMap()
+//        } else  {
+//            locationDataController.fetchLocations { (locations) in
+//                guard let locations = locations else {
+//                    self.errorAlertController.showErrorAlertView(in: self, with: "Location Not Found", and: "Could not retrive your current location. Please check your settings.")
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    self.calculateDistanceForLocations(locations)
+//                    self.addAnnotationsToMap()
+//                }
+//            }
+//        }
     }
     
     private func calculateDistanceForLocations(_ locations: [RecyclingLocation]) {

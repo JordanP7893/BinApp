@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum RecyclingType: CustomStringConvertible {
+enum RecyclingType: CustomStringConvertible, CaseIterable {
     case glass
     case paper
     case textiles
@@ -17,13 +17,13 @@ enum RecyclingType: CustomStringConvertible {
     var description: String {
         switch self {
         case .glass:
-            return "glass"
+            return "Glass"
         case .paper:
-            return "paper"
+            return "Paper"
         case .textiles:
-            return "textiles"
+            return "Textiles"
         case .electronics:
-            return "electronics"
+            return "Electronics"
         }
     }
     

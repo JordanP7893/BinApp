@@ -9,7 +9,7 @@
 import Foundation
 import CoreLocation
 
-class RecyclingLocation: NSObject, Codable {
+class RecyclingLocation: NSObject, Codable, Identifiable {
     var name: String
     var type: String
     var typeDescription: String

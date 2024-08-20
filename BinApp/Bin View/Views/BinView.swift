@@ -15,51 +15,53 @@ struct BinView: View {
     @State var showNotificationSheet = false
 
     var body: some View {
-        BinListView(bins: $binProvider.binDays)
-        .refreshable {
-            if let address = binProvider.address {
-                _ = try? await binProvider.fetchDataFromTheNetwork(usingId: address.id)
-            }
-        }
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    showAddressSheet = true
-                } label: {
-                    Image(systemName: "location.magnifyingglass")
+        NavigationStack {
+            BinListView(bins: $binProvider.binDays)
+                .refreshable {
+                    if let address = binProvider.address {
+                        _ = try? await binProvider.fetchDataFromTheNetwork(usingId: address.id)
+                    }
                 }
-            }
-
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showNotificationSheet = true
-                } label: {
-                    Image(systemName: "bell")
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            showAddressSheet = true
+                        } label: {
+                            Image(systemName: "location.magnifyingglass")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            showNotificationSheet = true
+                        } label: {
+                            Image(systemName: "bell")
+                        }
+                        
+                    }
+                })
+                .navigationTitle(binProvider.address?.title ?? "Bin Days")
+                .task {
+                    binProvider.fetchNotifications()
+                    if let address = binProvider.address {
+                        try? await binProvider.fetchBinDays(addressID: address.id)
+                    } else {
+                        binProvider.fetchAddress()
+                    }
                 }
-
-            }
-        })
-        .navigationTitle(binProvider.address?.title ?? "Bin Days")
-        .task {
-            binProvider.fetchNotifications()
-            if let address = binProvider.address {
-                try? await binProvider.fetchBinDays(addressID: address.id)
-            } else {
-                binProvider.fetchAddress()
-            }
-        }
-        .sheet(isPresented: $showAddressSheet) {
-            NavigationView {
-                BinAddressView()
-            }
-        }
-        .sheet(isPresented: $showNotificationSheet) {
-            NavigationView {
-                BinNotificationList(
-                    showNotificationSheet: $showNotificationSheet,
-                    notifications: binProvider.binNotifications
-                )
-            }
+                .sheet(isPresented: $showAddressSheet) {
+                    NavigationView {
+                        BinAddressView()
+                    }
+                }
+                .sheet(isPresented: $showNotificationSheet) {
+                    NavigationView {
+                        BinNotificationList(
+                            showNotificationSheet: $showNotificationSheet,
+                            notifications: binProvider.binNotifications
+                        )
+                    }
+                }
         }
     }
 }

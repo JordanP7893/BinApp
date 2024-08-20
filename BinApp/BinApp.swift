@@ -14,9 +14,13 @@ struct BinApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            TabView {
                 BinView()
                     .environmentObject(binProvider)
+                    .tabItem { Label("Bin Days", image: "waste") }
+                
+                MapView()
+                    .tabItem { Label("Recycling Centres", image: "recycle") }
             }
             .tint(.init("AppColour"))
         }

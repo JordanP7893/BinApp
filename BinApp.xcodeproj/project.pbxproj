@@ -34,6 +34,7 @@
 		17ED544F241047CD00FD0643 /* BinDayTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */; };
 		17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */; };
 		17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */; };
+		4F05D0D02C6FA2700079657A /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05D0CF2C6FA2700079657A /* MapView.swift */; };
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085452C4E620C0014195E /* CSwiftV.swift */; };
 		4F40854A2C4FC4730014195E /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085492C4FC4730014195E /* LocationService.swift */; };
@@ -42,6 +43,7 @@
 		4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4FD9A82B1DF18500E49266 /* BinAddressMapView.swift */; };
 		4F52EE6829A284B400AF8C8D /* BinAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6729A284B400AF8C8D /* BinAppUITests.swift */; };
 		4F52EE6A29A284B400AF8C8D /* BinAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */; };
+		4F5A1D862C7260D4007EA577 /* MapView+ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */; };
 		4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F60E1632B14E46700518D96 /* BinAddressView.swift */; };
 		4F76836B2B0B73B200EA9BB3 /* BinNotificationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */; };
 		4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7D83AE2B28B860002F9445 /* BinAddressViewModel.swift */; };
@@ -96,6 +98,7 @@
 		17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewController.swift; sourceTree = "<group>"; };
 		17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewCell.swift; sourceTree = "<group>"; };
 		17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		4F05D0CF2C6FA2700079657A /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F4085452C4E620C0014195E /* CSwiftV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSwiftV.swift; sourceTree = "<group>"; };
 		4F4085472C4E624D0014195E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -108,6 +111,7 @@
 		4F52EE6929A284B400AF8C8D /* BinAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4F52EE7029A2996100AF8C8D /* BrudenellMountLocation.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BrudenellMountLocation.gpx; sourceTree = "<group>"; };
 		4F52EE7129A299FB00AF8C8D /* LocationTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LocationTestPlan.xctestplan; sourceTree = "<group>"; };
+		4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+ViewModel.swift"; sourceTree = "<group>"; };
 		4F60E1632B14E46700518D96 /* BinAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressView.swift; sourceTree = "<group>"; };
 		4F76836A2B0B73B200EA9BB3 /* BinNotificationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinNotificationList.swift; sourceTree = "<group>"; };
 		4F7D83AE2B28B860002F9445 /* BinAddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressViewModel.swift; sourceTree = "<group>"; };
@@ -165,6 +169,8 @@
 			children = (
 				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
 				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
+				4F05D0CF2C6FA2700079657A /* MapView.swift */,
+				4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -478,6 +484,7 @@
 				4F812080293522B900D7F793 /* AlertError.swift in Sources */,
 				4F864A002A9CC44100FAC4AE /* BinApp.swift in Sources */,
 				1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */,
+				4F5A1D862C7260D4007EA577 /* MapView+ViewModel.swift in Sources */,
 				4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */,
 				4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */,
 				1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */,
@@ -492,6 +499,7 @@
 				4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */,
 				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
+				4F05D0D02C6FA2700079657A /* MapView.swift in Sources */,
 				4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */,
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
