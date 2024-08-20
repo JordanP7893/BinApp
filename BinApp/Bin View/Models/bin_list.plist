@@ -62,13 +62,14 @@ Your household waste should be placed inside the bin with the lid closed. Extra 
 	<key>GREEN</key>
 	<dict>
 		<key>no</key>
-		<string>• black or brown plastic
+		<string>• black plastic
 • black bin bags
 • compostable or biodegradable plastic
+• drinking glasses
 • electrical items
 • food waste
 • garden waste
-• glass
+• light bulbs
 • polystyrene
 • shredded paper (this causes problems with recycling machinery)
 • syringes or needles
@@ -81,6 +82,7 @@ Your household waste should be placed inside the bin with the lid closed. Extra 
 • carrier bags
 • cartons and Tetra Paks
 • foil including food containers and takeaway trays
+• glass
 • metal cans
 • paper
 • plastic bottles, tubs and pots
