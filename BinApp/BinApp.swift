@@ -19,7 +19,7 @@ struct BinApp: App {
                     .environmentObject(binProvider)
                     .tabItem { Label("Bin Days", image: "waste") }
                 
-                MapView()
+                MapView(viewModel: MapViewViewModel())
                     .tabItem { Label("Recycling Centres", image: "recycle") }
             }
             .tint(.init("AppColour"))

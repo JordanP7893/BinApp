@@ -129,7 +129,7 @@ class MapViewController: UIViewController {
     
     private func convertToMapPins(_ locations: [RecyclingLocation]) -> [MapPin] {
         return locations.map { location in
-            let mapPin = MapPin(coordinate: location.coordinates, title: location.name, subtitle: location.typeDescription, type: location.type, address: location.address, postcode: location.postcode)
+            let mapPin = MapPin(coordinate: location.coordinates, title: location.name, subtitle: location.typeDescription, type: "", address: location.address, postcode: location.postcode)
             mapPin.distance = location.distance
             mapPin.drivingDistance = location.drivingDistance
             mapPin.drivingTime = location.drivingTime
@@ -138,7 +138,7 @@ class MapViewController: UIViewController {
     }
     
     private func convertToRecyclingLocation(_ pin: MapPin) -> RecyclingLocation {
-        let location = RecyclingLocation(name: pin.title ?? "", type: pin.type, typeDescription: pin.subtitle ?? "", coordinates: pin.coordinate, address: pin.address, postcode: pin.postcode)
+        let location = RecyclingLocation(name: pin.title ?? "", type: .glass, typeDescription: pin.subtitle ?? "", coordinates: pin.coordinate, address: pin.address, postcode: pin.postcode)
         location.distance = pin.distance
         location.drivingDistance = pin.drivingDistance
         location.drivingTime = pin.drivingTime
@@ -202,9 +202,7 @@ class MapViewController: UIViewController {
     }
     
     func filterLocations(_ locations: [RecyclingLocation], by recyclingType: RecyclingType) -> [RecyclingLocation] {
-        return locations.filter { location in
-            location.type == recyclingType.description
-        }
+        return locations
     }
     
     func orderLocations(_ locations: [RecyclingLocation], asDistancefrom currentLocation: CLLocation) -> [RecyclingLocation] {

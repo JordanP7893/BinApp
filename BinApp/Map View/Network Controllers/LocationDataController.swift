@@ -20,7 +20,7 @@ class LocationDataController {
         
         let (data, _) = try await URLSession.shared.data(from: url)
         
-        guard let string = String(data: data, encoding: .ascii) else { throw LocationDataControllerError.stringConversionFailed }
+        guard let string = String(data: data, encoding: .isoLatin1) else { throw LocationDataControllerError.stringConversionFailed }
         
         let locations = try converCsvStringToAddresses(string: string)
         
@@ -69,7 +69,7 @@ class LocationDataController {
             for type in locationTypes {
                 if type.value {
                     let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                    let location = RecyclingLocation(name: name, type: type.key, typeDescription: typeDescription, coordinates: coordinates, address: address, postcode: postcode)
+                    let location = RecyclingLocation(name: name, type: .init(rawValue: type.key), typeDescription: typeDescription, coordinates: coordinates, address: address, postcode: postcode)
                     
                     locations.append(location)
                 }

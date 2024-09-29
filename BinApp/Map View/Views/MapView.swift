@@ -9,50 +9,82 @@
 import SwiftUI
 import MapKit
 
-struct MapView: View {
-    @State var selectedRecyclingType: RecyclingType = .glass
-    @State var viewModel = ViewModel()
+struct MapView<ViewModel: MapViewProtocol>: View {
+    @State var viewModel: ViewModel
+    @State var locationManager = LocationManager()
     
     var body: some View {
         NavigationStack {
-            Map() {
-                ForEach(viewModel.locations) {
-                    Marker(coordinate: $0.coordinates) {
-                        Image("glass")
+            ZStack {
+                Map(position: $viewModel.mapCamera) {
+                    ForEach(viewModel.locationsFiltered) { location in
+                        Marker(location.name, image: location.type.description.lowercased(), coordinate: location.coordinates)
+                            .tint(location.type.colour)
                     }
-                    .tint(.green)
+                    UserAnnotation()
+                }
+                .onMapCameraChange {
+                    viewModel.mapCentreTracked = $0.region.center
+                }
+                .mapControls {
+                    MapUserLocationButton()
                 }
             }
-                .toolbar(content: {
-                    ToolbarItemGroup(placement: .topBarLeading) {
-                        Picker("Recycling type", selection: $selectedRecyclingType) {
-                            ForEach(RecyclingType.allCases, id: \.self) { type in
-                                HStack {
-                                    Text(type.description)
-                                    Spacer()
-                                }
+            .toolbar(content: {
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Picker("Recycling type", selection: $viewModel.selectedRecyclingType) {
+                        ForEach(RecyclingType.allCases, id: \.self) { type in
+                            HStack {
+                                Text(type.description)
+                                Spacer()
                             }
                         }
-                        .pickerStyle(.menu)
-                        .labelsHidden()
                     }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        NavigationLink {
-                            
-                        } label: {
-                            Image(systemName: "list.bullet")
-                        }
-                    }
-                })
-                .task {
-                    await viewModel.getLocations()
+                    .pickerStyle(.menu)
+                    .labelsHidden()
                 }
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    NavigationLink {
+                        
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
+                }
+            })
+            .task {
+                await viewModel.getLocations()
+            }
+            .task(id: locationManager.userLocation) {
+                if let location = locationManager.userLocation, viewModel.mapCamera == .automatic {
+                    viewModel.mapCamera = .region(.init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
+                }
+            }
+            .onAppear {
+                locationManager.startLocationServices()
+            }
         }
+    }
+}
+
+class MockMapViewModel: MapViewProtocol {
+    var locations: [RecyclingLocation] = []
+    var locationsFiltered: [RecyclingLocation] = RecyclingLocation.mockData
+    var selectedRecyclingType: RecyclingType = .glass
+    var mapCamera: MapCameraPosition = .automatic
+    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre
+    
+    func getLocations() async {
+        locations = RecyclingLocation.mockData
+        locationsFiltered = locations
+    }
+    
+    func locationsFiltered(by type: RecyclingType) -> [RecyclingLocation] {
+        locations
     }
 }
 
 #Preview {
     NavigationView {
-        MapView()
+        MapView(viewModel: MockMapViewModel())
     }
 }
