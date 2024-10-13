@@ -52,6 +52,10 @@
 		4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F841D1B291914F7003A35F7 /* BinDetailView.swift */; };
 		4F864A002A9CC44100FAC4AE /* BinApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8649FF2A9CC44100FAC4AE /* BinApp.swift */; };
 		4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F864A012A9CF47F00FAC4AE /* BinView.swift */; };
+		4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */; };
+		4F8729012CBC1DEA002FA5FE /* RecyclingIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */; };
+		4F8729032CBC2125002FA5FE /* RecyclingIconStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */; };
+		4F8729052CBC26A4002FA5FE /* RecyclingLocationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */; };
 		4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */; };
 		4FD5FE122CA9CB79006CA06E /* CLLocationCoordinate2D+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */; };
 		4FE6BD162A6D8DAE002447D6 /* BinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD152A6D8DAE002447D6 /* BinListView.swift */; };
@@ -121,6 +125,10 @@
 		4F841D1B291914F7003A35F7 /* BinDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDetailView.swift; sourceTree = "<group>"; };
 		4F8649FF2A9CC44100FAC4AE /* BinApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinApp.swift; sourceTree = "<group>"; };
 		4F864A012A9CF47F00FAC4AE /* BinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinView.swift; sourceTree = "<group>"; };
+		4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationCardView.swift; sourceTree = "<group>"; };
+		4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconView.swift; sourceTree = "<group>"; };
+		4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconStackView.swift; sourceTree = "<group>"; };
+		4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationList.swift; sourceTree = "<group>"; };
 		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Extensions.swift"; sourceTree = "<group>"; };
 		4FE6BD152A6D8DAE002447D6 /* BinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinListView.swift; sourceTree = "<group>"; };
@@ -169,8 +177,8 @@
 		170C9CBF2422C16200DD586E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
-				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
+				4F8729062CBC2F0D002FA5FE /* SupportingViews */,
+				4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */,
 				4F05D0CF2C6FA2700079657A /* MapView.swift */,
 				4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */,
 			);
@@ -370,6 +378,18 @@
 			path = BinNotifications;
 			sourceTree = "<group>";
 		};
+		4F8729062CBC2F0D002FA5FE /* SupportingViews */ = {
+			isa = PBXGroup;
+			children = (
+				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
+				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
+				4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */,
+				4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */,
+				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
+			);
+			path = SupportingViews;
+			sourceTree = "<group>";
+		};
 		4FD5FE102CA9CB60006CA06E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -504,19 +524,23 @@
 				17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */,
 				172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */,
 				4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */,
+				4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
 				4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
 				4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */,
+				4F8729052CBC26A4002FA5FE /* RecyclingLocationList.swift in Sources */,
 				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
 				4F05D0D02C6FA2700079657A /* MapView.swift in Sources */,
 				4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */,
 				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
+				4F8729032CBC2125002FA5FE /* RecyclingIconStackView.swift in Sources */,
 				4F81207C29351A2C00D7F793 /* BinDaysProvider.swift in Sources */,
 				4F76836B2B0B73B200EA9BB3 /* BinNotificationList.swift in Sources */,
 				4F40854A2C4FC4730014195E /* LocationService.swift in Sources */,
+				4F8729012CBC1DEA002FA5FE /* RecyclingIconView.swift in Sources */,
 				4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */,
 				17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */,
 				178705732265013F0047E348 /* LocationDataController.swift in Sources */,

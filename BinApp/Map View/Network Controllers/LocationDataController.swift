@@ -55,25 +55,19 @@ class LocationDataController {
             //Fix for incorrect longitudes
             longitude = longitude > 0 ? -longitude : longitude
             
-            let locationTypes = ["glass" : glass, "paper" : paper, "textiles" : textiles, "electronics" : electronics]
+            let locationTypesDictonary: [RecyclingType: Bool] = [.glass : glass, .paper : paper, .textiles : textiles, .electronics : electronics]
             
-            var descriptions: [String] = []
-            for type in locationTypes {
+            var types: [RecyclingType] = []
+            for type in locationTypesDictonary {
                 if type.value {
-                    descriptions.append(type.key.capitalized)
+                    types.append(type.key)
                 }
             }
             
-            let typeDescription = descriptions.joined(separator: ", ")
+            let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let location = RecyclingLocation(name: name, types: types, coordinates: coordinates, address: address, postcode: postcode)
             
-            for type in locationTypes {
-                if type.value {
-                    let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                    let location = RecyclingLocation(name: name, type: .init(rawValue: type.key), typeDescription: typeDescription, coordinates: coordinates, address: address, postcode: postcode)
-                    
-                    locations.append(location)
-                }
-            }
+            locations.append(location)
         }
         
         return locations

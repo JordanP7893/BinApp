@@ -18,8 +18,8 @@ struct MapView<ViewModel: MapViewProtocol>: View {
             ZStack {
                 Map(position: $viewModel.mapCamera) {
                     ForEach(viewModel.locationsFiltered) { location in
-                        Marker(location.name, image: location.type.description.lowercased(), coordinate: location.coordinates)
-                            .tint(location.type.colour)
+                        Marker(location.name, image: viewModel.selectedRecyclingType.description.lowercased(), coordinate: location.coordinates)
+                            .tint(viewModel.selectedRecyclingType.colour)
                     }
                     UserAnnotation()
                 }
@@ -45,7 +45,7 @@ struct MapView<ViewModel: MapViewProtocol>: View {
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     NavigationLink {
-                        
+                        RecyclingLocationList(recyclingLocations: viewModel.locationsFiltered)
                     } label: {
                         Image(systemName: "list.bullet")
                     }
@@ -68,13 +68,13 @@ struct MapView<ViewModel: MapViewProtocol>: View {
 
 class MockMapViewModel: MapViewProtocol {
     var locations: [RecyclingLocation] = []
-    var locationsFiltered: [RecyclingLocation] = RecyclingLocation.mockData
+    var locationsFiltered: [RecyclingLocation] = [RecyclingLocation].mockData
     var selectedRecyclingType: RecyclingType = .glass
     var mapCamera: MapCameraPosition = .automatic
     var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre
     
     func getLocations() async {
-        locations = RecyclingLocation.mockData
+        locations = [RecyclingLocation].mockData
         locationsFiltered = locations
     }
     

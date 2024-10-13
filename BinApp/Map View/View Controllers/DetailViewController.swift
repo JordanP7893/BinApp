@@ -60,7 +60,7 @@ class DetailViewController: UITableViewController {
                 addressText = addressText.replacingOccurrences(of: ", ", with: "\n")
             }
             
-            titleLabel.text = location.typeDescription
+//            titleLabel.text = location.typeDescription
             addressLabel.text = addressText
             getMapImage(centeredOn: location.coordinates)
         }

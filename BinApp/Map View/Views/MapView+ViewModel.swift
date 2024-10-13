@@ -58,7 +58,7 @@ class MapViewViewModel: MapViewProtocol {
     }
     
     private func locationsFiltered(by type: RecyclingType) -> [RecyclingLocation] {
-        return locations.filter({ $0.type == type })
+        return locations.filter({ $0.types.contains(type) })
     }
     
     private func orderLocations(_ locations: [RecyclingLocation], asDistancefrom currentLocation: CLLocationCoordinate2D) -> [RecyclingLocation] {
