@@ -13,47 +13,55 @@ struct MapView<ViewModel: MapViewProtocol>: View {
     @State var viewModel: ViewModel
     @State var locationManager = LocationManager()
     
+    @State var card1: RecyclingLocation?
+    @State var card2: RecyclingLocation?
+    
     var body: some View {
         NavigationStack {
-            ZStack {
-                Map(position: $viewModel.mapCamera) {
+            ZStack(alignment: .bottom) {
+                Map(position: $viewModel.mapCamera, selection: $viewModel.selectedLocation) {
                     ForEach(viewModel.locationsFiltered) { location in
-                        Marker(location.name, image: viewModel.selectedRecyclingType.description.lowercased(), coordinate: location.coordinates)
+                        Marker(
+                            location.name,
+                            image: viewModel.selectedRecyclingType.description.lowercased(),
+                            coordinate: location.coordinates
+                        )
                             .tint(viewModel.selectedRecyclingType.colour)
+                            .tag(location)
                     }
                     UserAnnotation()
                 }
-                .onMapCameraChange {
-                    viewModel.mapCentreTracked = $0.region.center
-                }
-                .mapControls {
-                    MapUserLocationButton()
+                .onMapCameraChange { viewModel.mapCentreTracked = $0.region.center }
+                .mapControls { MapUserLocationButton() }
+                
+                ZStack {
+                    if let card1 {
+                        RecyclingCardBottomStackView(selectedLocation: card1)
+                            .transition(.offset(y: 200).combined(with: .opacity))
+                    }
+                    
+                    if let card2 {
+                        RecyclingCardBottomStackView(selectedLocation: card2)
+                            .transition(.offset(y: 200).combined(with: .opacity))
+                    }
                 }
             }
-            .toolbar(content: {
-                ToolbarItemGroup(placement: .topBarLeading) {
-                    Picker("Recycling type", selection: $viewModel.selectedRecyclingType) {
-                        ForEach(RecyclingType.allCases, id: \.self) { type in
-                            HStack {
-                                Text(type.description)
-                                Spacer()
-                            }
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
-                }
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    NavigationLink {
-                        RecyclingLocationList(recyclingLocations: viewModel.locationsFiltered)
-                    } label: {
-                        Image(systemName: "list.bullet")
-                    }
+            .onChange(of: viewModel.selectedLocation, { oldValue, newValue in
+                if newValue == nil {
+                    card1 = nil
+                    card2 = nil
+                } else if card1 == nil {
+                    card1 = newValue
+                    card2 = nil
+                } else {
+                    card2 = newValue
+                    card1 = nil
                 }
             })
-            .task {
-                await viewModel.getLocations()
-            }
+            .animation(.easeInOut, value: card1)
+            .animation(.easeInOut, value: card2)
+            .toolbar(content: toolbarContent)
+            .task { await viewModel.getLocations() }
             .task(id: locationManager.userLocation) {
                 if let location = locationManager.userLocation, viewModel.mapCamera == .automatic {
                     viewModel.mapCamera = .region(.init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
@@ -66,9 +74,35 @@ struct MapView<ViewModel: MapViewProtocol>: View {
     }
 }
 
+extension MapView {
+    @ToolbarContentBuilder
+    func toolbarContent() -> some ToolbarContent {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            Picker("Recycling type", selection: $viewModel.selectedRecyclingType) {
+                ForEach(RecyclingType.allCases, id: \.self) { type in
+                    HStack {
+                        Text(type.description)
+                        Spacer()
+                    }
+                }
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+        }
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            NavigationLink {
+                RecyclingLocationList(recyclingLocations: viewModel.locationsFiltered)
+            } label: {
+                Image(systemName: "list.bullet")
+            }
+        }
+    }
+}
+
 class MockMapViewModel: MapViewProtocol {
     var locations: [RecyclingLocation] = []
     var locationsFiltered: [RecyclingLocation] = [RecyclingLocation].mockData
+    var selectedLocation: RecyclingLocation? = nil
     var selectedRecyclingType: RecyclingType = .glass
     var mapCamera: MapCameraPosition = .automatic
     var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre

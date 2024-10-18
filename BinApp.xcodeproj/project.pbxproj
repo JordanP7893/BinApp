@@ -56,6 +56,7 @@
 		4F8729012CBC1DEA002FA5FE /* RecyclingIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */; };
 		4F8729032CBC2125002FA5FE /* RecyclingIconStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */; };
 		4F8729052CBC26A4002FA5FE /* RecyclingLocationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */; };
+		4F87290C2CC29E44002FA5FE /* RecyclingCardBottomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F87290B2CC29E44002FA5FE /* RecyclingCardBottomStackView.swift */; };
 		4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */; };
 		4FD5FE122CA9CB79006CA06E /* CLLocationCoordinate2D+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */; };
 		4FE6BD162A6D8DAE002447D6 /* BinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD152A6D8DAE002447D6 /* BinListView.swift */; };
@@ -129,6 +130,7 @@
 		4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconView.swift; sourceTree = "<group>"; };
 		4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconStackView.swift; sourceTree = "<group>"; };
 		4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationList.swift; sourceTree = "<group>"; };
+		4F87290B2CC29E44002FA5FE /* RecyclingCardBottomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingCardBottomStackView.swift; sourceTree = "<group>"; };
 		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Extensions.swift"; sourceTree = "<group>"; };
 		4FE6BD152A6D8DAE002447D6 /* BinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinListView.swift; sourceTree = "<group>"; };
@@ -381,13 +383,30 @@
 		4F8729062CBC2F0D002FA5FE /* SupportingViews */ = {
 			isa = PBXGroup;
 			children = (
+				4F8729082CC29E1F002FA5FE /* RecyclingCard */,
+				4F8729072CC29DF4002FA5FE /* RecyclingIcon */,
 				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
-				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
-				4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */,
-				4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */,
 				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
 			);
 			path = SupportingViews;
+			sourceTree = "<group>";
+		};
+		4F8729072CC29DF4002FA5FE /* RecyclingIcon */ = {
+			isa = PBXGroup;
+			children = (
+				4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */,
+				4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */,
+			);
+			path = RecyclingIcon;
+			sourceTree = "<group>";
+		};
+		4F8729082CC29E1F002FA5FE /* RecyclingCard */ = {
+			isa = PBXGroup;
+			children = (
+				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
+				4F87290B2CC29E44002FA5FE /* RecyclingCardBottomStackView.swift */,
+			);
+			path = RecyclingCard;
 			sourceTree = "<group>";
 		};
 		4FD5FE102CA9CB60006CA06E /* Extensions */ = {
@@ -525,6 +544,7 @@
 				172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */,
 				4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */,
 				4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */,
+				4F87290C2CC29E44002FA5FE /* RecyclingCardBottomStackView.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
 				4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,

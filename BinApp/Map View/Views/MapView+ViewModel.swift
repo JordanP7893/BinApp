@@ -14,6 +14,7 @@ protocol MapViewProtocol: ObservableObject {
     var locations: [RecyclingLocation] { get set }
     var locationsFiltered: [RecyclingLocation] { get set }
     var selectedRecyclingType: RecyclingType { get set }
+    var selectedLocation: RecyclingLocation? { get set }
     var mapCamera: MapCameraPosition { get set }
     var mapCentreTracked: CLLocationCoordinate2D { get set }
     func getLocations() async
@@ -23,6 +24,7 @@ protocol MapViewProtocol: ObservableObject {
 class MapViewViewModel: MapViewProtocol {
     var locations: [RecyclingLocation] = []
     var locationsFiltered: [RecyclingLocation] = []
+    var selectedLocation: RecyclingLocation?
     var selectedRecyclingType: RecyclingType = .glass {
         didSet {
             changeMapPinsDisplayed()

@@ -6,6 +6,7 @@
 //  Copyright © 2024 Jordan Porter. All rights reserved.
 //
 
+import MapKit
 import SwiftUI
 
 struct RecyclingLocationCardView: View {
@@ -35,7 +36,9 @@ struct RecyclingLocationCardView: View {
             Spacer()
             
             Button {
-                
+                let mapItem = MKMapItem(placemark: .init(coordinate: recyclingLocation.coordinates))
+                mapItem.name = recyclingLocation.name
+                mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving])
             } label: {
                 VStack(spacing: 8) {
                     Image(systemName: "car.fill")
