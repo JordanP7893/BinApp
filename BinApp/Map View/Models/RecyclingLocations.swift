@@ -17,8 +17,8 @@ class RecyclingLocation: NSObject, Codable, Identifiable {
     let address: String?
     let postcode: String?
     var distance: Double?
-    var drivingDistance: Double?
-    var drivingTime: Double?
+    var drivingDistance: Measurement<UnitLength>?
+    var drivingTime: TimeInterval?
     
     init(name: String, types: [RecyclingType], coordinates: CLLocationCoordinate2D, address: String?, postcode: String?) {
         self.id = UUID()

@@ -131,7 +131,7 @@ class MapViewController: UIViewController {
         return locations.map { location in
             let mapPin = MapPin(coordinate: location.coordinates, title: location.name, subtitle: "", type: "", address: location.address, postcode: location.postcode)
             mapPin.distance = location.distance
-            mapPin.drivingDistance = location.drivingDistance
+//            mapPin.drivingDistance = location.drivingDistance
             mapPin.drivingTime = location.drivingTime
             return mapPin
         }
@@ -140,7 +140,7 @@ class MapViewController: UIViewController {
     private func convertToRecyclingLocation(_ pin: MapPin) -> RecyclingLocation {
         let location = RecyclingLocation(name: pin.title ?? "", types: [.glass], coordinates: pin.coordinate, address: pin.address, postcode: pin.postcode)
         location.distance = pin.distance
-        location.drivingDistance = pin.drivingDistance
+//        location.drivingDistance = pin.drivingDistance
         location.drivingTime = pin.drivingTime
         return location
     }
@@ -176,17 +176,17 @@ class MapViewController: UIViewController {
         let mapTableViewController = MapTableViewController()
         let dispatchGroup = DispatchGroup()
         
-        for location in locations {
-            guard location.drivingDistance == nil else { continue }
-            dispatchGroup.enter()
-            self.directionsController.getDirections(from: currentLocation.coordinate, to: location.coordinates) { route in
-                if let route = route {
-                    location.drivingDistance = route.distance
-                    location.drivingTime = route.expectedTravelTime
-                }
-                dispatchGroup.leave()
-            }
-        }
+//        for location in locations {
+//            guard location.drivingDistance == nil else { continue }
+//            dispatchGroup.enter()
+//            self.directionsController.getDirections(from: currentLocation.coordinate, to: location.coordinates) { route in
+//                if let route = route {
+//                    location.drivingDistance = route.distance
+//                    location.drivingTime = route.expectedTravelTime
+//                }
+//                dispatchGroup.leave()
+//            }
+//        }
         
         dispatchGroup.notify(queue: .main) {
             let sortedRecyclingLocations = locations.sorted { (location1, location2) -> Bool in

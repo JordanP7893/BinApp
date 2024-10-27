@@ -10,22 +10,28 @@ import Foundation
 import MapKit
 
 class DirectionDataController {
+    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D) async throws -> MKDirections.ETAResponse {
+        try await withCheckedThrowingContinuation { continuation in
+            getDirections(from: startPoint, to: endPoint) { response in
+                continuation.resume(with: response)
+            }
+        }
+    }
     
-    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D, completion: @escaping (MKDirections.ETAResponse?) -> Void){
-        
+    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D, completion: @escaping (Result<MKDirections.ETAResponse, DirectionError>) -> Void){
         let directionRequest = createDirectionRequest(startingPoint: startPoint, endPoint: endPoint)
         let directions = MKDirections(request: directionRequest)
         
         directions.calculateETA { response, error in
             if let _ = error {
-                return completion(nil)
+                return completion(.failure(.invalidDirection))
             }
             
             guard let response = response else {
-                return completion(nil)
+                return completion(.failure(.invalidDirection))
             }
             
-            return completion(response)
+            return completion(.success(response))
         }
     }
     
@@ -39,4 +45,8 @@ class DirectionDataController {
         
         return request
     }
+}
+
+enum DirectionError: Error {
+    case invalidDirection
 }

@@ -44,14 +44,14 @@ class MapTableViewController: UITableViewController {
         let recyclingLocation = selectedRecyclingLocations[index]
         
         cell.textLabel?.text = recyclingLocation.name
-        if let drivingDistance = recyclingLocation.drivingDistance {
-            
-            let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
-            
-            cell.detailTextLabel?.text = String("\(drivingDistanceInMiles) miles")
-        } else {
+//        if let drivingDistance = recyclingLocation.drivingDistance {
+//            
+//            let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
+//            
+//            cell.detailTextLabel?.text = String("\(drivingDistanceInMiles) miles")
+//        } else {
             cell.detailTextLabel?.text = ""
-        }
+//        }
         
         return cell
     }

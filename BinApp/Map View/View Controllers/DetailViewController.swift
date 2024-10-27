@@ -44,15 +44,15 @@ class DetailViewController: UITableViewController {
         if let location = selectedLocation {
             self.title = location.name
             
-            if let drivingDistance = location.drivingDistance, let drivingTime = location.drivingTime {
-                let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
-                
-                let travelTimeInMinutes = Int((drivingTime/60).rounded(.up))
-                
-                self.directionsButton.setTitle("Directions\n\(drivingDistanceInMiles) miles    \(travelTimeInMinutes) mins", for: .normal)
-            } else {
+//            if let drivingDistance = location.drivingDistance, let drivingTime = location.drivingTime {
+//                let drivingDistanceInMiles = (drivingDistance * 0.000621371).rounded(toPlaces: 1)
+//                
+//                let travelTimeInMinutes = Int((drivingTime/60).rounded(.up))
+//                
+//                self.directionsButton.setTitle("Directions\n\(drivingDistanceInMiles) miles    \(travelTimeInMinutes) mins", for: .normal)
+//            } else {
                 calculateETA(destination: location.coordinates)
-            }
+//            }
             
             guard var addressText = location.address else {return}
             if let postcodeText = location.postcode {
@@ -97,17 +97,17 @@ class DetailViewController: UITableViewController {
         guard let location = locationManager.location?.coordinate else { return }
         
         directionsController.getDirections(from: location, to: destination) { (firstRoute) in
-            guard let firstRoute = firstRoute else {
-                return
-            }
-            let travelDistanceInMetres = firstRoute.distance
-            let travelDistance = (travelDistanceInMetres * 0.000621371).rounded(toPlaces: 1)
-            
-            let travelTimeInSeconds = firstRoute.expectedTravelTime
-            let travelTime = Int((travelTimeInSeconds/60).rounded(.up))
-            
-            
-            self.directionsButton.setTitle("Directions\n\(travelDistance) miles    \(travelTime) mins", for: .normal)
+//            guard let firstRoute = firstRoute else {
+//                return
+//            }
+//            let travelDistanceInMetres = firstRoute.distance
+//            let travelDistance = (travelDistanceInMetres * 0.000621371).rounded(toPlaces: 1)
+//            
+//            let travelTimeInSeconds = firstRoute.expectedTravelTime
+//            let travelTime = Int((travelTimeInSeconds/60).rounded(.up))
+//            
+//            
+//            self.directionsButton.setTitle("Directions\n\(travelDistance) miles    \(travelTime) mins", for: .normal)
         }
     }
     

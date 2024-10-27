@@ -36,12 +36,34 @@ struct MapView<ViewModel: MapViewProtocol>: View {
                 
                 ZStack {
                     if let card1 {
-                        RecyclingCardBottomStackView(selectedLocation: card1)
+                        RecyclingLocationCardView(
+                            viewModel: .init(
+                                recyclingLocation: card1,
+                                locationManger: locationManager
+                            )
+                        )
+                            .padding()
+                            .background(.background)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .shadow(radius: 10)
+                            .padding()
+                            .safeAreaPadding(.bottom)
                             .transition(.offset(y: 200).combined(with: .opacity))
                     }
                     
                     if let card2 {
-                        RecyclingCardBottomStackView(selectedLocation: card2)
+                        RecyclingLocationCardView(
+                            viewModel: .init(
+                                recyclingLocation: card2,
+                                locationManger: locationManager
+                            )
+                        )
+                            .padding()
+                            .background(.background)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .shadow(radius: 10)
+                            .padding()
+                            .safeAreaPadding(.bottom)
                             .transition(.offset(y: 200).combined(with: .opacity))
                     }
                 }

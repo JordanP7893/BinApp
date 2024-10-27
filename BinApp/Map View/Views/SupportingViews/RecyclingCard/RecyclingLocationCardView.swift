@@ -10,17 +10,17 @@ import MapKit
 import SwiftUI
 
 struct RecyclingLocationCardView: View {
-    let recyclingLocation: RecyclingLocation
+    @State var viewModel: RecyclingLocationCardViewModel
     
     var body: some View {
         HStack(spacing: 5) {
             VStack(alignment: .leading, spacing: 10) {
-                Text(recyclingLocation.name)
+                Text(viewModel.recyclingLocation.name)
                     .font(.title3)
                     .bold()
                     .lineLimit(1)
                 HStack {
-                    if let address = recyclingLocation.address, let postcode = recyclingLocation.postcode {
+                    if let address = viewModel.recyclingLocation.address, let postcode = viewModel.recyclingLocation.postcode {
                         VStack(alignment: .leading) {
                             Text(address)
                             Text(postcode)
@@ -29,25 +29,25 @@ struct RecyclingLocationCardView: View {
                         Spacer()
                     }
                         
-                    RecyclingIconStackView(recyclingTypes: recyclingLocation.types)
+                    RecyclingIconStackView(recyclingTypes: viewModel.recyclingLocation.types)
                 }
             }
             
             Spacer()
             
             Button {
-                let mapItem = MKMapItem(placemark: .init(coordinate: recyclingLocation.coordinates))
-                mapItem.name = recyclingLocation.name
+                let mapItem = MKMapItem(placemark: .init(coordinate: viewModel.recyclingLocation.coordinates))
+                mapItem.name = viewModel.recyclingLocation.name
                 mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving])
             } label: {
                 VStack(spacing: 8) {
                     Image(systemName: "car.fill")
                     
-                    if let distance = recyclingLocation.distance, let drivingTime = recyclingLocation.drivingTime {
-                        Text("\(distance) miles")
+                    if let drivingDistance = viewModel.recyclingLocation.drivingDistance, let drivingTime = viewModel.recyclingLocation.drivingTime {
+                        Text(String(format: "%.1f miles", drivingDistance.converted(to: .miles).value))
                             .font(.caption)
                             .fontWeight(.semibold)
-                        Text("\(drivingTime) mins")
+                        Text(String(format: "%.0f minutes", drivingTime / 60))
                             .font(.caption)
                             .fontWeight(.semibold)
                     }
@@ -59,10 +59,14 @@ struct RecyclingLocationCardView: View {
             }
 
         }
+        .animation(.default, value: viewModel.recyclingLocation.drivingTime)
+        .task {
+            await viewModel.getDirections()
+        }
     }
 }
 
 #Preview {
-    RecyclingLocationCardView(recyclingLocation: RecyclingLocation.mockData)
+    RecyclingLocationCardView(viewModel: .init(recyclingLocation: .mockData, locationManger: LocationManager()))
         .padding()
 }

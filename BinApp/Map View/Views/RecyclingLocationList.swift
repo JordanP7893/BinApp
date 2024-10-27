@@ -13,7 +13,7 @@ struct RecyclingLocationList: View {
     
     var body: some View {
         List(recyclingLocations) { recyclingLocation in
-            RecyclingLocationCardView(recyclingLocation: recyclingLocation)
+            RecyclingLocationCardView(viewModel: .init(recyclingLocation: recyclingLocation, locationManger: LocationManager()))
                 .buttonStyle(PlainButtonStyle())
         }
         .listStyle(.inset)
