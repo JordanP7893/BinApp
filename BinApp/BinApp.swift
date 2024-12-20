@@ -6,11 +6,13 @@
 //  Copyright © 2023 Jordan Porter. All rights reserved.
 //
 
+import CoreLocation
 import SwiftUI
 
 @main
 struct BinApp: App {
     @StateObject private var binProvider = BinDaysProvider()
+    @State var locationManager = LocationManager()
 
     var body: some Scene {
         WindowGroup {
@@ -23,6 +25,7 @@ struct BinApp: App {
                     .tabItem { Label("Recycling Centres", image: "recycle") }
             }
             .tint(.init("AppColour"))
+            .environmentObject(locationManager)
         }
     }
 }

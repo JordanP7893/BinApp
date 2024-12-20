@@ -36,7 +36,7 @@
 		17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */; };
 		4F05D0D02C6FA2700079657A /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05D0CF2C6FA2700079657A /* MapView.swift */; };
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
-		4F386C322CC576C10057A519 /* RecyclingLocationCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F386C312CC576C00057A519 /* RecyclingLocationCardViewModel.swift */; };
+		4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */; };
 		4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085452C4E620C0014195E /* CSwiftV.swift */; };
 		4F40854A2C4FC4730014195E /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085492C4FC4730014195E /* LocationService.swift */; };
 		4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */; };
@@ -56,8 +56,9 @@
 		4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */; };
 		4F8729012CBC1DEA002FA5FE /* RecyclingIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */; };
 		4F8729032CBC2125002FA5FE /* RecyclingIconStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */; };
-		4F8729052CBC26A4002FA5FE /* RecyclingLocationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */; };
+		4F8729052CBC26A4002FA5FE /* RecyclingLocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8729042CBC26A4002FA5FE /* RecyclingLocationListView.swift */; };
 		4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */; };
+		4F9C03222CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9C03212CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift */; };
 		4FD5FE122CA9CB79006CA06E /* CLLocationCoordinate2D+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */; };
 		4FE6BD162A6D8DAE002447D6 /* BinListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD152A6D8DAE002447D6 /* BinListView.swift */; };
 		4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE6BD172A6D920B002447D6 /* BinCellView.swift */; };
@@ -106,7 +107,7 @@
 		17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		4F05D0CF2C6FA2700079657A /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
-		4F386C312CC576C00057A519 /* RecyclingLocationCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationCardViewModel.swift; sourceTree = "<group>"; };
+		4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationInfoView.swift; sourceTree = "<group>"; };
 		4F4085452C4E620C0014195E /* CSwiftV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSwiftV.swift; sourceTree = "<group>"; };
 		4F4085472C4E624D0014195E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		4F4085492C4FC4730014195E /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -130,8 +131,9 @@
 		4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationCardView.swift; sourceTree = "<group>"; };
 		4F8729002CBC1DEA002FA5FE /* RecyclingIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconView.swift; sourceTree = "<group>"; };
 		4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingIconStackView.swift; sourceTree = "<group>"; };
-		4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationList.swift; sourceTree = "<group>"; };
+		4F8729042CBC26A4002FA5FE /* RecyclingLocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationListView.swift; sourceTree = "<group>"; };
 		4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
+		4F9C03212CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationDirectionButtonView.swift; sourceTree = "<group>"; };
 		4FD5FE112CA9CB74006CA06E /* CLLocationCoordinate2D+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+Extensions.swift"; sourceTree = "<group>"; };
 		4FE6BD152A6D8DAE002447D6 /* BinListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinListView.swift; sourceTree = "<group>"; };
 		4FE6BD172A6D920B002447D6 /* BinCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinCellView.swift; sourceTree = "<group>"; };
@@ -180,7 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				4F8729062CBC2F0D002FA5FE /* SupportingViews */,
-				4F8729042CBC26A4002FA5FE /* RecyclingLocationList.swift */,
+				4F8729042CBC26A4002FA5FE /* RecyclingLocationListView.swift */,
 				4F05D0CF2C6FA2700079657A /* MapView.swift */,
 				4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */,
 			);
@@ -194,6 +196,8 @@
 				172B48DB23F1F5BF009A7CA0 /* MapTableViewController.swift */,
 				17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */,
 				177F4101248BED6C006C20DD /* ErrorAlertController.swift */,
+				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
+				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -383,10 +387,10 @@
 		4F8729062CBC2F0D002FA5FE /* SupportingViews */ = {
 			isa = PBXGroup;
 			children = (
-				4F8729082CC29E1F002FA5FE /* RecyclingCard */,
 				4F8729072CC29DF4002FA5FE /* RecyclingIcon */,
-				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
-				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
+				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
+				4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */,
+				4F9C03212CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift */,
 			);
 			path = SupportingViews;
 			sourceTree = "<group>";
@@ -398,15 +402,6 @@
 				4F8729022CBC2125002FA5FE /* RecyclingIconStackView.swift */,
 			);
 			path = RecyclingIcon;
-			sourceTree = "<group>";
-		};
-		4F8729082CC29E1F002FA5FE /* RecyclingCard */ = {
-			isa = PBXGroup;
-			children = (
-				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
-				4F386C312CC576C00057A519 /* RecyclingLocationCardViewModel.swift */,
-			);
-			path = RecyclingCard;
 			sourceTree = "<group>";
 		};
 		4FD5FE102CA9CB60006CA06E /* Extensions */ = {
@@ -538,6 +533,7 @@
 				4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */,
 				4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */,
 				1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */,
+				4F9C03222CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift in Sources */,
 				1754C6122688C52500F7F05E /* BinAddressDataController.swift in Sources */,
 				4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */,
 				17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */,
@@ -548,8 +544,7 @@
 				4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
 				4F864A022A9CF47F00FAC4AE /* BinView.swift in Sources */,
-				4F386C322CC576C10057A519 /* RecyclingLocationCardViewModel.swift in Sources */,
-				4F8729052CBC26A4002FA5FE /* RecyclingLocationList.swift in Sources */,
+				4F8729052CBC26A4002FA5FE /* RecyclingLocationListView.swift in Sources */,
 				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
 				4F05D0D02C6FA2700079657A /* MapView.swift in Sources */,
@@ -568,6 +563,7 @@
 				1734D0A8225D27D200FB61C8 /* AppDelegate.swift in Sources */,
 				4FD5FE122CA9CB79006CA06E /* CLLocationCoordinate2D+Extensions.swift in Sources */,
 				170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */,
+				4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */,
 				4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */,
 				4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */,
 				177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */,

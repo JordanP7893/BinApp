@@ -10,8 +10,8 @@ import SwiftUI
 import MapKit
 
 struct MapView<ViewModel: MapViewProtocol>: View {
+    @EnvironmentObject var locationManager: LocationManager
     @State var viewModel: ViewModel
-    @State var locationManager = LocationManager()
     
     @State var card1: RecyclingLocation?
     @State var card2: RecyclingLocation?
@@ -36,58 +36,32 @@ struct MapView<ViewModel: MapViewProtocol>: View {
                 
                 ZStack {
                     if let card1 {
-                        RecyclingLocationCardView(
-                            viewModel: .init(
-                                recyclingLocation: card1,
-                                locationManger: locationManager
-                            )
-                        )
-                            .padding()
-                            .background(.background)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .shadow(radius: 10)
-                            .padding()
-                            .safeAreaPadding(.bottom)
-                            .transition(.offset(y: 200).combined(with: .opacity))
+                        RecyclingLocationCardView(recyclingLocation: card1)
                     }
                     
                     if let card2 {
-                        RecyclingLocationCardView(
-                            viewModel: .init(
-                                recyclingLocation: card2,
-                                locationManger: locationManager
-                            )
-                        )
-                            .padding()
-                            .background(.background)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .shadow(radius: 10)
-                            .padding()
-                            .safeAreaPadding(.bottom)
-                            .transition(.offset(y: 200).combined(with: .opacity))
+                        RecyclingLocationCardView(recyclingLocation: card2)
                     }
                 }
             }
-            .onChange(of: viewModel.selectedLocation, { oldValue, newValue in
-                if newValue == nil {
+            .onChange(of: viewModel.selectedLocation) {
+                if $1 == nil {
                     card1 = nil
                     card2 = nil
                 } else if card1 == nil {
-                    card1 = newValue
+                    card1 = $1
                     card2 = nil
                 } else {
-                    card2 = newValue
+                    card2 = $1
                     card1 = nil
                 }
-            })
+            }
             .animation(.easeInOut, value: card1)
             .animation(.easeInOut, value: card2)
             .toolbar(content: toolbarContent)
             .task { await viewModel.getLocations() }
             .task(id: locationManager.userLocation) {
-                if let location = locationManager.userLocation, viewModel.mapCamera == .automatic {
-                    viewModel.mapCamera = .region(.init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
-                }
+                viewModel.changeOf(userLocation: locationManager.userLocation)
             }
             .onAppear {
                 locationManager.startLocationServices()
@@ -128,14 +102,15 @@ class MockMapViewModel: MapViewProtocol {
     var selectedRecyclingType: RecyclingType = .glass
     var mapCamera: MapCameraPosition = .automatic
     var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre
+    var locationManager: LocationManager = .init()
     
     func getLocations() async {
         locations = [RecyclingLocation].mockData
         locationsFiltered = locations
     }
     
-    func locationsFiltered(by type: RecyclingType) -> [RecyclingLocation] {
-        locations
+    func changeOf(userLocation: CLLocation?) {
+        mapCamera = .region(.init(center: CLLocationCoordinate2D(latitude: 53.8194, longitude: -1.5804), latitudinalMeters: 2000, longitudinalMeters: 2000))
     }
 }
 
@@ -143,4 +118,5 @@ class MockMapViewModel: MapViewProtocol {
     NavigationView {
         MapView(viewModel: MockMapViewModel())
     }
+    .environmentObject(LocationManager())
 }

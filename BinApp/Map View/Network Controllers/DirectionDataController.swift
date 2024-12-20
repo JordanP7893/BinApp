@@ -10,28 +10,19 @@ import Foundation
 import MapKit
 
 class DirectionDataController {
-    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D) async throws -> MKDirections.ETAResponse {
-        try await withCheckedThrowingContinuation { continuation in
-            getDirections(from: startPoint, to: endPoint) { response in
-                continuation.resume(with: response)
-            }
-        }
-    }
-    
-    func getDirections(from startPoint: CLLocationCoordinate2D, to endPoint: CLLocationCoordinate2D, completion: @escaping (Result<MKDirections.ETAResponse, DirectionError>) -> Void){
-        let directionRequest = createDirectionRequest(startingPoint: startPoint, endPoint: endPoint)
-        let directions = MKDirections(request: directionRequest)
-        
-        directions.calculateETA { response, error in
-            if let _ = error {
-                return completion(.failure(.invalidDirection))
-            }
+    func fetchDirections(for recyclingLocation: RecyclingLocation, from userLocation: CLLocation) async throws -> DirectionData {
+        do {
+            let directionRequest = createDirectionRequest(startingPoint: userLocation.coordinate, endPoint: recyclingLocation.coordinates)
+            let directions = MKDirections(request: directionRequest)
+            let result = try await directions.calculateETA()
             
-            guard let response = response else {
-                return completion(.failure(.invalidDirection))
-            }
-            
-            return completion(.success(response))
+            return .init(
+                distance: .init(value: result.distance, unit: .meters),
+                duration: result.expectedTravelTime
+            )
+        } catch {
+            print(error)
+            throw DirectionError.invalidDirection
         }
     }
     
@@ -45,6 +36,11 @@ class DirectionDataController {
         
         return request
     }
+}
+
+struct DirectionData: Equatable {
+    let distance: Measurement<UnitLength>
+    let duration: TimeInterval
 }
 
 enum DirectionError: Error {

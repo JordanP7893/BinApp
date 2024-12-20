@@ -18,6 +18,7 @@ protocol MapViewProtocol: ObservableObject {
     var mapCamera: MapCameraPosition { get set }
     var mapCentreTracked: CLLocationCoordinate2D { get set }
     func getLocations() async
+    func changeOf(userLocation: CLLocation?)
 }
 
 @Observable
@@ -33,11 +34,11 @@ class MapViewViewModel: MapViewProtocol {
     var mapCamera: MapCameraPosition = .automatic
     var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre
     
-    let locationDataContrller = LocationDataController()
+    let locationDataController = LocationDataController()
     
     func getLocations() async {
         do {
-            locations = try await locationDataContrller.fetchLocations()
+            locations = try await locationDataController.fetchLocations()
             locationsFiltered = locationsFiltered(by: selectedRecyclingType)
         } catch {
             print("Handle error \(error)")
@@ -50,6 +51,12 @@ class MapViewViewModel: MapViewProtocol {
         
         withAnimation {
             mapCamera = .region(MKCoordinateRegion(center: .init(latitude: mapCentreTracked.latitude, longitude: mapCentreTracked.longitude), latitudinalMeters: distance * 2, longitudinalMeters: distance * 2))
+        }
+    }
+    
+    func changeOf(userLocation: CLLocation?) {
+        if let location = userLocation, mapCamera == .automatic {
+            mapCamera = .region( .init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
         }
     }
     

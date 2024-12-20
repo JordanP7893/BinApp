@@ -9,7 +9,7 @@
 import CoreLocation
 
 @Observable
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     @ObservationIgnored let manager = CLLocationManager()
     var userLocation: CLLocation?
     var userPostcode: String?

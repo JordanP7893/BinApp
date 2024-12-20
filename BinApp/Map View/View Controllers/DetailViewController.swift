@@ -96,7 +96,7 @@ class DetailViewController: UITableViewController {
     func calculateETA(destination: CLLocationCoordinate2D) {
         guard let location = locationManager.location?.coordinate else { return }
         
-        directionsController.getDirections(from: location, to: destination) { (firstRoute) in
+//        directionsController.getDirections(from: location, to: destination) { (firstRoute) in
 //            guard let firstRoute = firstRoute else {
 //                return
 //            }
@@ -108,7 +108,7 @@ class DetailViewController: UITableViewController {
 //            
 //            
 //            self.directionsButton.setTitle("Directions\n\(travelDistance) miles    \(travelTime) mins", for: .normal)
-        }
+//        }
     }
     
     @IBAction func NavigateButtonPressed(_ sender: UIButton) {
