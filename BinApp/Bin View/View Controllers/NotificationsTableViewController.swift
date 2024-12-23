@@ -41,11 +41,6 @@ class NotificationsTableViewController: UITableViewController {
         notificationState = notificationController.fetchNotificationState()
         
         if let notificationState = notificationState {
-            eveningSwitch.setOn(notificationState.evening, animated: false)
-            morningSwitch.setOn(notificationState.morning, animated: false)
-            eveningDatePicker.setDate(notificationState.eveningTime, animated: false)
-            morningDatePicker.setDate(notificationState.morningTime, animated: false)
-            notificationTypes = notificationState.types
             blackTypeCell.accessoryType = notificationTypes[0]! ? .checkmark : .none
             greenTypeCell.accessoryType = notificationTypes[1]! ? .checkmark : .none
             foodTypeCell.accessoryType = notificationTypes[2]! ? .checkmark : .none
@@ -56,22 +51,19 @@ class NotificationsTableViewController: UITableViewController {
     }
     
     func updateDateLabel(_ label: UILabel, with date: Date) {
-        label.text = BinNotifications.dateFormatter.string(from: date)
+//        label.text = BinNotifications.dateFormatter.string(from: date)
     }
     
     func updateNotifications() {
-        
-        notificationState = BinNotifications(morning: morningSwitch.isOn, morningTime: morningDatePicker.date, evening: eveningSwitch.isOn, eveningTime: eveningDatePicker.date, types: notificationTypes)
-        
         if let notificationState = notificationState {
-            Task {
-                let isAuthorized = await notificationController.setupBinNotification(for: binDays, at: notificationState)
-                if !isAuthorized {
-                    DispatchQueue.main.async {
-                        self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
-                    }
-                }
-            }
+//            Task {
+//                let isAuthorized = await notificationController.setupBinNotification(for: binDays, at: notificationState)
+//                if !isAuthorized {
+//                    DispatchQueue.main.async {
+//                        self.errorAlertController.showErrorAlertView(in: self, with: "Notifications Not Enabled", and: "Notifications are not enabled. Please check your settings.")
+//                    }
+//                }
+//            }
             notificationController.saveNotificationState(notificationState)
         }
     }

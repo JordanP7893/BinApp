@@ -10,86 +10,128 @@ import SwiftUI
 
 struct BinNotificationList: View {
     @Binding var showNotificationSheet: Bool
-
-    @ObservedObject var notifications: BinNotifications
-
+    
+    @Binding var notifications: BinNotifications
+    
     var body: some View {
         List {
             Section {
-                Toggle(isOn: $notifications.evening, label: {
+                Toggle(isOn: eveningOn, label: {
                     Text("Day before collection")
                 })
-                DatePicker("Time", selection: $notifications.eveningTime, displayedComponents: .hourAndMinute)
-                    .disabled(!notifications.evening)
-                    .opacity(notifications.evening ? 1 : 0.5)
+                DatePicker("Time", selection: eveningTime, displayedComponents: .hourAndMinute)
+                    .disabled(notifications.eveningTime == nil)
+                    .opacity(notifications.eveningTime == nil ? 0.5 : 1)
             }
-
+            
             Section {
-                Toggle(isOn: $notifications.morning, label: {
+                Toggle(isOn: morningOn, label: {
                     Text("Day of collection")
                 })
-                DatePicker("Time", selection: $notifications.morningTime, displayedComponents: .hourAndMinute)
-                    .disabled(!notifications.morning)
-                    .opacity(notifications.morning ? 1 : 0.5)
+                DatePicker("Time", selection: morningTime, displayedComponents: .hourAndMinute)
+                    .disabled(notifications.morningTime == nil)
+                    .opacity(notifications.morningTime == nil ? 0.5 : 1)
             } footer: {
                 Text("Note: Bins should be placed out by 7am")
             }
-
+            
             Section {
-                binTypeListButton(index: 0, text: "Black")
-                binTypeListButton(index: 1, text: "Green")
-                binTypeListButton(index: 2, text: "Brown")
+                binTypeListButton(type: .black, text: "Black")
+                binTypeListButton(type: .green, text: "Green")
+                binTypeListButton(type: .brown, text: "Brown")
             } header: {
                 Text("Bin Types")
             } footer: {
                 Text("Choose which bin types to recieve notifications for.")
             }
         }
-            .navigationTitle("Notifications")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem {
-                    Button(action: {
-                        showNotificationSheet = false
-                    }, label: {
-                        Text("Done")
-                            .bold()
-                    })
-                }
-            })
+        .navigationTitle("Notifications")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(content: {
+            ToolbarItem {
+                Button(action: {
+                    showNotificationSheet = false
+                }, label: {
+                    Text("Done")
+                        .bold()
+                })
+            }
+        })
     }
-
-    func binTypeListButton(index: Int, text: String) -> some View {
+    
+    func binTypeListButton(type: BinType, text: String) -> some View {
         Button(action: {
-            notifications.types[index]?.toggle()
+            if notifications.types.contains(where: { $0 == type }) {
+                notifications.types.removeAll { $0 == type }
+            } else {
+                notifications.types.append(type)
+            }
+            if notifications.types.isEmpty {
+                notifications.eveningTime = nil
+                notifications.morningTime = nil
+            }
         }, label: {
             HStack {
                 Text(text)
                     .foregroundStyle(.foreground)
                 Spacer()
                 Image(systemName: "checkmark")
-                    .opacity(notifications.types[index] ?? false ? 1 : 0)
+                    .opacity(notifications.types.contains(where: { $0 == type }) ? 1 : 0)
             }
         })
     }
 }
 
+extension BinNotificationList {
+    var eveningOn: Binding<Bool> {
+        Binding {
+            notifications.eveningTime != nil
+        } set: {
+            notifications.eveningTime = $0 ? .now : nil
+        }
+    }
+    
+    var eveningTime: Binding<Date> {
+        Binding {
+            notifications.eveningTime ?? .now
+        } set: {
+            notifications.eveningTime = $0
+        }
+
+    }
+    
+    var morningOn: Binding<Bool> {
+        Binding {
+            notifications.morningTime != nil
+        } set: {
+            notifications.morningTime = $0 ? .now : nil
+        }
+    }
+    
+    var morningTime: Binding<Date> {
+        Binding {
+            notifications.morningTime ?? .now
+        } set: {
+            notifications.morningTime = $0
+        }
+
+    }
+}
+
 #Preview {
+    @Previewable
+    @State var notifications: BinNotifications = .init()
+    
     Text("Bin Notification List")
-        .sheet(isPresented: .constant(true),
-               content: {
-            NavigationView {
-                BinNotificationList(
-                    showNotificationSheet: .constant(
-                        true
-                    ),
-                    notifications: .init(
-                        morning: false,
-                        morningTime: .now,
-                        evening: true,
-                        eveningTime: .now,
-                        types: [0:true, 1:true, 2:false]
-                    )
+        .sheet(
+            isPresented: .constant(true),
+            content: {
+                NavigationView {
+                    BinNotificationList(
+                        showNotificationSheet: .constant(
+                            true
+                        ),
+                        notifications: $notifications
                 )
                 
             }

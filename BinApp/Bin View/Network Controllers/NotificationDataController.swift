@@ -27,33 +27,33 @@ class NotificationDataController: NSObject {
         return binDays
     }
     
-    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async -> Bool {
-        var notificationTimes = [String: Date]()
-        
-        if (state.evening) {
-            notificationTimes.updateValue(state.eveningTime, forKey: "evening")
-        } else {
-            notificationTimes.removeValue(forKey: "evening")
-        }
-        
-        if (state.morning) {
-            notificationTimes.updateValue(state.morningTime, forKey: "morning")
-        } else {
-            notificationTimes.removeValue(forKey: "morning")
-        }
-        
-        do {
-            let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
-            if isAuthorized {
-                registerActions()
-                createNotificationForDays(binDays, at: notificationTimes, for: state.types)
-                return true
-            } else {
-                return false
-            }
-        } catch {
-            return false
-        }
+    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async {
+//        var notificationTimes = [String: Date]()
+//        
+//        if (state.evening) {
+//            notificationTimes.updateValue(state.eveningTime, forKey: "evening")
+//        } else {
+//            notificationTimes.removeValue(forKey: "evening")
+//        }
+//        
+//        if (state.morning) {
+//            notificationTimes.updateValue(state.morningTime, forKey: "morning")
+//        } else {
+//            notificationTimes.removeValue(forKey: "morning")
+//        }
+//        
+//        do {
+//            let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
+//            if isAuthorized {
+//                registerActions()
+//                createNotificationForDays(binDays, at: notificationTimes, for: state.types)
+//                return true
+//            } else {
+//                return false
+//            }
+//        } catch {
+//            return false
+//        }
     }
     
     private func createNotificationForDays(_ binDays: [BinDays], at times: [String: Date], for types: [Int: Bool]) {
@@ -72,9 +72,9 @@ class NotificationDataController: NSObject {
             
             for binDay in binDays {
                 for (type, isAllowed) in types {
-                    if type == binDay.type.position && isAllowed {
-                        createNotification(at: timeComponent, for: binDay, previousDay: previousDay)
-                    }
+//                    if type == binDay.type.position && isAllowed {
+//                        createNotification(at: timeComponent, for: binDay, previousDay: previousDay)
+//                    }
                 }
             }
         }

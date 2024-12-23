@@ -9,17 +9,24 @@
 import SwiftUI
 import MapKit
 
-struct BinView: View {
-    @EnvironmentObject var binProvider: BinDaysProvider
+struct BinListView: View {
+    @EnvironmentObject var viewModel: BinListViewModel
     @State var showAddressSheet = false
     @State var showNotificationSheet = false
 
     var body: some View {
         NavigationStack {
-            BinListView(bins: $binProvider.binDays)
+            List($viewModel.binDays) { bin in
+                NavigationLink {
+                    BinDetailView(bin: bin, donePressed: {}, remindPressed: { _ in }, tonightPressed: {})
+                } label: {
+                    BinCellView(bin: bin)
+                }
+            }
+            .listStyle(.inset)
                 .refreshable {
-                    if let address = binProvider.address {
-                        _ = try? await binProvider.fetchDataFromTheNetwork(usingId: address.id)
+                    if let address = viewModel.address {
+                        try? await viewModel.fetchDataFromTheNetwork(usingId: address.id)
                     }
                 }
                 .toolbar(content: {
@@ -40,13 +47,13 @@ struct BinView: View {
                         
                     }
                 })
-                .navigationTitle(binProvider.address?.title ?? "Bin Days")
+                .navigationTitle(viewModel.address?.title ?? "Bin Days")
                 .task {
-                    binProvider.fetchNotifications()
-                    if let address = binProvider.address {
-                        try? await binProvider.fetchBinDays(addressID: address.id)
+                    viewModel.fetchNotifications()
+                    if let address = viewModel.address {
+                        try? await viewModel.fetchBinDays(addressID: address.id)
                     } else {
-                        binProvider.fetchAddress()
+                        viewModel.fetchAddress()
                     }
                 }
                 .sheet(isPresented: $showAddressSheet) {
@@ -58,7 +65,7 @@ struct BinView: View {
                     NavigationView {
                         BinNotificationList(
                             showNotificationSheet: $showNotificationSheet,
-                            notifications: binProvider.binNotifications
+                            notifications: $viewModel.binNotifications
                         )
                     }
                 }
@@ -69,8 +76,8 @@ struct BinView: View {
 struct BinView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            BinView()
-                .environmentObject(BinDaysProvider())
+            BinListView()
+                .environmentObject(BinListViewModel())
         }
     }
 }

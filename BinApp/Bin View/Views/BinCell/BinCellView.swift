@@ -44,7 +44,7 @@ struct BinCellView: View {
 
 struct BinCellView_Previews: PreviewProvider {
     static var previews: some View {
-        BinCellView(bin: .constant(.init(type: .green, date: Date(timeIntervalSinceNow: 1000000), isPending: true)))
+        BinCellView(bin: .constant(.testBin))
             .padding()
     }
 }

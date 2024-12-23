@@ -17,7 +17,7 @@ struct BinAddressView: View {
     }
 
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var binProvider: BinDaysProvider
+    @EnvironmentObject var binProvider: BinListViewModel
 
     @StateObject var viewModel = BinAddressViewModel()
     @State var locationManager = LocationManager()

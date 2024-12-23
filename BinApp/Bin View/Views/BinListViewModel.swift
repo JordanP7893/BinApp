@@ -9,7 +9,7 @@
 import Foundation
 
 @MainActor
-class BinDaysProvider: ObservableObject {
+class BinListViewModel: ObservableObject {
     @Published var address: AddressData? {
         didSet {
             if let address {
@@ -20,16 +20,12 @@ class BinDaysProvider: ObservableObject {
         }
     }
     @Published var binDays: [BinDays] = []
-    @Published var binNotifications: BinNotifications = BinNotifications(
-        morning: false,
-        morningTime: .now,
-        evening: false,
-        eveningTime: .now,
-        types: [0: false, 1: false, 2: false]
-    ) {
+    @Published var binNotifications: BinNotifications = BinNotifications() {
         didSet {
-            Task {
-                await updateNotifications()
+            if binNotifications != oldValue {
+                Task {
+                    await updateNotifications()
+                }
             }
         }
     }
@@ -56,9 +52,9 @@ class BinDaysProvider: ObservableObject {
     }
 
     func fetchDataFromTheNetwork(usingId addressID: Int) async throws {
-        self.binDays = try await binDaysDataController.fetchBinDates(id: addressID)
-        self.binDays = binDays.sorted { $0.date < $1.date }
-        let _ = await updateNotifications()
+        let fetchedBins = try await binDaysDataController.fetchBinDates(id: addressID)
+        self.binDays = fetchedBins.sorted { $0.date < $1.date }
+        await updateNotifications()
     }
 
     func fetchNotifications() {
@@ -67,8 +63,9 @@ class BinDaysProvider: ObservableObject {
         }
     }
 
-    func updateNotifications() async -> Bool {
-        return await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
+    func updateNotifications() async {
+        
+//        await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
     }
     
 }

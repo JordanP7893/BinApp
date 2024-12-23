@@ -15,7 +15,7 @@ class BinDayTableViewController: UITableViewController {
     let binAddressDataController = BinAddressDataController()
     let notificationDataController = NotificationDataController()
     let errorAlertController = ErrorAlertController()
-    let binDaysProvider = BinDaysProvider()
+    let binDaysProvider = BinListViewModel()
     let binRefreshControl = UIRefreshControl()
     
     var addressID: Int?

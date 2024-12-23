@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 
 struct BinDays: Codable, Hashable, Identifiable {
-    var type: BinType
-    var date: Date
+    let type: BinType
+    let date: Date
+    var notificationDate: Date?
     var isPending: Bool
     
     var id: String {
@@ -25,10 +26,10 @@ struct BinDays: Codable, Hashable, Identifiable {
         case id
     }
     
-    init(type: BinType, date: Date, isPending: Bool) {
+    init(type: BinType, date: Date) {
         self.type = type
         self.date = date
-        self.isPending = isPending
+        self.isPending = false
     }
     
     init(from decoder: Decoder) throws {
@@ -50,21 +51,20 @@ struct BinDays: Codable, Hashable, Identifiable {
         isPending = false
     }
 
-    static let testBin = BinDays(type: .green, date: Date(timeIntervalSinceNow: 10000), isPending: true)
+    static let testBin = BinDays(type: .green, date: Date(timeIntervalSinceNow: 10000))
     static let testBinsArray: [BinDays] = [
-        .init(type: .green, date: Date(timeIntervalSinceNow: 1), isPending: true),
-        .init(type: .black, date: Date(timeIntervalSinceNow: 100000), isPending: false),
-        .init(type: .green, date: Date(timeIntervalSinceNow: 200000), isPending: false),
-        .init(type: .black, date: Date(timeIntervalSinceNow: 300000), isPending: false),
-        .init(type: .brown, date: Date(timeIntervalSinceNow: 400000), isPending: false),
-        .init(type: .green, date: Date(timeIntervalSinceNow: 500000), isPending: false),
-        .init(type: .black, date: Date(timeIntervalSinceNow: 600000), isPending: false),
-        .init(type: .green, date: Date(timeIntervalSinceNow: 700000), isPending: false),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 1)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 100000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 200000)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 300000)),
+        .init(type: .brown, date: Date(timeIntervalSinceNow: 400000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 500000)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 600000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 700000)),
     ]
 }
 
 enum BinType: String, Codable{
-    
     case green = "GREEN"
     case black = "BLACK"
     case brown = "BROWN"
@@ -80,19 +80,6 @@ enum BinType: String, Codable{
             return "Brown"
         case .food:
             return "Food"
-        }
-    }
-    
-    var position: Int {
-        switch self {
-        case .black:
-            return 0
-        case .green:
-            return 1
-        case .food:
-            return 2
-        case .brown:
-            return 3
         }
     }
     
