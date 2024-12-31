@@ -10,9 +10,7 @@ import Foundation
 
 struct BinNotifications: Codable, Equatable {
     enum CodingKeys: CodingKey {
-        case morning
         case morningTime
-        case evening
         case eveningTime
         case types
     }
@@ -21,7 +19,7 @@ struct BinNotifications: Codable, Equatable {
     var eveningTime: Date?
     var types: [BinType]
     
-    init(morningTime: Date? = nil, eveningTime: Date? = nil, types: [BinType] = [.green, .black, .brown]) {
+    init(morningTime: Date? = nil, eveningTime: Date? = nil, types: [BinType] = BinType.allCases) {
         self.morningTime = morningTime
         self.eveningTime = eveningTime
         self.types = types

@@ -15,7 +15,7 @@ class BinDayTableViewController: UITableViewController {
     let binAddressDataController = BinAddressDataController()
     let notificationDataController = NotificationDataController()
     let errorAlertController = ErrorAlertController()
-    let binDaysProvider = BinListViewModel()
+//    let binDaysProvider = BinListViewModel()
     let binRefreshControl = UIRefreshControl()
     
     var addressID: Int?
@@ -116,7 +116,7 @@ class BinDayTableViewController: UITableViewController {
         Task {
             do {
 //                binDays = try await binDaysProvider.fetchDataFromTheNetwork(usingId: addressID)
-                binDaysProvider.binDays = binDays
+//                binDaysProvider.binDays = binDays
                 await updateNotifications(binDays: binDays)
                 updateUI()
                 binRefreshControl.endRefreshing()

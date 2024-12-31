@@ -10,7 +10,12 @@ import Foundation
 import UserNotifications
 import UIKit
 
-class NotificationDataController: NSObject {
+protocol NotificationDataProtocol {
+    func saveNotificationState(_ binNotifications: BinNotifications)
+    func fetchNotificationState() -> BinNotifications?
+}
+
+class NotificationDataController: NotificationDataProtocol {
     
     public let notificationCenter = UNUserNotificationCenter.current()
     
@@ -251,4 +256,12 @@ class NotificationDataController: NSObject {
 enum NotificationCategoryIdentifier: String {
     case standard
     case tonight
+}
+
+class MockNotificationDataController: NotificationDataProtocol {
+    func saveNotificationState(_ binNotifications: BinNotifications) {}
+    
+    func fetchNotificationState() -> BinNotifications? {
+        BinNotifications(morningTime: nil, eveningTime: .distantPast, types: [.black, .green])
+    }
 }

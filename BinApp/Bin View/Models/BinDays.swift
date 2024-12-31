@@ -12,8 +12,21 @@ import UIKit
 struct BinDays: Codable, Hashable, Identifiable {
     let type: BinType
     let date: Date
-    var notificationDate: Date?
+    var notificationEvening: Date?
+    var notificationMorning: Date?
     var isPending: Bool
+    
+    var showNotification: Bool {
+        if let notificationEvening, notificationEvening < Date() && isPending {
+            return true
+        }
+        
+        if let notificationMorning, notificationMorning < Date() && isPending {
+            return true
+        }
+        
+        return false
+    }
     
     var id: String {
         return "\(date.description) \(type.description)"
@@ -29,14 +42,14 @@ struct BinDays: Codable, Hashable, Identifiable {
     init(type: BinType, date: Date) {
         self.type = type
         self.date = date
-        self.isPending = false
+        self.isPending = true
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.type = try container.decode(BinType.self, forKey: .type)
         self.date = try container.decode(Date.self, forKey: .date)
-        self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? false
+        self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? true
     }
     
     func encode(to encoder: Encoder) throws {
@@ -64,11 +77,13 @@ struct BinDays: Codable, Hashable, Identifiable {
     ]
 }
 
-enum BinType: String, Codable{
+enum BinType: String, Codable, CaseIterable, Identifiable {
     case green = "GREEN"
     case black = "BLACK"
     case brown = "BROWN"
     case food = "FOOD"
+    
+    var id: String { rawValue }
     
     var description: String {
         switch self {

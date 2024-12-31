@@ -37,6 +37,7 @@
 		4F05D0D02C6FA2700079657A /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05D0CF2C6FA2700079657A /* MapView.swift */; };
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */; };
+		4F26BC372D21BC1C002E70E2 /* LegacyBinNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F26BC362D21BC00002E70E2 /* LegacyBinNotifications.swift */; };
 		4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085452C4E620C0014195E /* CSwiftV.swift */; };
 		4F40854A2C4FC4730014195E /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4085492C4FC4730014195E /* LocationService.swift */; };
 		4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */; };
@@ -107,6 +108,7 @@
 		4F05D0CF2C6FA2700079657A /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationInfoView.swift; sourceTree = "<group>"; };
+		4F26BC362D21BC00002E70E2 /* LegacyBinNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyBinNotifications.swift; sourceTree = "<group>"; };
 		4F4085452C4E620C0014195E /* CSwiftV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSwiftV.swift; sourceTree = "<group>"; };
 		4F4085472C4E624D0014195E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		4F4085492C4FC4730014195E /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				4F81207F293522B900D7F793 /* AlertError.swift */,
 				4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */,
 				17E064552444975900789B9A /* BinNotifications.swift */,
+				4F26BC362D21BC00002E70E2 /* LegacyBinNotifications.swift */,
 				174A36FC24A7885E0091847F /* AddressData.swift */,
 				4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */,
 				4F4C3BB929197EA7004EA04F /* bin_list.plist */,
@@ -538,6 +541,7 @@
 				4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */,
 				4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
+				4F26BC372D21BC1C002E70E2 /* LegacyBinNotifications.swift in Sources */,
 				4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */,
 				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
 				4F864A022A9CF47F00FAC4AE /* BinListView.swift in Sources */,

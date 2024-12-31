@@ -8,9 +8,12 @@
 
 import Foundation
 
+protocol BinDaysDataProtocol {
+    func fetchBinDates(id: Int) async throws -> [BinDays]
+    func fetchBinData(skipDateCheck: Bool) -> [BinDays]?
+}
 
-class BinDaysDataController {
-    
+class BinDaysDataController: BinDaysDataProtocol {
     func fetchBinDates(id: Int) async throws -> [BinDays] {
         let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
@@ -101,5 +104,15 @@ class BinDaysDataController {
         }
         
         return newBins
+    }
+}
+
+class MockBinDaysDataController: BinDaysDataProtocol {
+    func fetchBinDates(id: Int) async throws -> [BinDays] {
+        BinDays.testBinsArray
+    }
+    
+    func fetchBinData(skipDateCheck: Bool) -> [BinDays]? {
+        BinDays.testBinsArray
     }
 }

@@ -28,7 +28,7 @@ struct BinCellView: View {
 
             Spacer()
 
-            if bin.isPending {
+            if bin.showNotification {
                 Text("1")
                     .padding(3)
                     .foregroundColor(.white)
@@ -42,9 +42,15 @@ struct BinCellView: View {
     }
 }
 
-struct BinCellView_Previews: PreviewProvider {
-    static var previews: some View {
-        BinCellView(bin: .constant(.testBin))
-            .padding()
-    }
+#Preview("Pending") {
+    var testBin = BinDays.testBin
+    testBin.notificationEvening = .distantPast
+    
+    return BinCellView(bin: .constant(testBin))
+        .padding()
+}
+
+#Preview("Not Pending") {
+    BinCellView(bin: .constant(.testBin))
+        .padding()
 }

@@ -20,7 +20,7 @@ struct BinDetailView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if showPopup && bin.isPending{
+                if showPopup && bin.showNotification{
                     BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed, tonightPressed: tonightPressed)
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                         .padding(.bottom)
@@ -55,17 +55,30 @@ struct BinDetailView: View {
     }
 }
 
-struct BinDetailView_Previews: PreviewProvider {
+#Preview("Pending") {
+    var testBin = BinDays.testBin
+    testBin.notificationEvening = .distantPast
     
-    static var previews: some View {
-        NavigationView {
-            BinDetailView(
-                bin: .constant(BinDays.testBin),
-                donePressed: {},
-                remindPressed: { _ in },
-                tonightPressed: {}
-            )
-        }
+    return NavigationView {
+        BinDetailView(
+            bin: .constant(testBin),
+            donePressed: {},
+            remindPressed: { _ in },
+            tonightPressed: {}
+        )
+    }
+}
+
+#Preview("Not Pending") {
+    var testBin = BinDays.testBin
+    
+    return NavigationView {
+        BinDetailView(
+            bin: .constant(testBin),
+            donePressed: {},
+            remindPressed: { _ in },
+            tonightPressed: {}
+        )
     }
 }
 

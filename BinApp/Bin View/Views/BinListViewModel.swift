@@ -8,6 +8,12 @@
 
 import Foundation
 
+protocol BinListViewModelProtocol: ObservableObject {
+    var address: AddressData? { get set }
+    var binDays: [BinDays] { get set }
+    var binNotifications: BinNotifications { get set }
+}
+
 @MainActor
 class BinListViewModel: ObservableObject {
     @Published var address: AddressData? {
@@ -63,9 +69,43 @@ class BinListViewModel: ObservableObject {
         }
     }
 
-    func updateNotifications() async {
-        
-//        await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
+    private func updateNotifications() async {
+        notificationDataController.saveNotificationState(binNotifications)
+        binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
     }
     
+    private func updateBinDaysWithNotifications(binDays: [BinDays], notifications: BinNotifications) -> [BinDays] {
+        let calendar = Calendar.current
+        
+        return binDays.map { binDay in
+            var updatedBinDay = binDay
+
+            if notifications.types.contains(binDay.type) {
+                if let morningTime = notifications.morningTime {
+                    updatedBinDay.notificationMorning = combine(date: binDay.date, time: morningTime, calendar: calendar)
+                }
+                
+                if let eveningTime = notifications.eveningTime, let previousDate = calendar.date(byAdding: .day, value: -1, to: binDay.date) {
+                    updatedBinDay.notificationEvening = combine(date: previousDate, time: eveningTime, calendar: calendar)
+                }
+            }
+
+            return updatedBinDay
+        }
+    }
+    
+    private func combine(date: Date, time: Date, calendar: Calendar, previousDay: Bool = false) -> Date? {
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: time)
+        
+        var combinedComponents = DateComponents()
+        combinedComponents.year = dateComponents.year
+        combinedComponents.month = dateComponents.month
+        combinedComponents.day = dateComponents.day
+        combinedComponents.hour = timeComponents.hour
+        combinedComponents.minute = timeComponents.minute
+        combinedComponents.second = timeComponents.second
+        
+        return calendar.date(from: combinedComponents)
+    }
 }

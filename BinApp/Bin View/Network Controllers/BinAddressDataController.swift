@@ -8,7 +8,12 @@
 
 import Foundation
 
-class BinAddressDataController {
+protocol BinAddressDataProtocol {
+    func fetchAddressData() -> AddressData?
+    func saveAddressData(_ addresses: AddressData)
+}
+
+class BinAddressDataController: BinAddressDataProtocol {
     func fetchAddress(postcode: String) async throws -> [StoreAddress] {
         let postcodeToSearch = postcode.replacingOccurrences(of: " ", with: "")
         let paramString = BinAddressDataController.getParamString(params: ["postcode": postcodeToSearch])
@@ -80,3 +85,10 @@ class BinAddressDataController {
     }
 }
 
+class MockBinAddressDataController: BinAddressDataProtocol {
+    func fetchAddressData() -> AddressData? {
+        return AddressData(id: 1, title: "1 Leeds Road")
+    }
+    
+    func saveAddressData(_ addresses: AddressData) {}
+}

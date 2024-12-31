@@ -36,9 +36,9 @@ struct BinNotificationList: View {
             }
             
             Section {
-                binTypeListButton(type: .black, text: "Black")
-                binTypeListButton(type: .green, text: "Green")
-                binTypeListButton(type: .brown, text: "Brown")
+                ForEach(BinType.allCases) {
+                    binTypeListButton(type: $0)
+                }
             } header: {
                 Text("Bin Types")
             } footer: {
@@ -59,7 +59,7 @@ struct BinNotificationList: View {
         })
     }
     
-    func binTypeListButton(type: BinType, text: String) -> some View {
+    func binTypeListButton(type: BinType) -> some View {
         Button(action: {
             if notifications.types.contains(where: { $0 == type }) {
                 notifications.types.removeAll { $0 == type }
@@ -72,7 +72,7 @@ struct BinNotificationList: View {
             }
         }, label: {
             HStack {
-                Text(text)
+                Text(type.description)
                     .foregroundStyle(.foreground)
                 Spacer()
                 Image(systemName: "checkmark")
