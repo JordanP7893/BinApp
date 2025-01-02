@@ -36,9 +36,19 @@ class BinListViewModel: ObservableObject {
         }
     }
 
-    let addressDataController = BinAddressDataController()
-    let binDaysDataController = BinDaysDataController()
-    let notificationDataController = NotificationDataController()
+    let addressDataController: BinAddressDataProtocol
+    let binDaysDataController: BinDaysDataProtocol
+    let notificationDataController: NotificationDataProtocol
+    
+    init(
+        addressDataController: BinAddressDataProtocol,
+        binDaysDataController: BinDaysDataProtocol,
+        notificationDataController: NotificationDataProtocol
+    ) {
+        self.addressDataController = addressDataController
+        self.binDaysDataController = binDaysDataController
+        self.notificationDataController = notificationDataController
+    }
     
     func onAppear() async {
         fetchNotifications()
@@ -69,7 +79,7 @@ class BinListViewModel: ObservableObject {
     }
 
     private func fetchBinDays(addressID: Int) async throws {
-        if let binDays = binDaysDataController.fetchBinData() {
+        if let binDays = binDaysDataController.fetchBinData(skipDateCheck: false) {
             self.binDays = binDays.sorted { $0.date < $1.date }
         } else {
             try await fetchDataFromTheNetwork(usingId: addressID)

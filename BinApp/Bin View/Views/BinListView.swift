@@ -67,10 +67,15 @@ struct BinListView: View {
     }
 }
 
-struct BinView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            BinListView(viewModel: .init())
-        }
+#Preview {
+    NavigationView {
+        BinListView(
+            viewModel: .init(
+                addressDataController: MockBinAddressDataController(),
+                binDaysDataController: MockBinDaysDataController(),
+                notificationDataController: MockNotificationDataController()
+            )
+        )
+            .environment(LocationManager())
     }
 }

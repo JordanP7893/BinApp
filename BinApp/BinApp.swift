@@ -16,7 +16,13 @@ struct BinApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                BinListView(viewModel: BinListViewModel())
+                BinListView(
+                    viewModel: BinListViewModel(
+                        addressDataController: BinAddressDataController(),
+                        binDaysDataController: BinDaysDataController(),
+                        notificationDataController: NotificationDataController()
+                    )
+                )
                     .tabItem { Label("Bin Days", image: "waste") }
                 
                 MapView(viewModel: MapViewViewModel())
