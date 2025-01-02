@@ -10,7 +10,8 @@ import SwiftUI
 import MapKit
 
 struct BinListView: View {
-    @EnvironmentObject var viewModel: BinListViewModel
+    @StateObject var viewModel: BinListViewModel
+    
     @State var showAddressSheet = false
     @State var showNotificationSheet = false
 
@@ -25,9 +26,7 @@ struct BinListView: View {
             }
             .listStyle(.inset)
                 .refreshable {
-                    if let address = viewModel.address {
-                        try? await viewModel.fetchDataFromTheNetwork(usingId: address.id)
-                    }
+                    await viewModel.onRefresh()
                 }
                 .toolbar(content: {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -49,16 +48,11 @@ struct BinListView: View {
                 })
                 .navigationTitle(viewModel.address?.title ?? "Bin Days")
                 .task {
-                    viewModel.fetchNotifications()
-                    if let address = viewModel.address {
-                        try? await viewModel.fetchBinDays(addressID: address.id)
-                    } else {
-                        viewModel.fetchAddress()
-                    }
+                    await viewModel.onAppear()
                 }
                 .sheet(isPresented: $showAddressSheet) {
                     NavigationView {
-                        BinAddressView()
+                        BinAddressView(onSavePress: viewModel.onSavePress(address:))
                     }
                 }
                 .sheet(isPresented: $showNotificationSheet) {
@@ -76,8 +70,7 @@ struct BinListView: View {
 struct BinView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            BinListView()
-                .environmentObject(BinListViewModel())
+            BinListView(viewModel: .init())
         }
     }
 }

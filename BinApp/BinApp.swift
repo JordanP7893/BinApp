@@ -11,14 +11,12 @@ import SwiftUI
 
 @main
 struct BinApp: App {
-    @StateObject private var binProvider = BinListViewModel()
     @State var locationManager = LocationManager()
 
     var body: some Scene {
         WindowGroup {
             TabView {
-                BinListView()
-                    .environmentObject(binProvider)
+                BinListView(viewModel: BinListViewModel())
                     .tabItem { Label("Bin Days", image: "waste") }
                 
                 MapView(viewModel: MapViewViewModel())

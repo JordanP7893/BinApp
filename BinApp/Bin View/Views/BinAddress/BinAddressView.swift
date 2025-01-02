@@ -17,10 +17,12 @@ struct BinAddressView: View {
     }
 
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var binProvider: BinListViewModel
+    @EnvironmentObject var locationManager: LocationManager
 
     @StateObject var viewModel = BinAddressViewModel()
-    @State var locationManager = LocationManager()
+    
+    var onSavePress: (_ saveAddress: StoreAddress) -> Void
+    
     @State var locationButtonState: LocationButtonState = .notPressed
 
     var body: some View {
@@ -87,11 +89,10 @@ struct BinAddressView: View {
             ToolbarItem {
                 Button(action: {
                     dismiss()
-                    Task {
-                        guard let addresses = viewModel.addresses else { return }
-                        let address = addresses[viewModel.selectedAddressIndex]
-                        binProvider.updateAddress(newAddress: .init(id: address.premisesId, title: address.formattedAddress))
-                    }
+                    
+                    guard let addresses = viewModel.addresses else { return }
+                    let address = addresses[viewModel.selectedAddressIndex]
+                    onSavePress(address)
                 }, label: {
                     Text("Save")
                         .bold()
@@ -124,7 +125,7 @@ struct BinAddressView: View {
                     isPresented: $isPresented,
                        content: {
                     NavigationView {
-                        BinAddressView()
+                        BinAddressView(onSavePress: { _ in })
                     }
                 })
         }

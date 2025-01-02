@@ -40,16 +40,35 @@ class BinListViewModel: ObservableObject {
     let binDaysDataController = BinDaysDataController()
     let notificationDataController = NotificationDataController()
     
-    func updateAddress(newAddress: AddressData) {
+    func onAppear() async {
+        fetchNotifications()
+        if let address {
+            try? await fetchBinDays(addressID: address.id)
+        } else {
+            fetchAddress()
+        }
+    }
+    
+    func onRefresh() async {
+        if let address {
+            try? await fetchDataFromTheNetwork(usingId: address.id)
+        }
+    }
+    
+    func onSavePress(address: StoreAddress) {
+        updateAddress(newAddress: .init(id: address.premisesId, title: address.formattedAddress))
+    }
+    
+    private func updateAddress(newAddress: AddressData) {
         address = newAddress
         addressDataController.saveAddressData(newAddress)
     }
     
-    func fetchAddress() {
+    private func fetchAddress() {
         address = addressDataController.fetchAddressData()
     }
 
-    func fetchBinDays(addressID: Int) async throws {
+    private func fetchBinDays(addressID: Int) async throws {
         if let binDays = binDaysDataController.fetchBinData() {
             self.binDays = binDays.sorted { $0.date < $1.date }
         } else {
@@ -57,13 +76,13 @@ class BinListViewModel: ObservableObject {
         }
     }
 
-    func fetchDataFromTheNetwork(usingId addressID: Int) async throws {
+    private func fetchDataFromTheNetwork(usingId addressID: Int) async throws {
         let fetchedBins = try await binDaysDataController.fetchBinDates(id: addressID)
         self.binDays = fetchedBins.sorted { $0.date < $1.date }
         await updateNotifications()
     }
 
-    func fetchNotifications() {
+    private func fetchNotifications() {
         if let binNotifications = notificationDataController.fetchNotificationState() {
             self.binNotifications = binNotifications
         }
