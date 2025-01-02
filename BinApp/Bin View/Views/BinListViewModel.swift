@@ -51,11 +51,13 @@ class BinListViewModel: ObservableObject {
     }
     
     func onAppear() async {
-        fetchNotifications()
-        if let address {
-            try? await fetchBinDays(addressID: address.id)
-        } else {
-            fetchAddress()
+        if binDays.isEmpty {
+            fetchNotifications()
+            if let address {
+                try? await fetchBinDays(addressID: address.id)
+            } else {
+                fetchAddress()
+            }
         }
     }
     

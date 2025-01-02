@@ -68,14 +68,14 @@ struct BinListView: View {
 }
 
 #Preview {
+    let viewModel = BinListViewModel(
+        addressDataController: MockBinAddressDataController(),
+        binDaysDataController: MockBinDaysDataController(),
+        notificationDataController: MockNotificationDataController()
+    )
+    
     NavigationView {
-        BinListView(
-            viewModel: .init(
-                addressDataController: MockBinAddressDataController(),
-                binDaysDataController: MockBinDaysDataController(),
-                notificationDataController: MockNotificationDataController()
-            )
-        )
+        BinListView(viewModel: viewModel)
             .environment(LocationManager())
     }
 }
