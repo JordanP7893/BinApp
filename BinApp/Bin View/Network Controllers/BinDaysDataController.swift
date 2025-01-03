@@ -9,12 +9,13 @@
 import Foundation
 
 protocol BinDaysDataProtocol {
-    func fetchBinDates(id: Int) async throws -> [BinDays]
-    func fetchBinData(skipDateCheck: Bool) -> [BinDays]?
+    func fetchNetworkBinDays(id: Int) async throws -> [BinDays]
+    func fetchLocalBinDays() throws -> [BinDays]
+    func saveBinData(_ binDays: [BinDays])
 }
 
 class BinDaysDataController: BinDaysDataProtocol {
-    func fetchBinDates(id: Int) async throws -> [BinDays] {
+    func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
         let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
         
@@ -29,11 +30,11 @@ class BinDaysDataController: BinDaysDataProtocol {
             decoder.dateDecodingStrategy = .formatted(formatter)
             
             let binDates = try decoder.decode([BinDays].self, from: data)
-            let uniqueBinDates = Array(Set(binDates))
-            let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
-            self.saveBinData(binsWithPending)
-            UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
-            return binsWithPending
+//            let uniqueBinDates = Array(Set(binDates))
+//            let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
+//            self.saveBinData(binsWithPending)
+//            UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
+            return binDates.sorted { $0.date < $1.date }
             
         } catch {
             
@@ -56,23 +57,16 @@ class BinDaysDataController: BinDaysDataProtocol {
         try? encodedBinDays?.write(to: archiveURL, options: .noFileProtection)
     }
     
-    func fetchBinData(skipDateCheck: Bool = false) -> [BinDays]? {
+    func fetchLocalBinDays() throws -> [BinDays] {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
         
-        if !skipDateCheck {
-            let binDaysLastFetchedDate = UserDefaults.standard.value(forKey: "binDaysLastFetchedDate") as? Date
-            guard let binDaysLastFetchedDate = binDaysLastFetchedDate, binDaysLastFetchedDate.addDay(noOfDays: 7) > Date() else { return nil }
-        }
-        
         let propertyListDecoder = PropertyListDecoder()
-        if let retrievedBinDays = try? Data(contentsOf: archiveURL), let decodedBinDays = try? propertyListDecoder.decode([BinDays].self, from: retrievedBinDays){
-            if decodedBinDays.isEmpty { return nil }
+        let retrievedBinDays = try Data(contentsOf: archiveURL)
+        let decodedBinDays = try propertyListDecoder.decode([BinDays].self, from: retrievedBinDays)
+        if decodedBinDays.isEmpty { throw BinError.emptyBinArray }
             
-            return decodedBinDays
-        } else {
-            return nil
-        }
+        return decodedBinDays
     }
     
     static func asyncGET(url: URL) async throws -> Data {
@@ -91,28 +85,34 @@ class BinDaysDataController: BinDaysDataProtocol {
         }
     }
     
-    private func updateFetchedBinsWithPendingStates(_ fetchedBins: [BinDays]) -> [BinDays] {
-        var newBins = fetchedBins
-        guard let currentBins = fetchBinData(skipDateCheck: true) else { return newBins }
-        
-        let pendingBinIds = currentBins.filter({ $0.isPending }).map({$0.id})
-        
-        pendingBinIds.forEach { id in
-            if let index = newBins.firstIndex(where: {$0.id == id}) {
-                newBins[index].isPending = true
-            }
-        }
-        
-        return newBins
-    }
+//    private func updateFetchedBinsWithPendingStates(_ fetchedBins: [BinDays]) -> [BinDays] {
+//        var newBins = fetchedBins
+//        guard let currentBins = fetchBinData(skipDateCheck: true) else { return newBins }
+//        
+//        let pendingBinIds = currentBins.filter({ $0.isPending }).map({$0.id})
+//        
+//        pendingBinIds.forEach { id in
+//            if let index = newBins.firstIndex(where: {$0.id == id}) {
+//                newBins[index].isPending = true
+//            }
+//        }
+//        
+//        return newBins
+//    }
+}
+
+enum BinError: Error {
+    case emptyBinArray
 }
 
 class MockBinDaysDataController: BinDaysDataProtocol {
-    func fetchBinDates(id: Int) async throws -> [BinDays] {
+    func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
         BinDays.testBinsArray
     }
     
-    func fetchBinData(skipDateCheck: Bool) -> [BinDays]? {
+    func fetchLocalBinDays() -> [BinDays] {
         BinDays.testBinsArray
     }
+    
+    func saveBinData(_ binDays: [BinDays]) {}
 }

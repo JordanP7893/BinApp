@@ -78,11 +78,11 @@ class BinDayTableViewController: UITableViewController {
     }
     
     func refreshBinListWithNotifications() {
-        Task {
-            binDays = await notificationDataController.getTriggeredNotifications(binDays: binDays)
-            binDaysDataController.saveBinData(binDays)
-            updateUI()
-        }
+//        Task {
+//            binDays = await notificationDataController.getTriggeredNotifications(binDays: binDays)
+//            binDaysDataController.saveBinData(binDays)
+//            updateUI()
+//        }
     }
 
     @objc func updateUI() {

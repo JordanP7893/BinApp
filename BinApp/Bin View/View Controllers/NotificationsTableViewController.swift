@@ -38,7 +38,7 @@ class NotificationsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        notificationState = notificationController.fetchNotificationState()
+//        notificationState = notificationController.fetchNotificationState()
         
         if let notificationState = notificationState {
             blackTypeCell.accessoryType = notificationTypes[0]! ? .checkmark : .none
@@ -64,7 +64,7 @@ class NotificationsTableViewController: UITableViewController {
 //                    }
 //                }
 //            }
-            notificationController.saveNotificationState(notificationState)
+//            notificationController.saveNotificationState(notificationState)
         }
     }
     

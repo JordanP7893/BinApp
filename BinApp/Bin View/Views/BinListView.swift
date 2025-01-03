@@ -47,9 +47,6 @@ struct BinListView: View {
                     }
                 })
                 .navigationTitle(viewModel.address?.title ?? "Bin Days")
-                .task {
-                    await viewModel.onAppear()
-                }
                 .sheet(isPresented: $showAddressSheet) {
                     NavigationView {
                         BinAddressView(onSavePress: viewModel.onSavePress(address:))

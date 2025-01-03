@@ -18,15 +18,23 @@ protocol BinListViewModelProtocol: ObservableObject {
 class BinListViewModel: ObservableObject {
     @Published var address: AddressData? {
         didSet {
-            if let address {
+            if let address, oldValue != nil {
                 Task {
-                    try await fetchDataFromTheNetwork(usingId: address.id)
+                    addressDataController.saveAddressData(address)
+                    await fetchDataFromTheNetwork(usingId: address.id)
+                    await updateNotifications()
                 }
             }
         }
     }
-    @Published var binDays: [BinDays] = []
-    @Published var binNotifications: BinNotifications = BinNotifications() {
+    @Published var binDays: [BinDays] = [] {
+        didSet {
+            if binDays != oldValue {
+                binDaysDataController.saveBinData(binDays)
+            }
+        }
+    }
+    @Published var binNotifications: BinNotifications {
         didSet {
             if binNotifications != oldValue {
                 Task {
@@ -35,7 +43,7 @@ class BinListViewModel: ObservableObject {
             }
         }
     }
-
+    
     let addressDataController: BinAddressDataProtocol
     let binDaysDataController: BinDaysDataProtocol
     let notificationDataController: NotificationDataProtocol
@@ -48,61 +56,63 @@ class BinListViewModel: ObservableObject {
         self.addressDataController = addressDataController
         self.binDaysDataController = binDaysDataController
         self.notificationDataController = notificationDataController
-    }
-    
-    func onAppear() async {
-        if binDays.isEmpty {
-            fetchNotifications()
-            if let address {
-                try? await fetchBinDays(addressID: address.id)
-            } else {
-                fetchAddress()
+        
+        self.address = addressDataController.fetchAddressData()
+        
+        do {
+            self.binNotifications = try notificationDataController.fetchNotificationState()
+        } catch {
+            self.binNotifications = .init()
+        }
+        
+        if let address {
+            do {
+                self.binDays = try binDaysDataController.fetchLocalBinDays()
+            } catch {
+                Task {
+                    await fetchDataFromTheNetwork(usingId: address.id)
+                }
             }
         }
     }
     
     func onRefresh() async {
         if let address {
-            try? await fetchDataFromTheNetwork(usingId: address.id)
+            await fetchDataFromTheNetwork(usingId: address.id)
+            await updateNotifications()
         }
     }
     
     func onSavePress(address: StoreAddress) {
-        updateAddress(newAddress: .init(id: address.premisesId, title: address.formattedAddress))
+        self.address = .init(
+            id: address.premisesId,
+            title: address.formattedAddress
+        )
     }
     
-    private func updateAddress(newAddress: AddressData) {
-        address = newAddress
-        addressDataController.saveAddressData(newAddress)
-    }
-    
-    private func fetchAddress() {
-        address = addressDataController.fetchAddressData()
-    }
+}
 
-    private func fetchBinDays(addressID: Int) async throws {
-        if let binDays = binDaysDataController.fetchBinData(skipDateCheck: false) {
-            self.binDays = binDays.sorted { $0.date < $1.date }
-        } else {
-            try await fetchDataFromTheNetwork(usingId: addressID)
-        }
-    }
+// MARK: Private Methods
 
-    private func fetchDataFromTheNetwork(usingId addressID: Int) async throws {
-        let fetchedBins = try await binDaysDataController.fetchBinDates(id: addressID)
-        self.binDays = fetchedBins.sorted { $0.date < $1.date }
-        await updateNotifications()
-    }
-
-    private func fetchNotifications() {
-        if let binNotifications = notificationDataController.fetchNotificationState() {
-            self.binNotifications = binNotifications
+extension BinListViewModel {
+    private func fetchDataFromTheNetwork(usingId addressID: Int) async {
+        do {
+            self.binDays = try await binDaysDataController.fetchNetworkBinDays(id: addressID)
+        } catch {
+            print(error)
         }
     }
 
     private func updateNotifications() async {
-        notificationDataController.saveNotificationState(binNotifications)
-        binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
+        do {
+            try notificationDataController.saveNotificationState(binNotifications)
+            
+            guard !binDays.isEmpty else { return }
+            binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
+            try await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
+        } catch {
+            print(error)
+        }
     }
     
     private func updateBinDaysWithNotifications(binDays: [BinDays], notifications: BinNotifications) -> [BinDays] {

@@ -27,8 +27,8 @@ struct BinNotifications: Codable, Equatable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        morningTime = try container.decode(Date.self, forKey: .morningTime)
-        eveningTime = try container.decode(Date.self, forKey: .eveningTime)
+        morningTime = try container.decode(Date?.self, forKey: .morningTime)
+        eveningTime = try container.decode(Date?.self, forKey: .eveningTime)
         types = try container.decode([BinType].self, forKey: .types)
     }
 

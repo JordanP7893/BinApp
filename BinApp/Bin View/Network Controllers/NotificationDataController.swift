@@ -11,124 +11,68 @@ import UserNotifications
 import UIKit
 
 protocol NotificationDataProtocol {
-    func saveNotificationState(_ binNotifications: BinNotifications)
-    func fetchNotificationState() -> BinNotifications?
+    func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws
+    func saveNotificationState(_ binNotifications: BinNotifications) throws
+    func fetchNotificationState() throws -> BinNotifications
 }
 
 class NotificationDataController: NotificationDataProtocol {
     
     public let notificationCenter = UNUserNotificationCenter.current()
     
-    public func getTriggeredNotifications(binDays: [BinDays]) async -> [BinDays] {
-        var binDays = binDays
-        
-        let deliveredNotifications = await notificationCenter.deliveredNotifications()
-        for notification in deliveredNotifications {
-            if let index = binDays.firstIndex(where: {$0.id == notification.request.identifier}) {
-                binDays[index].isPending = true
-            }
-        }
-        
-        return binDays
-    }
-    
-    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async {
-//        var notificationTimes = [String: Date]()
-//        
-//        if (state.evening) {
-//            notificationTimes.updateValue(state.eveningTime, forKey: "evening")
-//        } else {
-//            notificationTimes.removeValue(forKey: "evening")
-//        }
-//        
-//        if (state.morning) {
-//            notificationTimes.updateValue(state.morningTime, forKey: "morning")
-//        } else {
-//            notificationTimes.removeValue(forKey: "morning")
-//        }
-//        
-//        do {
-//            let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
-//            if isAuthorized {
-//                registerActions()
-//                createNotificationForDays(binDays, at: notificationTimes, for: state.types)
-//                return true
-//            } else {
-//                return false
-//            }
-//        } catch {
-//            return false
-//        }
-    }
-    
-    private func createNotificationForDays(_ binDays: [BinDays], at times: [String: Date], for types: [Int: Bool]) {
-        
-        notificationCenter.removeAllPendingNotificationRequests()
-        notificationCenter.removeAllDeliveredNotifications()
-        
-        for (title, time) in times {
+    public func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws {
+        let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
+        if isAuthorized {
+            registerActions()
+            notificationCenter.removeAllPendingNotificationRequests()
+            notificationCenter.removeAllDeliveredNotifications()
             
-            let previousDay = title == "evening" ? true : false
-            let timeComponent = Calendar.current.dateComponents([.hour, .minute], from: time)
-            
+            /// Uncomment to trigger test notification for the first bin after 10 seconds
 //            var binDays = binDays
-//            createTestNotification(for: binDays[0])
+//            try await createTestNotification(for: binDays[0])
 //            binDays.remove(at: 0)
             
             for binDay in binDays {
-                for (type, isAllowed) in types {
-//                    if type == binDay.type.position && isAllowed {
-//                        createNotification(at: timeComponent, for: binDay, previousDay: previousDay)
-//                    }
-                }
+                try await createNotification(for: binDay)
             }
         }
     }
     
-    private func createTestNotification(for binDay: BinDays) {
+    private func createTestNotification(for binDay: BinDays) async throws {
         let content = setNotificationContent(withCategory: NotificationCategoryIdentifier.tonight.rawValue, title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
 
         let request = UNNotificationRequest(identifier: binDay.id, content: content, trigger: trigger)
 
-        notificationCenter.add(request) { (error) in
-            if let error = error {
-                //error handle
-                print(error)
-                return
-            }
+        try await notificationCenter.add(request)
+    }
+    
+    private func createNotification(for binDay: BinDays) async throws {
+    
+        var categoryIdentifier = NotificationCategoryIdentifier.standard
+        
+        if let notificationEvening = binDay.notificationEvening, Calendar.current.component(.hour, from: notificationEvening) < 18 {
+            categoryIdentifier = NotificationCategoryIdentifier.tonight
+        }
+        
+        let content = setNotificationContent(withCategory: categoryIdentifier.rawValue, title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
+        
+        if let notificationEvening = binDay.notificationEvening {
+            try await createNotification(id: "\(binDay.id) - evening", at: notificationEvening, withContent: content)
+        } else if let notificationMorning = binDay.notificationMorning {
+            try await createNotification(id: "\(binDay.id) - morning", at: notificationMorning, withContent: content)
         }
     }
     
-    private func createNotification(at time: DateComponents, for binDay: BinDays, previousDay: Bool) {
-    
-        var categoryIdentifier = NotificationCategoryIdentifier.standard.rawValue
-        
-        guard var date = Calendar.current.date(byAdding: time, to: binDay.date) else { return }
-        if previousDay {
-            date = Calendar.current.date(byAdding: .day, value: -1, to: date)!
-            
-            if let hour = time.hour, hour < 18 {
-                categoryIdentifier = NotificationCategoryIdentifier.tonight.rawValue
-            }
-        }
-        
-        let content = setNotificationContent(withCategory: categoryIdentifier, title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
-        
+    private func createNotification(id: String, at date: Date, withContent content: UNMutableNotificationContent) async throws {
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         
-        let request = UNNotificationRequest(identifier: binDay.id, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
         
-        notificationCenter.add(request) { (error) in
-            if let error = error {
-                //error handle
-                print(error)
-                return
-            }
-        }
+        try await notificationCenter.add(request)
     }
     
     private func setNotificationContent(withCategory categoryIdentifier: String, title: String, body: String) -> UNMutableNotificationContent {
@@ -143,29 +87,28 @@ class NotificationDataController: NotificationDataProtocol {
         return content
     }
     
-    func saveNotificationState(_ binNotifications: BinNotifications) {
+    func saveNotificationState(_ binNotifications: BinNotifications) throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("notification_data").appendingPathExtension("plist")
+        let archiveURL = documentsDirectory.appendingPathComponent("notification_data_v2").appendingPathExtension("plist")
         
         if FileManager.default.fileExists(atPath: archiveURL.path){
             try? FileManager.default.removeItem(atPath: archiveURL.path)
         }
         
         let propertyListEncoder = PropertyListEncoder()
-        let encodedLocations = try? propertyListEncoder.encode(binNotifications)
-        try? encodedLocations?.write(to: archiveURL, options: .noFileProtection)
+        let encodedLocations = try propertyListEncoder.encode(binNotifications)
+        try encodedLocations.write(to: archiveURL, options: .noFileProtection)
     }
     
-    func fetchNotificationState() -> BinNotifications? {
+    func fetchNotificationState() throws -> BinNotifications {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("notification_data").appendingPathExtension("plist")
+        let archiveURL = documentsDirectory.appendingPathComponent("notification_data_v2").appendingPathExtension("plist")
         
         let propertyListDecoder = PropertyListDecoder()
-        if let retrievedLocations = try? Data(contentsOf: archiveURL), let decodedNotifications = try? propertyListDecoder.decode(BinNotifications.self, from: retrievedLocations){
-            return decodedNotifications
-        } else {
-            return nil
-        }
+        let retrievedLocations = try Data(contentsOf: archiveURL)
+        let decodedNotifications = try propertyListDecoder.decode(BinNotifications.self, from: retrievedLocations)
+            
+        return decodedNotifications
     }
     
     public func removeDeliveredNotification(withIdentifier id: String) {
@@ -259,9 +202,11 @@ enum NotificationCategoryIdentifier: String {
 }
 
 class MockNotificationDataController: NotificationDataProtocol {
+    func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws {}
+    
     func saveNotificationState(_ binNotifications: BinNotifications) {}
     
-    func fetchNotificationState() -> BinNotifications? {
+    func fetchNotificationState() throws -> BinNotifications {
         BinNotifications(morningTime: nil, eveningTime: .distantPast, types: [.black, .green])
     }
 }
