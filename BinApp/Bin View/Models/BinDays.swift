@@ -35,6 +35,8 @@ struct BinDays: Codable, Hashable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case type = "BinType"
         case date = "CollectionDate"
+        case notificationEvening
+        case notificationMorning
         case isPending
         case id
     }
@@ -49,6 +51,8 @@ struct BinDays: Codable, Hashable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.type = try container.decode(BinType.self, forKey: .type)
         self.date = try container.decode(Date.self, forKey: .date)
+        self.notificationEvening = try container.decodeIfPresent(Date.self, forKey: .notificationEvening)
+        self.notificationMorning = try container.decodeIfPresent(Date.self, forKey: .notificationMorning)
         self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? true
     }
     
@@ -56,8 +60,9 @@ struct BinDays: Codable, Hashable, Identifiable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(type, forKey: .type)
         try container.encode(date, forKey: .date)
+        try container.encode(notificationEvening, forKey: .notificationEvening)
+        try container.encode(notificationMorning, forKey: .notificationMorning)
         try container.encode(isPending, forKey: .isPending)
-        try container.encode(id, forKey: .id)
     }
 
     mutating func donePressed() {

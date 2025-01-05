@@ -44,7 +44,7 @@ class BinDayTableViewController: UITableViewController {
             guard let chosenBinIndex = binDays.firstIndex(where: {$0.id == id}) else { return }
             
             binDays[chosenBinIndex].isPending = true
-            binDaysDataController.saveBinData(binDays)
+//            binDaysDataController.saveBinData(binDays)
             
             updateUI()
             goToDetailsPage(forIndex: chosenBinIndex)
@@ -56,7 +56,7 @@ class BinDayTableViewController: UITableViewController {
         
         if let chosenBinIndex = binDays.firstIndex(where: {$0.id == id}) {
             binDays[chosenBinIndex].isPending = false
-            binDaysDataController.saveBinData(binDays)
+//            binDaysDataController.saveBinData(binDays)
         }
         
         DispatchQueue.main.async {
@@ -174,7 +174,7 @@ class BinDayTableViewController: UITableViewController {
         
         func doneButtonPressed() {
             binDays[index].isPending = false
-            binDaysDataController.saveBinData(binDays)
+//            binDaysDataController.saveBinData(binDays)
             notificationDataController.removeDeliveredNotification(withIdentifier: bin.id)
             DispatchQueue.main.async {
                 UIApplication.shared.applicationIconBadgeNumber = 0

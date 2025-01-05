@@ -8,12 +8,15 @@
 
 import Foundation
 import UserNotifications
-import UIKit
 
 protocol NotificationDataProtocol {
     func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws
     func saveNotificationState(_ binNotifications: BinNotifications) throws
     func fetchNotificationState() throws -> BinNotifications
+    
+    func removeDeliveredNotification(withIdentifier id: String)
+    func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval)
+    func remindTonightNotification(from content: UNNotificationContent, withId id: String)
 }
 
 class NotificationDataController: NotificationDataProtocol {
@@ -24,13 +27,11 @@ class NotificationDataController: NotificationDataProtocol {
         let isAuthorized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
         if isAuthorized {
             registerActions()
+            Task {
+                notificationCenter.setBadgeCount(0)
+            }
             notificationCenter.removeAllPendingNotificationRequests()
             notificationCenter.removeAllDeliveredNotifications()
-            
-            /// Uncomment to trigger test notification for the first bin after 10 seconds
-//            var binDays = binDays
-//            try await createTestNotification(for: binDays[0])
-//            binDays.remove(at: 0)
             
             for binDay in binDays {
                 try await createNotification(for: binDay)
@@ -66,7 +67,7 @@ class NotificationDataController: NotificationDataProtocol {
     }
     
     private func createNotification(id: String, at date: Date, withContent content: UNMutableNotificationContent) async throws {
-        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         
@@ -113,6 +114,9 @@ class NotificationDataController: NotificationDataProtocol {
     
     public func removeDeliveredNotification(withIdentifier id: String) {
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
+        Task {
+            notificationCenter.setBadgeCount(0)
+        }
     }
     
     public func snoozeBin(_ bin: BinDays, for time: TimeInterval) {
@@ -167,12 +171,7 @@ class NotificationDataController: NotificationDataProtocol {
     }
     
     private func copyNotification(from content: UNNotificationContent, withId id: String, withTrigger trigger: UNNotificationTrigger) {
-        
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationsCleared"), object: nil, userInfo: ["id": id])
-        notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
-        DispatchQueue.main.async {
-            UIApplication.shared.applicationIconBadgeNumber = 0
-        }
+        removeDeliveredNotification(withIdentifier: id)
         
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
         notificationCenter.add(request)
@@ -209,4 +208,10 @@ class MockNotificationDataController: NotificationDataProtocol {
     func fetchNotificationState() throws -> BinNotifications {
         BinNotifications(morningTime: nil, eveningTime: .distantPast, types: [.black, .green])
     }
+    
+    func removeDeliveredNotification(withIdentifier id: String) {}
+    
+    func snoozeNotification(from content: UNNotificationContent, withId id: String, for snoozeTime: TimeInterval) {}
+    
+    func remindTonightNotification(from content: UNNotificationContent, withId id: String) {}
 }

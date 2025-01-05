@@ -253,9 +253,9 @@
 			isa = PBXGroup;
 			children = (
 				17E026BC2411952E008E9292 /* BinDays.swift */,
+				17E064552444975900789B9A /* BinNotifications.swift */,
 				4F81207F293522B900D7F793 /* AlertError.swift */,
 				4F4C3BB729197CA9004EA04F /* BinTypeListData.swift */,
-				17E064552444975900789B9A /* BinNotifications.swift */,
 				4F26BC362D21BC00002E70E2 /* LegacyBinNotifications.swift */,
 				174A36FC24A7885E0091847F /* AddressData.swift */,
 				4F934040295F3D5C00CCE2EE /* AppReviewRequest.swift */,

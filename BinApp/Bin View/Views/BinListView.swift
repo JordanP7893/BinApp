@@ -12,6 +12,9 @@ import MapKit
 struct BinListView: View {
     @StateObject var viewModel: BinListViewModel
     
+    @Environment(\.scenePhase) private var scenePhase
+    
+    @State var notificationTime: Date?
     @State var showAddressSheet = false
     @State var showNotificationSheet = false
 
@@ -25,41 +28,51 @@ struct BinListView: View {
                 }
             }
             .listStyle(.inset)
-                .refreshable {
-                    await viewModel.onRefresh()
+            .task {
+                await viewModel.onAppear()
+            }
+            .refreshable {
+                await viewModel.onRefresh()
+            }
+            .onChange(of: scenePhase) { _, phase in
+                switch phase {
+                case .background: viewModel.cancelTimer()
+                case .active: viewModel.scheduleTimer()
+                default: break
                 }
-                .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            showAddressSheet = true
-                        } label: {
-                            Image(systemName: "location.magnifyingglass")
-                        }
+            }
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showAddressSheet = true
+                    } label: {
+                        Image(systemName: "location.magnifyingglass")
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showNotificationSheet = true
+                    } label: {
+                        Image(systemName: "bell")
                     }
                     
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showNotificationSheet = true
-                        } label: {
-                            Image(systemName: "bell")
-                        }
-                        
-                    }
-                })
-                .navigationTitle(viewModel.address?.title ?? "Bin Days")
-                .sheet(isPresented: $showAddressSheet) {
-                    NavigationView {
-                        BinAddressView(onSavePress: viewModel.onSavePress(address:))
-                    }
                 }
-                .sheet(isPresented: $showNotificationSheet) {
-                    NavigationView {
-                        BinNotificationList(
-                            showNotificationSheet: $showNotificationSheet,
-                            notifications: $viewModel.binNotifications
-                        )
-                    }
+            })
+            .navigationTitle(viewModel.address?.title ?? "Bin Days")
+            .sheet(isPresented: $showAddressSheet) {
+                NavigationView {
+                    BinAddressView(onSavePress: viewModel.onSavePress(address:))
                 }
+            }
+            .sheet(isPresented: $showNotificationSheet) {
+                NavigationView {
+                    BinNotificationList(
+                        showNotificationSheet: $showNotificationSheet,
+                        notifications: $viewModel.binNotifications
+                    )
+                }
+            }
         }
     }
 }

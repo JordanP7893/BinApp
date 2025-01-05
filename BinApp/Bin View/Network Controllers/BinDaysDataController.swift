@@ -11,7 +11,7 @@ import Foundation
 protocol BinDaysDataProtocol {
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays]
     func fetchLocalBinDays() throws -> [BinDays]
-    func saveBinData(_ binDays: [BinDays])
+    func saveBinData(_ binDays: [BinDays]) throws
 }
 
 class BinDaysDataController: BinDaysDataProtocol {
@@ -42,30 +42,30 @@ class BinDaysDataController: BinDaysDataProtocol {
         }
     }
     
-    func saveBinData(_ binDays: [BinDays]) {
+    func saveBinData(_ binDays: [BinDays]) throws {
         if binDays.isEmpty { return }
         
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
+        let archiveURL = documentsDirectory.appendingPathComponent("bin_data_v2").appendingPathExtension("plist")
         
         if FileManager.default.fileExists(atPath: archiveURL.path){
-            try? FileManager.default.removeItem(atPath: archiveURL.path)
+            try FileManager.default.removeItem(atPath: archiveURL.path)
         }
         
         let propertyListEncoder = PropertyListEncoder()
-        let encodedBinDays = try? propertyListEncoder.encode(binDays)
-        try? encodedBinDays?.write(to: archiveURL, options: .noFileProtection)
+        let encodedBinDays = try propertyListEncoder.encode(binDays)
+        try encodedBinDays.write(to: archiveURL, options: .noFileProtection)
     }
     
     func fetchLocalBinDays() throws -> [BinDays] {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("bin_data").appendingPathExtension("plist")
+        let archiveURL = documentsDirectory.appendingPathComponent("bin_data_v2").appendingPathExtension("plist")
         
         let propertyListDecoder = PropertyListDecoder()
         let retrievedBinDays = try Data(contentsOf: archiveURL)
         let decodedBinDays = try propertyListDecoder.decode([BinDays].self, from: retrievedBinDays)
         if decodedBinDays.isEmpty { throw BinError.emptyBinArray }
-            
+        print("fetch \(decodedBinDays.first?.notificationEvening?.description)")
         return decodedBinDays
     }
     
@@ -110,9 +110,9 @@ class MockBinDaysDataController: BinDaysDataProtocol {
         BinDays.testBinsArray
     }
     
-    func fetchLocalBinDays() -> [BinDays] {
+    func fetchLocalBinDays() throws -> [BinDays] {
         BinDays.testBinsArray
     }
     
-    func saveBinData(_ binDays: [BinDays]) {}
+    func saveBinData(_ binDays: [BinDays]) throws {}
 }

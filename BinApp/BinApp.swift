@@ -11,8 +11,9 @@ import SwiftUI
 
 @main
 struct BinApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State var locationManager = LocationManager()
-
+    
     var body: some Scene {
         WindowGroup {
             TabView {

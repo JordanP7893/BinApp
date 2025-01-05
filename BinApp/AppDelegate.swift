@@ -7,12 +7,10 @@
 //
 
 import UIKit
-import CoreLocation
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let notificationDataController = NotificationDataController()
-    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -49,7 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationReceived"), object: nil, userInfo: nil)
         return [.sound, .banner, .badge]
     }
     
@@ -58,30 +55,32 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         switch response.actionIdentifier {
         case "done":
             notificationDataController.removeDeliveredNotification(withIdentifier: response.notification.request.identifier)
-            DispatchQueue.main.async {
-                UIApplication.shared.applicationIconBadgeNumber = 0
-            }
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "NotificationsCleared"), object: nil, userInfo: ["id": response.notification.request.identifier])
         case "snooze10Min":
-            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 10 * 60)
+            notificationDataController.snoozeNotification(
+                from: response.notification.request.content,
+                withId: response.notification.request.identifier,
+                for: 10 * 60
+            )
         case "snooze1Hour":
-            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 60 * 60)
+            notificationDataController.snoozeNotification(
+                from: response.notification.request.content,
+                withId: response.notification.request.identifier,
+                for: 60 * 60
+            )
         case "snooze2Hour":
-            notificationDataController.snoozeNotification(from: response.notification.request.content, withId: response.notification.request.identifier, for: 2 * 60 * 60)
+            notificationDataController.snoozeNotification(
+                from: response.notification.request.content,
+                withId: response.notification.request.identifier,
+                for: 2 * 60 * 60
+            )
         case "tonight":
-            notificationDataController.remindTonightNotification(from: response.notification.request.content, withId: response.notification.request.identifier)
+            notificationDataController.remindTonightNotification(
+                from: response.notification.request.content,
+                withId: response.notification.request.identifier
+            )
         default:
             let id = response.notification.request.identifier
-            
-            guard let tabBarController = self.window?.rootViewController as? UITabBarController else { return }
-            tabBarController.selectedIndex = 0
-            
-            guard let navigationController = tabBarController.viewControllers?.first as? UINavigationController,
-                    let binTableViewController = navigationController.viewControllers.first as? BinDayTableViewController else {
-                return
-            }
-            
-            binTableViewController.notificationTapped(withId: id)
+            // TODO: switch tab and navigate to the correct bin item
         }
         completionHandler()
     }
