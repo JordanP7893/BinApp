@@ -11,6 +11,8 @@ import MapKit
 
 struct BinListView: View {
     @StateObject var viewModel: BinListViewModel
+    @Binding var selectedBinID: String?
+    @State var selectedBin: BinDays?
     
     @Environment(\.scenePhase) private var scenePhase
     
@@ -20,11 +22,27 @@ struct BinListView: View {
 
     var body: some View {
         NavigationStack {
-            List($viewModel.binDays) { bin in
-                NavigationLink {
-                    BinDetailView(bin: bin, donePressed: {}, remindPressed: { _ in }, tonightPressed: {})
+            List(viewModel.binDays) { bin in
+                Button {
+                    selectedBin = bin
                 } label: {
                     BinCellView(bin: bin)
+                }
+            }
+            .navigationDestination(isPresented: Binding(
+                get: { selectedBin != nil },
+                set: { if !$0 { selectedBin = nil } }
+            )) {
+                if let selectedBin = selectedBin {
+                    BinDetailView(
+                        bin: Binding(
+                            get: { selectedBin },
+                            set: { self.selectedBin = $0 }
+                        ),
+                        donePressed: {},
+                        remindPressed: { _ in },
+                        tonightPressed: {}
+                    )
                 }
             }
             .listStyle(.inset)
@@ -74,6 +92,12 @@ struct BinListView: View {
                 }
             }
         }
+        .onChange(of: selectedBinID) { _, id in
+            selectedBin = viewModel.binDays.first { $0.id == id }
+        }
+        .onChange(of: selectedBin) { _, bin in
+            selectedBinID = bin?.id
+        }
     }
 }
 
@@ -85,7 +109,7 @@ struct BinListView: View {
     )
     
     NavigationView {
-        BinListView(viewModel: viewModel)
+        BinListView(viewModel: viewModel, selectedBinID: .constant(nil))
             .environment(LocationManager())
     }
 }

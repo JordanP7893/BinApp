@@ -10,7 +10,7 @@ import SwiftUI
 
 struct BinCellView: View {
 
-    @Binding var bin: BinDays
+    var bin: BinDays
 
     var body: some View {
         HStack(spacing: 20.0) {
@@ -46,11 +46,11 @@ struct BinCellView: View {
     var testBin = BinDays.testBin
     testBin.notificationEvening = .distantPast
     
-    return BinCellView(bin: .constant(testBin))
+    return BinCellView(bin: testBin)
         .padding()
 }
 
 #Preview("Not Pending") {
-    BinCellView(bin: .constant(.testBin))
+    BinCellView(bin: .testBin)
         .padding()
 }
