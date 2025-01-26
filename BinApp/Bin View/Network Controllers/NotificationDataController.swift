@@ -13,9 +13,19 @@ protocol NotificationDataProtocol {
     func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws
     func saveNotificationState(_ binNotifications: BinNotifications) throws
     func fetchNotificationState() throws -> BinNotifications
+    
+    func markBinDone(binId: String)
+    func snoozeBin(_ bin: BinDays, for time: TimeInterval, isMorning: Bool)
+    func tonightBin(_ bin: BinDays)
 }
 
 class NotificationDataController: NotificationDataProtocol {
+    
+    var binDaysDataController: BinDaysDataController
+    
+    init(binDaysDataController: BinDaysDataController) {
+        self.binDaysDataController = binDaysDataController
+    }
     
     public let notificationCenter = UNUserNotificationCenter.current()
     
@@ -37,14 +47,15 @@ class NotificationDataController: NotificationDataProtocol {
     
     private func createNotification(for binDay: BinDays) async throws {
         if let notificationEvening = binDay.notificationEvening {
-            var categoryIdentifier = NotificationCategoryIdentifier.standard
+            var categoryIdentifier = NotificationCategoryIdentifier.evening
             if Calendar.current.component(.hour, from: notificationEvening) < 18 {
-                categoryIdentifier = NotificationCategoryIdentifier.tonight
+                categoryIdentifier = NotificationCategoryIdentifier.eveningWithTonight
             }
             let content = setNotificationContent(withCategory: categoryIdentifier.rawValue, title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
             try await createNotification(id: binDay.id, at: notificationEvening, withContent: content)
-        } else if let notificationMorning = binDay.notificationMorning {
-            let categoryIdentifier = NotificationCategoryIdentifier.tonight
+        }
+        if let notificationMorning = binDay.notificationMorning {
+            let categoryIdentifier = NotificationCategoryIdentifier.morning
             let content = setNotificationContent(withCategory: categoryIdentifier.rawValue, title: "Bin Day", body: "Put out \(binDay.type.description) Bin")
             try await createNotification(id: binDay.id, at: notificationMorning, withContent: content)
         }
@@ -96,21 +107,33 @@ class NotificationDataController: NotificationDataProtocol {
         return decodedNotifications
     }
     
-    public func removeDeliveredNotification(withIdentifier id: String) {
+    func markBinDone(binId: String) {
+        removeDeliveredNotification(withIdentifier: binId)
+        try? binDaysDataController.markAsDoneFor(bin: binId)
+    }
+    
+    private func removeDeliveredNotification(withIdentifier id: String) {
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [id])
         Task {
             notificationCenter.setBadgeCount(0)
         }
     }
     
-    public func snoozeBin(_ bin: BinDays, for time: TimeInterval) {
-        let content = setNotificationContent(withCategory: NotificationCategoryIdentifier.standard.rawValue, title: "Bin Day", body: "Put out \(bin.type.description) Bin")
+    public func snoozeBin(_ bin: BinDays, for time: TimeInterval, isMorning: Bool = false) {
+        var categoryIdentifier: NotificationCategoryIdentifier
+        if isMorning {
+            categoryIdentifier = .morning
+        } else {
+            categoryIdentifier = .evening
+        }
+        
+        let content = setNotificationContent(withCategory: categoryIdentifier.rawValue, title: "Bin Day", body: "Put out \(bin.type.description) Bin")
         
         snoozeNotification(from: content, withId: bin.id, for: time)
     }
     
     public func tonightBin(_ bin: BinDays) {
-        let content = setNotificationContent(withCategory: NotificationCategoryIdentifier.standard.rawValue, title: "Bin Day", body: "Put out \(bin.type.description) Bin")
+        let content = setNotificationContent(withCategory: NotificationCategoryIdentifier.evening.rawValue, title: "Bin Day", body: "Put out \(bin.type.description) Bin")
         
         remindTonightNotification(from: content, withId: bin.id)
     }
@@ -119,19 +142,20 @@ class NotificationDataController: NotificationDataProtocol {
         let intervalTrigger = UNTimeIntervalNotificationTrigger(timeInterval: snoozeTime, repeats: false)
         
         let newContent = content.mutableCopy() as! UNMutableNotificationContent
-        
-        if let notificationDueDateTime = Calendar.current.date(byAdding: .second, value: Int(snoozeTime), to: Date()) {
-            
-            let todaysDate = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-            let sixEveningTime = DateComponents(hour: 18, minute: 0)
-            let sixTonightComponents = DateComponents(year: todaysDate.year, month: todaysDate.month, day: todaysDate.day, hour: sixEveningTime.hour, minute: sixEveningTime.minute)
-            
-            if let sixTonightDateTime = Calendar.current.date(from: sixTonightComponents), notificationDueDateTime > sixTonightDateTime {
-                newContent.categoryIdentifier = NotificationCategoryIdentifier.standard.rawValue
-            }
+        if Calendar.current.component(.hour, from: Date()) > 18 && content.categoryIdentifier == NotificationCategoryIdentifier.eveningWithTonight.rawValue {
+            newContent.categoryIdentifier = NotificationCategoryIdentifier.evening.rawValue
+        } else {
+            newContent.categoryIdentifier = content.categoryIdentifier
         }
         
         copyNotification(from: newContent, withId: id, withTrigger: intervalTrigger)
+        
+        let newNotificationDate = Calendar.current.date(byAdding: .second, value: Int(snoozeTime), to: Date())!
+        try? binDaysDataController.updateBinDateFor(
+            bin: id,
+            to: newNotificationDate,
+            isMorningDate: newContent.categoryIdentifier == NotificationCategoryIdentifier.morning.rawValue
+        )
     }
     
     public func remindTonightNotification(from content: UNNotificationContent, withId id: String) {
@@ -149,9 +173,15 @@ class NotificationDataController: NotificationDataProtocol {
         let tonightTrigger = UNCalendarNotificationTrigger(dateMatching: triggerDateTime, repeats: false)
         
         let newContent = content.mutableCopy() as! UNMutableNotificationContent
-        newContent.categoryIdentifier = NotificationCategoryIdentifier.standard.rawValue
+        newContent.categoryIdentifier = NotificationCategoryIdentifier.evening.rawValue
         
         copyNotification(from: newContent, withId: id, withTrigger: tonightTrigger)
+        guard let tonightDate = Calendar.current.date(from: triggerDateTime) else { return }
+        try? binDaysDataController.updateBinDateFor(
+            bin: id,
+            to: tonightDate,
+            isMorningDate: false
+        )
     }
     
     private func copyNotification(from content: UNNotificationContent, withId id: String, withTrigger trigger: UNNotificationTrigger) {
@@ -172,16 +202,18 @@ class NotificationDataController: NotificationDataProtocol {
         let snooze2HourAction = UNNotificationAction(identifier: "snooze2Hour", title: "Remind me in 2 hours", icon: snoozeIcon)
         let tonightAction = UNNotificationAction(identifier:"tonight", title: "Remind me tonight", icon: tonightIcon)
         
-        let snoozeCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.standard.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, snooze2HourAction], intentIdentifiers: [])
-        let tonightCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.tonight.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, tonightAction], intentIdentifiers: [])
+        let morningCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.morning.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, snooze2HourAction], intentIdentifiers: [])
+        let eveningCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.evening.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, snooze2HourAction], intentIdentifiers: [])
+        let eveningWithTonightCategory = UNNotificationCategory(identifier: NotificationCategoryIdentifier.eveningWithTonight.rawValue, actions: [doneAction, snooze10MinAction, snooze1HourAction, tonightAction], intentIdentifiers: [])
         
-        notificationCenter.setNotificationCategories([snoozeCategory, tonightCategory])
+        notificationCenter.setNotificationCategories([morningCategory, eveningCategory, eveningWithTonightCategory])
     }
 }
 
 enum NotificationCategoryIdentifier: String {
-    case standard
-    case tonight
+    case evening
+    case eveningWithTonight
+    case morning
 }
 
 class MockNotificationDataController: NotificationDataProtocol {
@@ -192,4 +224,8 @@ class MockNotificationDataController: NotificationDataProtocol {
     func fetchNotificationState() throws -> BinNotifications {
         BinNotifications(morningTime: nil, eveningTime: .distantPast, types: [.black, .green])
     }
+    
+    func markBinDone(binId: String) {}
+    func snoozeBin(_ bin: BinDays, for time: TimeInterval, isMorning: Bool) {}
+    func tonightBin(_ bin: BinDays) {}
 }

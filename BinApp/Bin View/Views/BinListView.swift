@@ -39,9 +39,15 @@ struct BinListView: View {
                             get: { selectedBin },
                             set: { self.selectedBin = $0 }
                         ),
-                        donePressed: {},
-                        remindPressed: { _ in },
-                        tonightPressed: {}
+                        donePressed: {
+                            viewModel.onDonePress(for: selectedBin)
+                        },
+                        remindPressed: {
+                            viewModel.onRemindMeLaterPress(at: $0, for: selectedBin)
+                        },
+                        tonightPressed: {
+                            viewModel.onRemindMeTonightPress(for: selectedBin)
+                        }
                     )
                 }
             }
@@ -97,6 +103,9 @@ struct BinListView: View {
         }
         .onChange(of: selectedBin) { _, bin in
             selectedBinID = bin?.id
+        }
+        .onChange(of: viewModel.binDaysDataController.lastUpdate) { _, _ in
+            viewModel.onLocalRefresh()
         }
     }
 }

@@ -16,20 +16,36 @@ struct BinDays: Codable, Hashable, Identifiable {
     var notificationMorning: Date?
     var isPending: Bool
     
-    var showNotification: Bool {
-        if let notificationEvening, notificationEvening < Date() && isPending {
-            return true
-        }
-        
+    var isMorningPending: Bool {
         if let notificationMorning, notificationMorning < Date() && isPending {
             return true
+        } else {
+            return false
         }
-        
-        return false
+    }
+    
+    var isEveningPending: Bool {
+        if let notificationEvening, notificationEvening < Date() && isPending {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var showNotification: Bool {
+        if isMorningPending || isEveningPending {
+            return true
+        } else {
+            return false
+        }
     }
     
     var id: String {
         return "\(date.description) \(type.description)"
+    }
+    
+    mutating func donePressed() {
+        isPending = false
     }
     
     enum CodingKeys: String, CodingKey {
@@ -63,10 +79,6 @@ struct BinDays: Codable, Hashable, Identifiable {
         try container.encode(notificationEvening, forKey: .notificationEvening)
         try container.encode(notificationMorning, forKey: .notificationMorning)
         try container.encode(isPending, forKey: .isPending)
-    }
-
-    mutating func donePressed() {
-        isPending = false
     }
 
     static let testBin = BinDays(type: .green, date: Date(timeIntervalSinceNow: 10000))

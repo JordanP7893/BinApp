@@ -22,8 +22,8 @@ struct BinApp: App {
                 BinListView(
                     viewModel: BinListViewModel(
                         addressDataController: BinAddressDataController(),
-                        binDaysDataController: BinDaysDataController(),
-                        notificationDataController: NotificationDataController()
+                        binDaysDataController: delegate.binDaysDataController,
+                        notificationDataController: delegate.notificationDataController
                     ),
                     selectedBinID: $selectBinID
                 )

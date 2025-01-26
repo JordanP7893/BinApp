@@ -13,7 +13,7 @@ class BinDayTableViewController: UITableViewController {
     
     let binDaysDataController = BinDaysDataController()
     let binAddressDataController = BinAddressDataController()
-    let notificationDataController = NotificationDataController()
+//    let notificationDataController = NotificationDataController()
     let errorAlertController = ErrorAlertController()
 //    let binDaysProvider = BinListViewModel()
     let binRefreshControl = UIRefreshControl()
@@ -175,7 +175,7 @@ class BinDayTableViewController: UITableViewController {
         func doneButtonPressed() {
             binDays[index].isPending = false
 //            binDaysDataController.saveBinData(binDays)
-            notificationDataController.removeDeliveredNotification(withIdentifier: bin.id)
+//            notificationDataController.removeDeliveredNotification(withIdentifier: bin.id)
             DispatchQueue.main.async {
                 UIApplication.shared.applicationIconBadgeNumber = 0
             }
@@ -184,13 +184,13 @@ class BinDayTableViewController: UITableViewController {
         
         func remindButtonPresses(snoozeFor time: TimeInterval) {
             binDays[index].isPending = false
-            notificationDataController.snoozeBin(bin, for: time)
+//            notificationDataController.snoozeBin(bin, for: time)
             updateUI()
         }
         
         func tonightButtonPressed() {
             binDays[index].isPending = false
-            notificationDataController.tonightBin(bin)
+//            notificationDataController.tonightBin(bin)
             updateUI()
         }
         

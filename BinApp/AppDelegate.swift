@@ -17,8 +17,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     var storedBinID: String? = nil
-
-    let notificationDataController = NotificationDataController()
+    
+    var binDaysDataController: BinDaysDataController
+    var notificationDataController: NotificationDataController
+    
+    override init() {
+        self.binDaysDataController = BinDaysDataController()
+        self.notificationDataController = NotificationDataController(binDaysDataController: binDaysDataController)
+    }
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         notificationDataController.notificationCenter.delegate = self
@@ -36,7 +43,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         switch response.actionIdentifier {
         case "done":
-            notificationDataController.removeDeliveredNotification(withIdentifier: response.notification.request.identifier)
+            notificationDataController.markBinDone(binId: response.notification.request.identifier)
         case "snooze10Min":
             notificationDataController.snoozeNotification(
                 from: response.notification.request.content,

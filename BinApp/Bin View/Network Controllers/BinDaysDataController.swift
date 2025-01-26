@@ -9,12 +9,15 @@
 import Foundation
 
 protocol BinDaysDataProtocol {
+    var lastUpdate: Date? { get }
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays]
     func fetchLocalBinDays() throws -> [BinDays]
     func saveBinData(_ binDays: [BinDays]) throws
 }
 
 class BinDaysDataController: BinDaysDataProtocol {
+    @Published var lastUpdate: Date?
+    
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
         let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
@@ -55,6 +58,8 @@ class BinDaysDataController: BinDaysDataProtocol {
         let propertyListEncoder = PropertyListEncoder()
         let encodedBinDays = try propertyListEncoder.encode(binDays)
         try encodedBinDays.write(to: archiveURL, options: .noFileProtection)
+        
+        lastUpdate = .now
     }
     
     func fetchLocalBinDays() throws -> [BinDays] {
@@ -65,7 +70,6 @@ class BinDaysDataController: BinDaysDataProtocol {
         let retrievedBinDays = try Data(contentsOf: archiveURL)
         let decodedBinDays = try propertyListDecoder.decode([BinDays].self, from: retrievedBinDays)
         if decodedBinDays.isEmpty { throw BinError.emptyBinArray }
-        print("fetch \(decodedBinDays.first?.notificationEvening?.description)")
         return decodedBinDays
     }
     
@@ -83,6 +87,26 @@ class BinDaysDataController: BinDaysDataProtocol {
         } catch {
             throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
         }
+    }
+    
+    public func updateBinDateFor(bin id: String, to date: Date, isMorningDate: Bool) throws {
+        var bins = try fetchLocalBinDays()
+        if let index = bins.firstIndex(where: {$0.id == id}) {
+            if isMorningDate {
+                bins[index].notificationMorning = date
+            } else {
+                bins[index].notificationEvening = date
+            }
+        }
+        try saveBinData(bins)
+    }
+    
+    public func markAsDoneFor(bin id: String) throws {
+        var bins = try fetchLocalBinDays()
+        if let index = bins.firstIndex(where: {$0.id == id}) {
+            bins[index].donePressed()
+        }
+        try saveBinData(bins)
     }
     
 //    private func updateFetchedBinsWithPendingStates(_ fetchedBins: [BinDays]) -> [BinDays] {
@@ -106,6 +130,8 @@ enum BinError: Error {
 }
 
 class MockBinDaysDataController: BinDaysDataProtocol {
+    var lastUpdate: Date?
+    
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
         BinDays.testBinsArray
     }

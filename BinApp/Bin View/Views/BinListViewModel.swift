@@ -9,12 +9,6 @@
 import Foundation
 import UserNotifications
 
-protocol BinListViewModelProtocol: ObservableObject {
-    var address: AddressData? { get set }
-    var binDays: [BinDays] { get set }
-    var binNotifications: BinNotifications { get set }
-}
-
 @MainActor
 class BinListViewModel: ObservableObject {
     @Published var address: AddressData? {
@@ -90,6 +84,12 @@ class BinListViewModel: ObservableObject {
         await fetchDataFromTheNetwork(usingId: address?.id)
     }
     
+    func onLocalRefresh() {
+        if let binDays = try? binDaysDataController.fetchLocalBinDays() {
+            self.binDays = binDays
+        }
+    }
+    
     func onSavePress(address: StoreAddress) {
         self.address = .init(
             id: address.premisesId,
@@ -97,15 +97,30 @@ class BinListViewModel: ObservableObject {
         )
     }
     
+    func onDonePress(for bin: BinDays) {
+        notificationDataController.markBinDone(binId: bin.id)
+    }
+    
+    func onRemindMeLaterPress(at time: TimeInterval, for bin: BinDays) {
+        notificationDataController.snoozeBin(bin, for: time, isMorning: bin.isMorningPending)
+    }
+    
+    func onRemindMeTonightPress(for bin: BinDays) {
+        notificationDataController.tonightBin(bin)
+    }
+    
     func scheduleTimer() {
         cancelTimer()
         
-        let now = Date()
-        let calendar = Calendar.current
-        let nextMinute = calendar.nextDate(after: now, matching: DateComponents(second: 0), matchingPolicy: .strict)
-        let delay = nextMinute?.timeIntervalSince(now) ?? 0
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        Task {
+            let now = Date()
+            let calendar = Calendar.current
+            let nextMinute = calendar.nextDate(after: now, matching: DateComponents(second: 0), matchingPolicy: .strict)
+            let delay = nextMinute?.timeIntervalSince(now) ?? 0
+
+            // Convert delay to nanoseconds for Task.sleep
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            
             self.objectWillChange.send()
             self.startRepeatingTimer()
         }
@@ -114,17 +129,17 @@ class BinListViewModel: ObservableObject {
     func cancelTimer() {
         timer?.invalidate()
     }
-    
-    private func startRepeatingTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
-            self.objectWillChange.send()
-        }
-    }
 }
 
 // MARK: Private Methods
 
 extension BinListViewModel {
+    private func startRepeatingTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            self.objectWillChange.send()
+        }
+    }
+    
     private func fetchDataFromTheNetwork(usingId addressID: Int?) async {
         guard let addressID else { return }
         
@@ -151,7 +166,7 @@ extension BinListViewModel {
     private func updateBinDaysWithNotifications(binDays: [BinDays], notifications: BinNotifications) -> [BinDays] {
         let calendar = Calendar.current
         
-        var binDaysWithNotifications = binDays.map { binDay in
+        let binDaysWithNotifications = binDays.map { binDay in
             var updatedBinDay = binDay
 
             if notifications.types.contains(binDay.type) {
@@ -162,16 +177,15 @@ extension BinListViewModel {
                 if let eveningTime = notifications.eveningTime, let previousDate = calendar.date(byAdding: .day, value: -1, to: binDay.date) {
                     updatedBinDay.notificationEvening = combine(date: previousDate, time: eveningTime, calendar: calendar)
                 }
+                
+                /// Uncomment to trigger test notification for the first bin after 10 seconds
+//                if binDays.firstIndex(of: binDay) == 0 {
+//                    updatedBinDay.notificationEvening = .now.addingTimeInterval(10)
+//                }
             }
 
             return updatedBinDay
         }
-        
-        /// Uncomment to trigger test notification for the first bin after 10 seconds
-//        var firstBin = binDaysWithNotifications.first!
-//        firstBin.notificationEvening = .now.addingTimeInterval(10)
-//        binDaysWithNotifications.removeFirst()
-//        binDaysWithNotifications.insert(firstBin, at: 0)
         
         return binDaysWithNotifications
     }

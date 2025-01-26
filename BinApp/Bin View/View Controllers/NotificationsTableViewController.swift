@@ -32,7 +32,7 @@ class NotificationsTableViewController: UITableViewController {
     var binDays = [BinDays]()
     var notificationTypes = [0: true, 1: true, 2: true, 3: true]
     
-    let notificationController = NotificationDataController()
+//    let notificationController = NotificationDataController()
     let errorAlertController = ErrorAlertController()
     
     override func viewDidLoad() {
