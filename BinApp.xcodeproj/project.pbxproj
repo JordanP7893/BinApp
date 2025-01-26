@@ -14,7 +14,6 @@
 		1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734D0A9225D27D200FB61C8 /* MapViewController.swift */; };
 		1734D0AD225D27D200FB61C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1734D0AB225D27D200FB61C8 /* Main.storyboard */; };
 		1734D0AF225D27D300FB61C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1734D0AE225D27D300FB61C8 /* Assets.xcassets */; };
-		1734D0B2225D27D300FB61C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1734D0B0225D27D300FB61C8 /* LaunchScreen.storyboard */; };
 		1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734D0B9225D33EA00FB61C8 /* RecyclingLocations.swift */; };
 		1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1744EA43244B196A0054218D /* NotificationDataController.swift */; };
 		1744EA48244B21EE0054218D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1744EA47244B21EE0054218D /* MapKit.framework */; };
@@ -84,7 +83,6 @@
 		1734D0A9225D27D200FB61C8 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		1734D0AC225D27D200FB61C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1734D0AE225D27D300FB61C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1734D0B1225D27D300FB61C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1734D0B3225D27D300FB61C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1734D0B9225D33EA00FB61C8 /* RecyclingLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocations.swift; sourceTree = "<group>"; };
 		1744EA43244B196A0054218D /* NotificationDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataController.swift; sourceTree = "<group>"; };
@@ -306,7 +304,6 @@
 				4FD5FE102CA9CB60006CA06E /* Extensions */,
 				1734D0AB225D27D200FB61C8 /* Main.storyboard */,
 				1734D0AE225D27D300FB61C8 /* Assets.xcassets */,
-				1734D0B0225D27D300FB61C8 /* LaunchScreen.storyboard */,
 				1734D0B3225D27D300FB61C8 /* Info.plist */,
 				4F4085472C4E624D0014195E /* PrivacyInfo.xcprivacy */,
 			);
@@ -506,7 +503,6 @@
 			files = (
 				4F4C3BBA29197EA7004EA04F /* bin_list.plist in Resources */,
 				178F7547245D9EF80035AD68 /* Settings.bundle in Resources */,
-				1734D0B2225D27D300FB61C8 /* LaunchScreen.storyboard in Resources */,
 				1734D0AF225D27D300FB61C8 /* Assets.xcassets in Resources */,
 				1734D0AD225D27D200FB61C8 /* Main.storyboard in Resources */,
 			);
@@ -603,14 +599,6 @@
 				1734D0AC225D27D200FB61C8 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		1734D0B0225D27D300FB61C8 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1734D0B1225D27D300FB61C8 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
