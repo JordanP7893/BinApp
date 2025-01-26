@@ -1,5 +1,5 @@
 //
-//  BinDaysDataController.swift
+//  BinDaysDataService.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 09/03/2020.
@@ -15,15 +15,15 @@ protocol BinDaysDataProtocol {
     func saveBinData(_ binDays: [BinDays]) throws
 }
 
-class BinDaysDataController: BinDaysDataProtocol {
+class BinDaysDataService: BinDaysDataProtocol {
     @Published var lastUpdate: Date?
     
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
-        let paramString = BinAddressDataController.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
+        let paramString = BinAddressDataService.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
         
         do {
-            let data = try await BinDaysDataController.asyncGET(url: binDatesUrl)
+            let data = try await BinDaysDataService.asyncGET(url: binDatesUrl)
             
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -129,7 +129,7 @@ enum BinError: Error {
     case emptyBinArray
 }
 
-class MockBinDaysDataController: BinDaysDataProtocol {
+class MockBinDaysDataService: BinDaysDataProtocol {
     var lastUpdate: Date?
     
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {

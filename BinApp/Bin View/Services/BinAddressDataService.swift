@@ -1,5 +1,5 @@
 //
-//  BinAddressDataController.swift
+//  BinAddressDataService.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 27/06/2021.
@@ -13,13 +13,13 @@ protocol BinAddressDataProtocol {
     func saveAddressData(_ addresses: AddressData)
 }
 
-class BinAddressDataController: BinAddressDataProtocol {
+class BinAddressDataService: BinAddressDataProtocol {
     func fetchAddress(postcode: String) async throws -> [StoreAddress] {
         let postcodeToSearch = postcode.replacingOccurrences(of: " ", with: "")
-        let paramString = BinAddressDataController.getParamString(params: ["postcode": postcodeToSearch])
+        let paramString = BinAddressDataService.getParamString(params: ["postcode": postcodeToSearch])
         let addressUrl = URL(string: "https://bins.azurewebsites.net/api/getaddress?" + paramString)!
 
-        let data = try await BinDaysDataController.asyncGET(url: addressUrl)
+        let data = try await BinDaysDataService.asyncGET(url: addressUrl)
         
         let decoder = JSONDecoder()
         let escapedData = Data(String(data: data, encoding: .utf8)!.replacingOccurrences(of: "\\u0000", with: "").utf8)
@@ -85,7 +85,7 @@ class BinAddressDataController: BinAddressDataProtocol {
     }
 }
 
-class MockBinAddressDataController: BinAddressDataProtocol {
+class MockBinAddressDataService: BinAddressDataProtocol {
     func fetchAddressData() -> AddressData? {
         return AddressData(id: 1, title: "1 Leeds Road")
     }

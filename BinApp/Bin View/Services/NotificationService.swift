@@ -1,5 +1,5 @@
 //
-//  NotificationDataController.swift
+//  NotificationService.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 18/04/2020.
@@ -9,7 +9,7 @@
 import Foundation
 import UserNotifications
 
-protocol NotificationDataProtocol {
+protocol NotificationProtocol {
     func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws
     func saveNotificationState(_ binNotifications: BinNotifications) throws
     func fetchNotificationState() throws -> BinNotifications
@@ -19,12 +19,12 @@ protocol NotificationDataProtocol {
     func tonightBin(_ bin: BinDays)
 }
 
-class NotificationDataController: NotificationDataProtocol {
+class NotificationService: NotificationProtocol {
     
-    var binDaysDataController: BinDaysDataController
+    var binDaysDataService: BinDaysDataService
     
-    init(binDaysDataController: BinDaysDataController) {
-        self.binDaysDataController = binDaysDataController
+    init(binDaysDataService: BinDaysDataService) {
+        self.binDaysDataService = binDaysDataService
     }
     
     public let notificationCenter = UNUserNotificationCenter.current()
@@ -109,7 +109,7 @@ class NotificationDataController: NotificationDataProtocol {
     
     func markBinDone(binId: String) {
         removeDeliveredNotification(withIdentifier: binId)
-        try? binDaysDataController.markAsDoneFor(bin: binId)
+        try? binDaysDataService.markAsDoneFor(bin: binId)
     }
     
     private func removeDeliveredNotification(withIdentifier id: String) {
@@ -151,7 +151,7 @@ class NotificationDataController: NotificationDataProtocol {
         copyNotification(from: newContent, withId: id, withTrigger: intervalTrigger)
         
         let newNotificationDate = Calendar.current.date(byAdding: .second, value: Int(snoozeTime), to: Date())!
-        try? binDaysDataController.updateBinDateFor(
+        try? binDaysDataService.updateBinDateFor(
             bin: id,
             to: newNotificationDate,
             isMorningDate: newContent.categoryIdentifier == NotificationCategoryIdentifier.morning.rawValue
@@ -177,7 +177,7 @@ class NotificationDataController: NotificationDataProtocol {
         
         copyNotification(from: newContent, withId: id, withTrigger: tonightTrigger)
         guard let tonightDate = Calendar.current.date(from: triggerDateTime) else { return }
-        try? binDaysDataController.updateBinDateFor(
+        try? binDaysDataService.updateBinDateFor(
             bin: id,
             to: tonightDate,
             isMorningDate: false
@@ -216,7 +216,7 @@ enum NotificationCategoryIdentifier: String {
     case morning
 }
 
-class MockNotificationDataController: NotificationDataProtocol {
+class MockNotificationService: NotificationProtocol {
     func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws {}
     
     func saveNotificationState(_ binNotifications: BinNotifications) {}

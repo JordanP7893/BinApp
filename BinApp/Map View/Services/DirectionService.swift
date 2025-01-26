@@ -1,5 +1,5 @@
 //
-//  DirectionDataController.swift
+//  DirectionService.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 18/03/2020.
@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-class DirectionDataController {
+class DirectionService {
     func fetchDirections(for recyclingLocation: RecyclingLocation, from userLocation: CLLocation) async throws -> DirectionData {
         do {
             let directionRequest = createDirectionRequest(startingPoint: userLocation.coordinate, endPoint: recyclingLocation.coordinates)
@@ -38,11 +38,14 @@ class DirectionDataController {
     }
 }
 
-struct DirectionData: Equatable {
-    let distance: Measurement<UnitLength>
-    let duration: TimeInterval
-}
 
-enum DirectionError: Error {
-    case invalidDirection
+extension DirectionService{
+    struct DirectionData: Equatable {
+        let distance: Measurement<UnitLength>
+        let duration: TimeInterval
+    }
+    
+    enum DirectionError: Error {
+        case invalidDirection
+    }
 }

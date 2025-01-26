@@ -70,11 +70,9 @@ struct BinDetailView: View {
 }
 
 #Preview("Not Pending") {
-    var testBin = BinDays.testBin
-    
-    return NavigationView {
+    NavigationView {
         BinDetailView(
-            bin: .constant(testBin),
+            bin: .constant(BinDays.testBin),
             donePressed: {},
             remindPressed: { _ in },
             tonightPressed: {}

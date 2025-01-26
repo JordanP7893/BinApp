@@ -11,7 +11,7 @@ import SwiftUI
 
 struct RecyclingLocationDirectionButton: View {
     @EnvironmentObject var locationManager: LocationManager
-    @State var directionData: DirectionData?
+    @State var directionData: DirectionService.DirectionData?
     
     var recyclingLocation: RecyclingLocation
     
@@ -76,7 +76,7 @@ struct RecyclingLocationDirectionButton: View {
             directionData = nil
             guard let userLocation = locationManager.userLocation else { return }
             
-            directionData = try await DirectionDataController().fetchDirections(for: recyclingLocation, from: userLocation)
+            directionData = try await DirectionService().fetchDirections(for: recyclingLocation, from: userLocation)
         } catch {
             print(error)
         }

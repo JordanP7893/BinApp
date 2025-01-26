@@ -39,11 +39,11 @@ class MapViewViewModel: MapViewProtocol {
         }
     }
     
-    let locationDataController = LocationDataController()
+    let recyclingLocationService = RecyclingLocationService()
     
     func getLocations() async {
         do {
-            locations = try await locationDataController.fetchLocations()
+            locations = try await recyclingLocationService.fetchLocations()
             locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
         } catch {
             print("Handle error \(error)")

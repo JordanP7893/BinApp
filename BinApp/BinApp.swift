@@ -21,9 +21,9 @@ struct BinApp: App {
             TabView(selection: $tabSelection) {
                 BinListView(
                     viewModel: BinListViewModel(
-                        addressDataController: BinAddressDataController(),
-                        binDaysDataController: delegate.binDaysDataController,
-                        notificationDataController: delegate.notificationDataController
+                        addressDataService: BinAddressDataService(),
+                        binDaysDataService: delegate.binDaysDataService,
+                        notificationDataService: delegate.notificationDataService
                     ),
                     selectedBinID: $selectBinID
                 )

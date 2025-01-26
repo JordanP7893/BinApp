@@ -18,17 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     var storedBinID: String? = nil
     
-    var binDaysDataController: BinDaysDataController
-    var notificationDataController: NotificationDataController
+    var binDaysDataService: BinDaysDataService
+    var notificationDataService: NotificationService
     
     override init() {
-        self.binDaysDataController = BinDaysDataController()
-        self.notificationDataController = NotificationDataController(binDaysDataController: binDaysDataController)
+        self.binDaysDataService = BinDaysDataService()
+        self.notificationDataService = NotificationService(binDaysDataService: binDaysDataService)
     }
     
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        notificationDataController.notificationCenter.delegate = self
+        notificationDataService.notificationCenter.delegate = self
         return true
     }
 }
@@ -43,27 +43,27 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         switch response.actionIdentifier {
         case "done":
-            notificationDataController.markBinDone(binId: response.notification.request.identifier)
+            notificationDataService.markBinDone(binId: response.notification.request.identifier)
         case "snooze10Min":
-            notificationDataController.snoozeNotification(
+            notificationDataService.snoozeNotification(
                 from: response.notification.request.content,
                 withId: response.notification.request.identifier,
                 for: 10 * 60
             )
         case "snooze1Hour":
-            notificationDataController.snoozeNotification(
+            notificationDataService.snoozeNotification(
                 from: response.notification.request.content,
                 withId: response.notification.request.identifier,
                 for: 60 * 60
             )
         case "snooze2Hour":
-            notificationDataController.snoozeNotification(
+            notificationDataService.snoozeNotification(
                 from: response.notification.request.content,
                 withId: response.notification.request.identifier,
                 for: 2 * 60 * 60
             )
         case "tonight":
-            notificationDataController.remindTonightNotification(
+            notificationDataService.remindTonightNotification(
                 from: response.notification.request.content,
                 withId: response.notification.request.identifier
             )

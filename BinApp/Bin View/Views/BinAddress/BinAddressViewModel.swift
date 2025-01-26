@@ -23,11 +23,11 @@ class BinAddressViewModel: ObservableObject {
     }
 
     let geocoder = CLGeocoder()
-    let binAddressDataController = BinAddressDataController()
+    let binAddressDataService = BinAddressDataService()
 
     func searchFor(postcode: String) async throws {
         let location = try await geocoder.geocodeAddressString(postcode)
-        let addresses = try await binAddressDataController.fetchAddress(postcode: postcode)
+        let addresses = try await binAddressDataService.fetchAddress(postcode: postcode)
 
         if !addresses.isEmpty {
             withAnimation {

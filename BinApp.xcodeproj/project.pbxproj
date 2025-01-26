@@ -7,32 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170C9CC62422C25C00DD586E /* DirectionDataController.swift */; };
-		172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172088D6242E201D0085ACF8 /* LocationModalViewController.swift */; };
-		172B48DC23F1F5BF009A7CA0 /* MapTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172B48DB23F1F5BF009A7CA0 /* MapTableViewController.swift */; };
+		170C9CC72422C25C00DD586E /* DirectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170C9CC62422C25C00DD586E /* DirectionService.swift */; };
 		1734D0A8225D27D200FB61C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734D0A7225D27D200FB61C8 /* AppDelegate.swift */; };
-		1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734D0A9225D27D200FB61C8 /* MapViewController.swift */; };
-		1734D0AD225D27D200FB61C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1734D0AB225D27D200FB61C8 /* Main.storyboard */; };
 		1734D0AF225D27D300FB61C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1734D0AE225D27D300FB61C8 /* Assets.xcassets */; };
 		1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734D0B9225D33EA00FB61C8 /* RecyclingLocations.swift */; };
-		1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1744EA43244B196A0054218D /* NotificationDataController.swift */; };
+		1744EA44244B196A0054218D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1744EA43244B196A0054218D /* NotificationService.swift */; };
 		1744EA48244B21EE0054218D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1744EA47244B21EE0054218D /* MapKit.framework */; };
 		174A36FD24A7885E0091847F /* AddressData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A36FC24A7885E0091847F /* AddressData.swift */; };
-		1754C6122688C52500F7F05E /* BinAddressDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1754C6112688C52500F7F05E /* BinAddressDataController.swift */; };
-		177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177ED471239C0713002B9A7C /* RecyclingMarker.swift */; };
-		177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177F4101248BED6C006C20DD /* ErrorAlertController.swift */; };
-		178705732265013F0047E348 /* LocationDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178705722265013F0047E348 /* LocationDataController.swift */; };
+		1754C6122688C52500F7F05E /* BinAddressDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1754C6112688C52500F7F05E /* BinAddressDataService.swift */; };
+		178705732265013F0047E348 /* RecyclingLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178705722265013F0047E348 /* RecyclingLocationService.swift */; };
 		178F7547245D9EF80035AD68 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 178F7546245D9EF80035AD68 /* Settings.bundle */; };
-		1799743924313C4A00F1944E /* UserLocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179974362431371100F1944E /* UserLocationController.swift */; };
 		17A306F822CD47A20074343A /* RecyclingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A306F722CD47A20074343A /* RecyclingType.swift */; };
 		17E026BD2411952E008E9292 /* BinDays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E026BC2411952E008E9292 /* BinDays.swift */; };
-		17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */; };
 		17E064562444975900789B9A /* BinNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E064552444975900789B9A /* BinNotifications.swift */; };
-		17E4BAAB2416DE6A00FF08EF /* BinDaysDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E4BAAA2416DE6A00FF08EF /* BinDaysDataController.swift */; };
-		17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EBBE39243B7F8A00911B21 /* NotificationsTableViewController.swift */; };
-		17ED544F241047CD00FD0643 /* BinDayTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */; };
+		17E4BAAB2416DE6A00FF08EF /* BinDaysDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E4BAAA2416DE6A00FF08EF /* BinDaysDataService.swift */; };
 		17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */; };
-		17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */; };
 		4F05D0D02C6FA2700079657A /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05D0CF2C6FA2700079657A /* MapView.swift */; };
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */; };
@@ -75,34 +64,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		170C9CC62422C25C00DD586E /* DirectionDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataController.swift; sourceTree = "<group>"; };
-		172088D6242E201D0085ACF8 /* LocationModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModalViewController.swift; sourceTree = "<group>"; };
-		172B48DB23F1F5BF009A7CA0 /* MapTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTableViewController.swift; sourceTree = "<group>"; };
+		170C9CC62422C25C00DD586E /* DirectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionService.swift; sourceTree = "<group>"; };
 		1734D0A4225D27D200FB61C8 /* Bins & Recycling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bins & Recycling.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1734D0A7225D27D200FB61C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1734D0A9225D27D200FB61C8 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		1734D0AC225D27D200FB61C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1734D0AE225D27D300FB61C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1734D0B3225D27D300FB61C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1734D0B9225D33EA00FB61C8 /* RecyclingLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocations.swift; sourceTree = "<group>"; };
-		1744EA43244B196A0054218D /* NotificationDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDataController.swift; sourceTree = "<group>"; };
+		1744EA43244B196A0054218D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		1744EA47244B21EE0054218D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		174A36FC24A7885E0091847F /* AddressData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressData.swift; sourceTree = "<group>"; };
-		1754C6112688C52500F7F05E /* BinAddressDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressDataController.swift; sourceTree = "<group>"; };
-		177ED471239C0713002B9A7C /* RecyclingMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingMarker.swift; sourceTree = "<group>"; };
-		177F4101248BED6C006C20DD /* ErrorAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertController.swift; sourceTree = "<group>"; };
-		178705722265013F0047E348 /* LocationDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataController.swift; sourceTree = "<group>"; };
+		1754C6112688C52500F7F05E /* BinAddressDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinAddressDataService.swift; sourceTree = "<group>"; };
+		178705722265013F0047E348 /* RecyclingLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationService.swift; sourceTree = "<group>"; };
 		178F7546245D9EF80035AD68 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
-		179974362431371100F1944E /* UserLocationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLocationController.swift; sourceTree = "<group>"; };
 		17A306F722CD47A20074343A /* RecyclingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingType.swift; sourceTree = "<group>"; };
 		17E026BC2411952E008E9292 /* BinDays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDays.swift; sourceTree = "<group>"; };
-		17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterMarker.swift; sourceTree = "<group>"; };
 		17E064552444975900789B9A /* BinNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BinNotifications.swift; path = "BinApp/Bin View/Models/BinNotifications.swift"; sourceTree = SOURCE_ROOT; };
-		17E4BAAA2416DE6A00FF08EF /* BinDaysDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysDataController.swift; sourceTree = "<group>"; };
-		17EBBE39243B7F8A00911B21 /* NotificationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsTableViewController.swift; sourceTree = "<group>"; };
-		17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewController.swift; sourceTree = "<group>"; };
+		17E4BAAA2416DE6A00FF08EF /* BinDaysDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysDataService.swift; sourceTree = "<group>"; };
 		17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewCell.swift; sourceTree = "<group>"; };
-		17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		4F05D0CF2C6FA2700079657A /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationInfoView.swift; sourceTree = "<group>"; };
@@ -167,13 +145,13 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		170C9CBE2422C14500DD586E /* Network Controllers */ = {
+		170C9CBE2422C14500DD586E /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				178705722265013F0047E348 /* LocationDataController.swift */,
-				170C9CC62422C25C00DD586E /* DirectionDataController.swift */,
+				178705722265013F0047E348 /* RecyclingLocationService.swift */,
+				170C9CC62422C25C00DD586E /* DirectionService.swift */,
 			);
-			path = "Network Controllers";
+			path = Services;
 			sourceTree = "<group>";
 		};
 		170C9CBF2422C16200DD586E /* Views */ = {
@@ -187,26 +165,12 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		170C9CC02422C18100DD586E /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				1734D0A9225D27D200FB61C8 /* MapViewController.swift */,
-				172B48DB23F1F5BF009A7CA0 /* MapTableViewController.swift */,
-				17F7C87623FB2B6C00CF3D70 /* DetailViewController.swift */,
-				177F4101248BED6C006C20DD /* ErrorAlertController.swift */,
-				177ED471239C0713002B9A7C /* RecyclingMarker.swift */,
-				17E03A5723E8BB3B00F4975D /* ClusterMarker.swift */,
-			);
-			path = "View Controllers";
-			sourceTree = "<group>";
-		};
 		170C9CC12422C19E00DD586E /* Map View */ = {
 			isa = PBXGroup;
 			children = (
-				170C9CC02422C18100DD586E /* View Controllers */,
 				170C9CBF2422C16200DD586E /* Views */,
 				170C9CBD2422C10E00DD586E /* Models */,
-				170C9CBE2422C14500DD586E /* Network Controllers */,
+				170C9CBE2422C14500DD586E /* Services */,
 			);
 			path = "Map View";
 			sourceTree = "<group>";
@@ -214,10 +178,9 @@
 		170C9CC22422C1B300DD586E /* Bin View */ = {
 			isa = PBXGroup;
 			children = (
-				170C9CC82422C69F00DD586E /* View Controllers */,
 				170C9CC32422C1C000DD586E /* Views */,
 				170C9CC52422C1D600DD586E /* Models */,
-				170C9CC42422C1C900DD586E /* Network Controllers */,
+				170C9CC42422C1C900DD586E /* Services */,
 			);
 			path = "Bin View";
 			sourceTree = "<group>";
@@ -236,15 +199,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		170C9CC42422C1C900DD586E /* Network Controllers */ = {
+		170C9CC42422C1C900DD586E /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				179974362431371100F1944E /* UserLocationController.swift */,
-				17E4BAAA2416DE6A00FF08EF /* BinDaysDataController.swift */,
-				1754C6112688C52500F7F05E /* BinAddressDataController.swift */,
-				1744EA43244B196A0054218D /* NotificationDataController.swift */,
+				17E4BAAA2416DE6A00FF08EF /* BinDaysDataService.swift */,
+				1754C6112688C52500F7F05E /* BinAddressDataService.swift */,
+				1744EA43244B196A0054218D /* NotificationService.swift */,
 			);
-			path = "Network Controllers";
+			path = Services;
 			sourceTree = "<group>";
 		};
 		170C9CC52422C1D600DD586E /* Models */ = {
@@ -260,16 +222,6 @@
 				4F4C3BB929197EA7004EA04F /* bin_list.plist */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		170C9CC82422C69F00DD586E /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				17EBBE39243B7F8A00911B21 /* NotificationsTableViewController.swift */,
-				17ED544E241047CD00FD0643 /* BinDayTableViewController.swift */,
-				172088D6242E201D0085ACF8 /* LocationModalViewController.swift */,
-			);
-			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 		1734D09B225D27D100FB61C8 = {
@@ -302,7 +254,6 @@
 				4F4085442C4E61FF0014195E /* CSwiftV */,
 				4F4085482C4FC4660014195E /* Services */,
 				4FD5FE102CA9CB60006CA06E /* Extensions */,
-				1734D0AB225D27D200FB61C8 /* Main.storyboard */,
 				1734D0AE225D27D300FB61C8 /* Assets.xcassets */,
 				1734D0B3225D27D300FB61C8 /* Info.plist */,
 				4F4085472C4E624D0014195E /* PrivacyInfo.xcprivacy */,
@@ -504,7 +455,6 @@
 				4F4C3BBA29197EA7004EA04F /* bin_list.plist in Resources */,
 				178F7547245D9EF80035AD68 /* Settings.bundle in Resources */,
 				1734D0AF225D27D300FB61C8 /* Assets.xcassets in Resources */,
-				1734D0AD225D27D200FB61C8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,29 +474,23 @@
 			files = (
 				4F812080293522B900D7F793 /* AlertError.swift in Sources */,
 				4F864A002A9CC44100FAC4AE /* BinApp.swift in Sources */,
-				1744EA44244B196A0054218D /* NotificationDataController.swift in Sources */,
+				1744EA44244B196A0054218D /* NotificationService.swift in Sources */,
 				4F5A1D862C7260D4007EA577 /* MapView+ViewModel.swift in Sources */,
 				4F934041295F3D5C00CCE2EE /* AppReviewRequest.swift in Sources */,
 				4F4C3BB829197CA9004EA04F /* BinTypeListData.swift in Sources */,
-				1734D0AA225D27D200FB61C8 /* MapViewController.swift in Sources */,
 				4F9C03222CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift in Sources */,
-				1754C6122688C52500F7F05E /* BinAddressDataController.swift in Sources */,
+				1754C6122688C52500F7F05E /* BinAddressDataService.swift in Sources */,
 				4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */,
-				17E03A5823E8BB3B00F4975D /* ClusterMarker.swift in Sources */,
-				172088D7242E201D0085ACF8 /* LocationModalViewController.swift in Sources */,
 				4F4FD9A92B1DF18500E49266 /* BinAddressMapView.swift in Sources */,
 				4F8728FF2CBC14FC002FA5FE /* RecyclingLocationCardView.swift in Sources */,
 				17A306F822CD47A20074343A /* RecyclingType.swift in Sources */,
 				4F26BC372D21BC1C002E70E2 /* LegacyBinNotifications.swift in Sources */,
 				4F4085462C4E620C0014195E /* CSwiftV.swift in Sources */,
-				1799743924313C4A00F1944E /* UserLocationController.swift in Sources */,
 				4F864A022A9CF47F00FAC4AE /* BinListView.swift in Sources */,
 				4F8729052CBC26A4002FA5FE /* RecyclingLocationListView.swift in Sources */,
-				177ED472239C0713002B9A7C /* RecyclingMarker.swift in Sources */,
 				1734D0BA225D33EA00FB61C8 /* RecyclingLocations.swift in Sources */,
 				4F05D0D02C6FA2700079657A /* MapView.swift in Sources */,
 				4F60E1642B14E46700518D96 /* BinAddressView.swift in Sources */,
-				17EBBE3A243B7F8A00911B21 /* NotificationsTableViewController.swift in Sources */,
 				17E064562444975900789B9A /* BinNotifications.swift in Sources */,
 				4F8729032CBC2125002FA5FE /* RecyclingIconStackView.swift in Sources */,
 				4F81207C29351A2C00D7F793 /* BinListViewModel.swift in Sources */,
@@ -554,21 +498,17 @@
 				4F40854A2C4FC4730014195E /* LocationService.swift in Sources */,
 				4F8729012CBC1DEA002FA5FE /* RecyclingIconView.swift in Sources */,
 				4F841D1C291914F7003A35F7 /* BinDetailView.swift in Sources */,
-				17F7C87723FB2B6D00CF3D70 /* DetailViewController.swift in Sources */,
-				178705732265013F0047E348 /* LocationDataController.swift in Sources */,
-				17E4BAAB2416DE6A00FF08EF /* BinDaysDataController.swift in Sources */,
+				178705732265013F0047E348 /* RecyclingLocationService.swift in Sources */,
+				17E4BAAB2416DE6A00FF08EF /* BinDaysDataService.swift in Sources */,
 				1734D0A8225D27D200FB61C8 /* AppDelegate.swift in Sources */,
 				4FD5FE122CA9CB79006CA06E /* CLLocationCoordinate2D+Extensions.swift in Sources */,
-				170C9CC72422C25C00DD586E /* DirectionDataController.swift in Sources */,
+				170C9CC72422C25C00DD586E /* DirectionService.swift in Sources */,
 				4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */,
 				4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */,
 				4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */,
-				177F4102248BED6C006C20DD /* ErrorAlertController.swift in Sources */,
 				4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */,
-				172B48DC23F1F5BF009A7CA0 /* MapTableViewController.swift in Sources */,
 				17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */,
 				174A36FD24A7885E0091847F /* AddressData.swift in Sources */,
-				17ED544F241047CD00FD0643 /* BinDayTableViewController.swift in Sources */,
 				17E026BD2411952E008E9292 /* BinDays.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -591,17 +531,6 @@
 			targetProxy = 4F52EE6B29A284B400AF8C8D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		1734D0AB225D27D200FB61C8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1734D0AC225D27D200FB61C8 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1734D0B4225D27D300FB61C8 /* Debug */ = {

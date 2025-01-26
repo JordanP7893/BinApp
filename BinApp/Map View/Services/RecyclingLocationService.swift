@@ -1,5 +1,5 @@
 //
-//  LocationDataController.swift
+//  RecyclingLocationService.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 15/04/2019.
@@ -9,18 +9,18 @@
 import Foundation
 import CoreLocation
 
-class LocationDataController {
+class RecyclingLocationService {
     func fetchLocations() async throws -> [RecyclingLocation] {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("recycling_data").appendingPathExtension("plist")
         
         let urlString = "https://datamillnorth.org/download/bring-sites/53d959b8-f711-4b5b-9c91-94879122d87e/Copy%20of%20Bring%20Sites%20Master%20Sheet%20.csv"
         
-        guard let url = URL(string: urlString) else { throw LocationDataControllerError.invalidURL }
+        guard let url = URL(string: urlString) else { throw RecyclingLocationService.ServiceErrors.invalidURL }
         
         let (data, _) = try await URLSession.shared.data(from: url)
         
-        guard let string = String(data: data, encoding: .isoLatin1) else { throw LocationDataControllerError.stringConversionFailed }
+        guard let string = String(data: data, encoding: .isoLatin1) else { throw RecyclingLocationService.ServiceErrors.stringConversionFailed }
         
         let locations = try converCsvStringToAddresses(string: string)
         
@@ -37,7 +37,7 @@ class LocationDataController {
     func converCsvStringToAddresses(string: String) throws -> [RecyclingLocation] {
         let csv = CSwiftV(with: string)
     
-        guard let keyedRows = csv.keyedRows else { throw LocationDataControllerError.csvConversionFailed }
+        guard let keyedRows = csv.keyedRows else { throw RecyclingLocationService.ServiceErrors.csvConversionFailed }
         
         var locations: [RecyclingLocation] = []
         
@@ -89,10 +89,12 @@ class LocationDataController {
     }
 }
 
-enum LocationDataControllerError: Error {
-    case invalidURL
-    case stringConversionFailed
-    case csvConversionFailed
+extension RecyclingLocationService {
+    enum ServiceErrors: Error {
+        case invalidURL
+        case stringConversionFailed
+        case csvConversionFailed
+    }
 }
 
 extension Date {

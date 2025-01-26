@@ -15,7 +15,7 @@ class BinListViewModel: ObservableObject {
         didSet {
             if let address, oldValue != nil {
                 Task {
-                    addressDataController.saveAddressData(address)
+                    addressDataService.saveAddressData(address)
                     await fetchDataFromTheNetwork(usingId: address.id)
                 }
             }
@@ -25,7 +25,7 @@ class BinListViewModel: ObservableObject {
         didSet {
             if binDays != oldValue {
                 do {
-                    try binDaysDataController.saveBinData(binDays)
+                    try binDaysDataService.saveBinData(binDays)
                 } catch {
                     print(error)
                 }
@@ -42,31 +42,31 @@ class BinListViewModel: ObservableObject {
         }
     }
     
-    let addressDataController: BinAddressDataProtocol
-    let binDaysDataController: BinDaysDataProtocol
-    let notificationDataController: NotificationDataProtocol
+    let addressDataService: BinAddressDataProtocol
+    let binDaysDataService: BinDaysDataProtocol
+    let notificationDataService: NotificationProtocol
     
     private var timer: Timer?
     
     init(
-        addressDataController: BinAddressDataProtocol,
-        binDaysDataController: BinDaysDataProtocol,
-        notificationDataController: NotificationDataProtocol
+        addressDataService: BinAddressDataProtocol,
+        binDaysDataService: BinDaysDataProtocol,
+        notificationDataService: NotificationProtocol
     ) {
-        self.addressDataController = addressDataController
-        self.binDaysDataController = binDaysDataController
-        self.notificationDataController = notificationDataController
+        self.addressDataService = addressDataService
+        self.binDaysDataService = binDaysDataService
+        self.notificationDataService = notificationDataService
         
-        self.address = addressDataController.fetchAddressData()
+        self.address = addressDataService.fetchAddressData()
         
         do {
-            self.binNotifications = try notificationDataController.fetchNotificationState()
+            self.binNotifications = try notificationDataService.fetchNotificationState()
         } catch {
             self.binNotifications = .init()
         }
         
         do {
-            self.binDays = try binDaysDataController.fetchLocalBinDays()
+            self.binDays = try binDaysDataService.fetchLocalBinDays()
         } catch {
             self.binDays = []
         }
@@ -85,7 +85,7 @@ class BinListViewModel: ObservableObject {
     }
     
     func onLocalRefresh() {
-        if let binDays = try? binDaysDataController.fetchLocalBinDays() {
+        if let binDays = try? binDaysDataService.fetchLocalBinDays() {
             self.binDays = binDays
         }
     }
@@ -98,15 +98,15 @@ class BinListViewModel: ObservableObject {
     }
     
     func onDonePress(for bin: BinDays) {
-        notificationDataController.markBinDone(binId: bin.id)
+        notificationDataService.markBinDone(binId: bin.id)
     }
     
     func onRemindMeLaterPress(at time: TimeInterval, for bin: BinDays) {
-        notificationDataController.snoozeBin(bin, for: time, isMorning: bin.isMorningPending)
+        notificationDataService.snoozeBin(bin, for: time, isMorning: bin.isMorningPending)
     }
     
     func onRemindMeTonightPress(for bin: BinDays) {
-        notificationDataController.tonightBin(bin)
+        notificationDataService.tonightBin(bin)
     }
     
     func scheduleTimer() {
@@ -144,7 +144,7 @@ extension BinListViewModel {
         guard let addressID else { return }
         
         do {
-            self.binDays = try await binDaysDataController.fetchNetworkBinDays(id: addressID)
+            self.binDays = try await binDaysDataService.fetchNetworkBinDays(id: addressID)
         } catch {
             print(error)
         }
@@ -153,11 +153,11 @@ extension BinListViewModel {
 
     private func updateNotifications() async {
         do {
-            try notificationDataController.saveNotificationState(binNotifications)
+            try notificationDataService.saveNotificationState(binNotifications)
             
             guard !binDays.isEmpty else { return }
             binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
-            try await notificationDataController.setupBinNotification(for: binDays, at: binNotifications)
+            try await notificationDataService.setupBinNotification(for: binDays, at: binNotifications)
         } catch {
             print(error)
         }

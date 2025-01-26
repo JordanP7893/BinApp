@@ -104,7 +104,7 @@ struct BinListView: View {
         .onChange(of: selectedBin) { _, bin in
             selectedBinID = bin?.id
         }
-        .onChange(of: viewModel.binDaysDataController.lastUpdate) { _, _ in
+        .onChange(of: viewModel.binDaysDataService.lastUpdate) { _, _ in
             viewModel.onLocalRefresh()
         }
     }
@@ -112,9 +112,9 @@ struct BinListView: View {
 
 #Preview {
     let viewModel = BinListViewModel(
-        addressDataController: MockBinAddressDataController(),
-        binDaysDataController: MockBinDaysDataController(),
-        notificationDataController: MockNotificationDataController()
+        addressDataService: MockBinAddressDataService(),
+        binDaysDataService: BinDaysDataService(),
+        notificationDataService: MockNotificationService()
     )
     
     NavigationView {

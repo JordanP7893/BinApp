@@ -13,7 +13,6 @@ struct RecyclingLocationList: View {
     @EnvironmentObject var locationManager: LocationManager
     @State var selected: RecyclingLocation?
     
-    let directionsController = DirectionDataController()
     let recyclingLocations: [RecyclingLocation]
     
     var body: some View {
