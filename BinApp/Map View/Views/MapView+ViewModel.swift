@@ -42,6 +42,8 @@ class MapViewViewModel: MapViewProtocol {
     let recyclingLocationService = RecyclingLocationService()
     
     func getLocations() async {
+        guard locations.isEmpty else { return }
+        
         do {
             locations = try await recyclingLocationService.fetchLocations()
             locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
