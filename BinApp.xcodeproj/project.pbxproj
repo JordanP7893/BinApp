@@ -21,7 +21,6 @@
 		17E026BD2411952E008E9292 /* BinDays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E026BC2411952E008E9292 /* BinDays.swift */; };
 		17E064562444975900789B9A /* BinNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E064552444975900789B9A /* BinNotifications.swift */; };
 		17E4BAAB2416DE6A00FF08EF /* BinDaysDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E4BAAA2416DE6A00FF08EF /* BinDaysDataService.swift */; };
-		17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */; };
 		4F05D0D02C6FA2700079657A /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F05D0CF2C6FA2700079657A /* MapView.swift */; };
 		4F207592292258E1000B5496 /* BinDuePopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F207591292258E1000B5496 /* BinDuePopupView.swift */; };
 		4F26BC332D15C49E002E70E2 /* RecyclingLocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */; };
@@ -80,7 +79,6 @@
 		17E026BC2411952E008E9292 /* BinDays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDays.swift; sourceTree = "<group>"; };
 		17E064552444975900789B9A /* BinNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BinNotifications.swift; path = "BinApp/Bin View/Models/BinNotifications.swift"; sourceTree = SOURCE_ROOT; };
 		17E4BAAA2416DE6A00FF08EF /* BinDaysDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDaysDataService.swift; sourceTree = "<group>"; };
-		17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDayTableViewCell.swift; sourceTree = "<group>"; };
 		4F05D0CF2C6FA2700079657A /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4F207591292258E1000B5496 /* BinDuePopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinDuePopupView.swift; sourceTree = "<group>"; };
 		4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecyclingLocationInfoView.swift; sourceTree = "<group>"; };
@@ -158,7 +156,6 @@
 			isa = PBXGroup;
 			children = (
 				4F8729062CBC2F0D002FA5FE /* SupportingViews */,
-				4F8729042CBC26A4002FA5FE /* RecyclingLocationListView.swift */,
 				4F05D0CF2C6FA2700079657A /* MapView.swift */,
 				4F5A1D852C7260D4007EA577 /* MapView+ViewModel.swift */,
 			);
@@ -191,7 +188,6 @@
 				4F60E1622B14E45100518D96 /* BinAddress */,
 				4F7683692B0B738B00EA9BB3 /* BinNotifications */,
 				4FE6BD142A6D8D9D002447D6 /* BinCell */,
-				4F4541A12922668600458127 /* BinTable */,
 				4F4541A02922667D00458127 /* BinDetail */,
 				4F864A012A9CF47F00FAC4AE /* BinListView.swift */,
 				4F81207B29351A2C00D7F793 /* BinListViewModel.swift */,
@@ -296,14 +292,6 @@
 			path = BinDetail;
 			sourceTree = "<group>";
 		};
-		4F4541A12922668600458127 /* BinTable */ = {
-			isa = PBXGroup;
-			children = (
-				17ED5450241048F500FD0643 /* BinDayTableViewCell.swift */,
-			);
-			path = BinTable;
-			sourceTree = "<group>";
-		};
 		4F52EE6629A284B400AF8C8D /* BinAppUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +328,7 @@
 				4F8728FE2CBC14FC002FA5FE /* RecyclingLocationCardView.swift */,
 				4F26BC322D15C49E002E70E2 /* RecyclingLocationInfoView.swift */,
 				4F9C03212CF39D3F006D456C /* RecyclingLocationDirectionButtonView.swift */,
+				4F8729042CBC26A4002FA5FE /* RecyclingLocationListView.swift */,
 			);
 			path = SupportingViews;
 			sourceTree = "<group>";
@@ -508,7 +497,6 @@
 				4FF5700429225462005361C4 /* BinWhatGoesInView.swift in Sources */,
 				4F7D83AF2B28B860002F9445 /* BinAddressViewModel.swift in Sources */,
 				4FE6BD182A6D920B002447D6 /* BinCellView.swift in Sources */,
-				17ED5451241048F500FD0643 /* BinDayTableViewCell.swift in Sources */,
 				174A36FD24A7885E0091847F /* AddressData.swift in Sources */,
 				17E026BD2411952E008E9292 /* BinDays.swift in Sources */,
 			);
