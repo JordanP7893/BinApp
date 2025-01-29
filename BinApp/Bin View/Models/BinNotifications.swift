@@ -39,3 +39,30 @@ struct BinNotifications: Codable, Equatable {
         try container.encode(types, forKey: .types)
     }
 }
+
+extension BinNotifications {
+    public init(fromLegacy legacy: LegacyBinNotifications) {
+        self.morningTime = legacy.morning ? legacy.morningTime : nil
+        self.eveningTime = legacy.evening ? legacy.eveningTime : nil
+        self.types = BinNotifications.convertTypes(from: legacy.types)
+    }
+
+    private static func convertTypes(from legacyTypes: [Int: Bool]) -> [BinType] {
+        var newTypes: [BinType] = []
+        
+        let typeMapping: [Int: BinType] = [
+            0: .black,
+            1: .green,
+            2: .food,
+            3: .brown
+        ]
+        
+        for (index, isEnabled) in legacyTypes where isEnabled == true {
+            if let binType = typeMapping[index] {
+                newTypes.append(binType)
+            }
+        }
+        
+        return newTypes
+    }
+}

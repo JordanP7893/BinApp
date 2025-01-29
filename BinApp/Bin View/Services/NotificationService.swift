@@ -12,7 +12,7 @@ import UserNotifications
 protocol NotificationProtocol {
     func setupBinNotification(for binDays: [BinDays], at state: BinNotifications) async throws
     func saveNotificationState(_ binNotifications: BinNotifications) throws
-    func fetchNotificationState() throws -> BinNotifications
+    func fetchNotificationState() -> BinNotifications
     
     func markBinDone(binId: String)
     func snoozeBin(_ bin: BinDays, for time: TimeInterval, isMorning: Bool)
@@ -96,14 +96,41 @@ class NotificationService: NotificationProtocol {
         try encodedLocations.write(to: archiveURL, options: .noFileProtection)
     }
     
-    func fetchNotificationState() throws -> BinNotifications {
+    func fetchNotificationState() -> BinNotifications {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("notification_data_v2").appendingPathExtension("plist")
         
+        do {
+            let propertyListDecoder = PropertyListDecoder()
+            let retrievedLocations = try Data(contentsOf: archiveURL)
+            let decodedNotifications = try propertyListDecoder.decode(BinNotifications.self, from: retrievedLocations)
+            return decodedNotifications
+        } catch {
+            do {
+                let legacyNotifications = try fetchLegacyNotificationState()
+                return legacyNotifications
+            } catch {
+                return .init()
+            }
+        }
+    }
+    
+    func fetchLegacyNotificationState() throws -> BinNotifications {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let archiveURL = documentsDirectory.appendingPathComponent("notification_data").appendingPathExtension("plist")
+        
         let propertyListDecoder = PropertyListDecoder()
         let retrievedLocations = try Data(contentsOf: archiveURL)
-        let decodedNotifications = try propertyListDecoder.decode(BinNotifications.self, from: retrievedLocations)
-            
+        let legacyNotifications = try propertyListDecoder.decode(LegacyBinNotifications.self, from: retrievedLocations)
+        
+        let decodedNotifications = BinNotifications.init(fromLegacy: legacyNotifications)
+        
+        try saveNotificationState(decodedNotifications)
+        
+        if FileManager.default.fileExists(atPath: archiveURL.path){
+            try? FileManager.default.removeItem(atPath: archiveURL.path)
+        }
+        
         return decodedNotifications
     }
     
@@ -221,7 +248,7 @@ class MockNotificationService: NotificationProtocol {
     
     func saveNotificationState(_ binNotifications: BinNotifications) {}
     
-    func fetchNotificationState() throws -> BinNotifications {
+    func fetchNotificationState() -> BinNotifications {
         BinNotifications(morningTime: nil, eveningTime: .distantPast, types: [.black, .green])
     }
     

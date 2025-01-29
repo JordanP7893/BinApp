@@ -58,12 +58,7 @@ class BinListViewModel: ObservableObject {
         self.notificationDataService = notificationDataService
         
         self.address = addressDataService.fetchAddressData()
-        
-        do {
-            self.binNotifications = try notificationDataService.fetchNotificationState()
-        } catch {
-            self.binNotifications = .init()
-        }
+        self.binNotifications = notificationDataService.fetchNotificationState()
         
         do {
             self.binDays = try binDaysDataService.fetchLocalBinDays()
