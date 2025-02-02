@@ -22,7 +22,7 @@ struct RecyclingLocationCardView: View {
                 .frame(width: 80)
         }
         .padding()
-        .background(.background)
+        .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(radius: 10)
         .padding()

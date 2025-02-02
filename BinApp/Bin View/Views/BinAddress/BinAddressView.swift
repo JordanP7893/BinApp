@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreLocation
 
+@MainActor
 struct BinAddressView: View {
     enum LocationButtonState {
         case active
@@ -26,10 +27,10 @@ struct BinAddressView: View {
     @State var locationButtonState: LocationButtonState = .notPressed
 
     var body: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: .bottom) {
             BinAddressMapView(mapPosition: $viewModel.mapCamera, point: viewModel.point)
 
-            VStack(alignment: .trailing) {
+            VStack(alignment: .center) {
                 HStack(spacing: 20.0) {
                     Button(action: {
                         locationButtonState = .loading
@@ -40,7 +41,6 @@ struct BinAddressView: View {
                     .disabled(locationButtonState == .loading)
 
                     TextField("Search", text: $viewModel.searchText)
-                        .textFieldStyle(.roundedBorder)
                         .textInputAutocapitalization(.characters)
                         .textContentType(.postalCode)
                         .onSubmit {
@@ -58,12 +58,9 @@ struct BinAddressView: View {
                 }
             }
             .padding()
-            .background(content: {
-                Rectangle()
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .foregroundStyle(.background)
-                    .shadow(radius: 5)
-            })
+            .background(.regularMaterial)
+            .cornerRadius(15)
+            .shadow(radius: 5)
             .padding()
         }
         .navigationTitle("Find Your Address")
@@ -116,19 +113,15 @@ struct BinAddressView: View {
 }
 
 #Preview {
-    struct PreviewView: View {
-        @State var isPresented = true
-
-        var body: some View {
-            Text("Bin Address")
-                .sheet(
-                    isPresented: $isPresented,
-                       content: {
-                    NavigationView {
-                        BinAddressView(onSavePress: { _ in })
-                    }
-                })
-        }
-    }
-    return PreviewView()
+    @Previewable @State var isPresented = true
+    
+    Text("Bin Address")
+        .sheet(
+            isPresented: $isPresented,
+            content: {
+                NavigationView {
+                    BinAddressView(onSavePress: { _ in })
+                }
+            })
+        .environmentObject(LocationManager())
 }

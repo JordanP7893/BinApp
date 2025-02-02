@@ -32,7 +32,10 @@ struct MapView<ViewModel: MapViewProtocol>: View {
                     UserAnnotation()
                 }
                 .onMapCameraChange { viewModel.mapCentreTracked = $0.region.center }
-                .mapControls { MapUserLocationButton() }
+                .mapControls {
+                    MapUserLocationButton()
+                    MapCompass()
+                }
                 
                 ZStack {
                     if let card1 {
