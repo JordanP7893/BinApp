@@ -9,9 +9,9 @@
 import SwiftUI
 import MapKit
 
-struct MapView<ViewModel: MapViewProtocol>: View {
+struct MapView: View {
     @EnvironmentObject var locationManager: LocationManager
-    @State var viewModel: ViewModel
+    @State var viewModel: MapViewViewModel
     
     @State var card1: RecyclingLocation?
     @State var card2: RecyclingLocation?
@@ -59,6 +59,8 @@ struct MapView<ViewModel: MapViewProtocol>: View {
                     card1 = nil
                 }
             }
+            .navigationTitle("Recycling Centres")
+            .navigationBarTitleDisplayMode(.inline)
             .animation(.easeInOut, value: card1)
             .animation(.easeInOut, value: card2)
             .toolbar(content: toolbarContent)
@@ -98,28 +100,9 @@ extension MapView {
     }
 }
 
-class MockMapViewModel: MapViewProtocol {
-    var locations: [RecyclingLocation] = []
-    var locationsFiltered: [RecyclingLocation] = [RecyclingLocation].mockData
-    var selectedLocation: RecyclingLocation? = nil
-    var selectedRecyclingType: RecyclingType = .glass
-    var mapCamera: MapCameraPosition = .automatic
-    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre
-    var locationManager: LocationManager = .init()
-    
-    func getLocations() async {
-        locations = [RecyclingLocation].mockData
-        locationsFiltered = locations
-    }
-    
-    func changeOf(userLocation: CLLocation?) {
-        mapCamera = .region(.init(center: CLLocationCoordinate2D(latitude: 53.8194, longitude: -1.5804), latitudinalMeters: 2000, longitudinalMeters: 2000))
-    }
-}
-
 #Preview {
     NavigationView {
-        MapView(viewModel: MockMapViewModel())
+        MapView(viewModel: MapViewViewModel())
     }
     .environmentObject(LocationManager())
 }

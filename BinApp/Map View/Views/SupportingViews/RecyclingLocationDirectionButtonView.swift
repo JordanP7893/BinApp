@@ -14,6 +14,7 @@ struct RecyclingLocationDirectionButton: View {
     @State var directionData: DirectionService.DirectionData?
     
     var recyclingLocation: RecyclingLocation
+    var isCompact: Bool
     
     var body: some View {
         Button {
@@ -21,27 +22,24 @@ struct RecyclingLocationDirectionButton: View {
             mapItem.name = recyclingLocation.name
             mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving])
         } label: {
-            GeometryReader { geometry in
-                let isHorizontal = geometry.size.width > 120 // Arbitrary threshold for switching layout
-                Group {
-                    if isHorizontal {
-                        HStack(spacing: 8) {
-                            icon
-                            directionText
-                        }
-                    } else {
-                        VStack(spacing: 8) {
-                            icon
-                            directionText
-                        }
+            Group {
+                if isCompact {
+                    VStack(spacing: 8) {
+                        icon
+                        directionText
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        icon
+                        directionText
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .foregroundStyle(.white)
-                .background(.blue)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .frame(height: 80)
+            .frame(maxWidth: 200)
+            .foregroundStyle(.white)
+            .background(.blue)
+            .cornerRadius(isCompact ? 10 : 40)
         }
         .task {
             await calculateDirections()
@@ -84,6 +82,6 @@ struct RecyclingLocationDirectionButton: View {
 }
 
 #Preview {
-    RecyclingLocationDirectionButton(recyclingLocation: .mockData)
+    RecyclingLocationDirectionButton(recyclingLocation: .mockData, isCompact: false)
         .environmentObject(LocationManager())
 }

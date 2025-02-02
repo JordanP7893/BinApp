@@ -10,19 +10,8 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
-protocol MapViewProtocol: ObservableObject {
-    var locations: [RecyclingLocation] { get set }
-    var locationsFiltered: [RecyclingLocation] { get set }
-    var selectedRecyclingType: RecyclingType { get set }
-    var selectedLocation: RecyclingLocation? { get set }
-    var mapCamera: MapCameraPosition { get set }
-    var mapCentreTracked: CLLocationCoordinate2D { get set }
-    func getLocations() async
-    func changeOf(userLocation: CLLocation?)
-}
-
 @Observable
-class MapViewViewModel: MapViewProtocol {
+class MapViewViewModel {
     var locations: [RecyclingLocation] = []
     var locationsFiltered: [RecyclingLocation] = []
     var selectedLocation: RecyclingLocation?

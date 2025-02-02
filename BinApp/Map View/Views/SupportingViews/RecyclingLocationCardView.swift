@@ -18,7 +18,7 @@ struct RecyclingLocationCardView: View {
             
             Spacer()
             
-            RecyclingLocationDirectionButton(recyclingLocation: recyclingLocation)
+            RecyclingLocationDirectionButton(recyclingLocation: recyclingLocation, isCompact: true)
                 .frame(width: 80)
         }
         .padding()

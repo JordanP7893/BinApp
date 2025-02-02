@@ -25,7 +25,8 @@ struct RecyclingLocationList: View {
             .listStyle(.inset)
             
             if let selected {
-                RecyclingLocationDirectionButton(recyclingLocation: selected)
+                RecyclingLocationDirectionButton(recyclingLocation: selected, isCompact: false)
+                    .shadow(radius: 20)
                     .padding()
             }
         }
