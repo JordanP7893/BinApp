@@ -22,11 +22,26 @@ struct BinListView: View {
 
     var body: some View {
         NavigationStack {
-            List(viewModel.binDays) { bin in
-                Button {
-                    selectedBin = bin
-                } label: {
-                    BinCellView(bin: bin)
+            Group {
+                if viewModel.address == nil {
+                    BinListEmptyView(type: .noAddress) {
+                        showAddressSheet = true
+                    }
+                } else if viewModel.binDays.isEmpty {
+                    ScrollView {
+                        BinListEmptyView(type: .noBin) {
+                            showAddressSheet = true
+                        }
+                            .containerRelativeFrame(.vertical)
+                    }
+                } else {
+                    List(viewModel.binDays) { bin in
+                        Button {
+                            selectedBin = bin
+                        } label: {
+                            BinCellView(bin: bin)
+                        }
+                    }
                 }
             }
             .navigationDestination(isPresented: Binding(
@@ -110,14 +125,40 @@ struct BinListView: View {
     }
 }
 
-#Preview {
+#Preview("Success") {
     let viewModel = BinListViewModel(
         addressDataService: MockBinAddressDataService(),
-        binDaysDataService: BinDaysDataService(),
+        binDaysDataService: MockBinDaysDataService(),
         notificationDataService: MockNotificationService()
     )
     
     NavigationView {
+        BinListView(viewModel: viewModel, selectedBinID: .constant(nil))
+            .environment(LocationManager())
+    }
+}
+
+#Preview("Empty Address") {
+    let viewModel = BinListViewModel(
+        addressDataService: MockBinAddressDataService(shouldFail: true),
+        binDaysDataService: MockBinDaysDataService(shouldFail: true),
+        notificationDataService: MockNotificationService()
+    )
+    
+    return NavigationView {
+        BinListView(viewModel: viewModel, selectedBinID: .constant(nil))
+            .environment(LocationManager())
+    }
+}
+
+#Preview("No Bins") {
+    let viewModel = BinListViewModel(
+        addressDataService: MockBinAddressDataService(),
+        binDaysDataService: MockBinDaysDataService(shouldFail: true),
+        notificationDataService: MockNotificationService()
+    )
+    
+    return NavigationView {
         BinListView(viewModel: viewModel, selectedBinID: .constant(nil))
             .environment(LocationManager())
     }

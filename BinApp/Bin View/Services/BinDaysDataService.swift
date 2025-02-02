@@ -130,14 +130,28 @@ enum BinError: Error {
 }
 
 class MockBinDaysDataService: BinDaysDataProtocol {
+    var shouldFail: Bool
+    
+    init(shouldFail: Bool = false) {
+        self.shouldFail = shouldFail
+    }
+    
     var lastUpdate: Date?
     
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
-        BinDays.testBinsArray
+        guard !shouldFail else {
+            throw BinError.emptyBinArray
+        }
+        
+        return BinDays.testBinsArray
     }
     
     func fetchLocalBinDays() throws -> [BinDays] {
-        BinDays.testBinsArray
+        guard !shouldFail else {
+            throw BinError.emptyBinArray
+        }
+        
+        return BinDays.testBinsArray
     }
     
     func saveBinData(_ binDays: [BinDays]) throws {}

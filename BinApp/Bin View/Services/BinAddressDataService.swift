@@ -86,7 +86,15 @@ class BinAddressDataService: BinAddressDataProtocol {
 }
 
 class MockBinAddressDataService: BinAddressDataProtocol {
+    var shouldFail: Bool
+    
+    init(shouldFail: Bool = false) {
+        self.shouldFail = shouldFail
+    }
+    
     func fetchAddressData() -> AddressData? {
+        guard !shouldFail else { return nil }
+        
         return AddressData(id: 1, title: "1 Leeds Road")
     }
     

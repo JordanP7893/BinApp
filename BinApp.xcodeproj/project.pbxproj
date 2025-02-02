@@ -17,8 +17,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1734D0A4225D27D200FB61C8 /* Bins & Recycling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Bins & Recycling.app"; path = "/Users/jordanporter/Developer/BinApp/build/Debug-iphoneos/Bins & Recycling.app"; sourceTree = "<absolute>"; };
-		4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BinAppUITests.xctest; path = "/Users/jordanporter/Developer/BinApp/build/Debug-iphoneos/BinAppUITests-Runner.app/PlugIns/BinAppUITests.xctest"; sourceTree = "<absolute>"; };
+		4F74D6AF2D4FD61C00907F75 /* Bins & Recycling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bins & Recycling.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +68,8 @@
 			children = (
 				4F74D67B2D4AAB4700907F75 /* BinApp */,
 				4F74D6AB2D4AAB5800907F75 /* BinAppUITests */,
+				4F74D6AF2D4FD61C00907F75 /* Bins & Recycling.app */,
+				4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,7 +93,7 @@
 			);
 			name = BinApp;
 			productName = BinApp;
-			productReference = 1734D0A4225D27D200FB61C8 /* Bins & Recycling.app */;
+			productReference = 4F74D6AF2D4FD61C00907F75 /* Bins & Recycling.app */;
 			productType = "com.apple.product-type.application";
 		};
 		4F52EE6429A284B400AF8C8D /* BinAppUITests */ = {
@@ -109,7 +111,7 @@
 			);
 			name = BinAppUITests;
 			productName = BinAppUITests;
-			productReference = 4F52EE6529A284B400AF8C8D /* BinAppUITests.xctest */;
+			productReference = 4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
