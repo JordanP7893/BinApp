@@ -67,18 +67,8 @@ struct BinListView: View {
                 }
             }
             .listStyle(.inset)
-            .task {
-                await viewModel.onAppear()
-            }
             .refreshable {
                 await viewModel.onRefresh()
-            }
-            .onChange(of: scenePhase) { _, phase in
-                switch phase {
-                case .background: viewModel.cancelTimer()
-                case .active: viewModel.scheduleTimer()
-                default: break
-                }
             }
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -99,19 +89,24 @@ struct BinListView: View {
                 }
             })
             .navigationTitle(viewModel.address?.title ?? "Bin Days")
-            .sheet(isPresented: $showAddressSheet) {
-                NavigationView {
-                    BinAddressView(onSavePress: viewModel.onSavePress(address:))
-                }
+        }
+        .sheet(isPresented: $showAddressSheet) {
+            NavigationView {
+                BinAddressView(onSavePress: viewModel.onSavePress(address:))
             }
-            .sheet(isPresented: $showNotificationSheet) {
-                NavigationView {
-                    BinNotificationList(
-                        showNotificationSheet: $showNotificationSheet,
-                        notifications: $viewModel.binNotifications
-                    )
-                }
+        }
+        .sheet(isPresented: $showNotificationSheet) {
+            NavigationView {
+                BinNotificationList(
+                    showNotificationSheet: $showNotificationSheet,
+                    notifications: $viewModel.binNotifications
+                )
             }
+        }
+        .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
+            Button("OK") { viewModel.clearError() }
+        } message: { message in
+            Text(message)
         }
         .onChange(of: selectedBinID) { _, id in
             selectedBin = viewModel.binDays.first { $0.id == id }
@@ -121,6 +116,13 @@ struct BinListView: View {
         }
         .onChange(of: viewModel.binDaysDataService.lastUpdate) { _, _ in
             viewModel.onLocalRefresh()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .background: viewModel.cancelTimer()
+            case .active: viewModel.scheduleTimer()
+            default: break
+            }
         }
     }
 }

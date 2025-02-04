@@ -9,8 +9,8 @@
 import Foundation
 
 protocol BinAddressDataProtocol {
-    func fetchAddressData() -> AddressData?
-    func saveAddressData(_ addresses: AddressData)
+    func fetchAddressData() throws -> AddressData
+    func saveAddressData(_ addresses: AddressData) throws
 }
 
 class BinAddressDataService: BinAddressDataProtocol {
@@ -36,30 +36,8 @@ class BinAddressDataService: BinAddressDataProtocol {
         }
         return data.map { String($0) }.joined(separator: "&")
     }
-
-    static func callGet(url:URL, complete: @escaping ((message:String, data:Data?)) -> Void) {
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-
-        var result:(message:String, data:Data?) = (message: "Fail", data: nil)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-
-            if(error != nil)
-            {
-                result.message = "Fail Error not null : \(error.debugDescription)"
-            }
-            else
-            {
-                result.message = "Success"
-                result.data = data
-            }
-
-            complete(result)
-        }
-        task.resume()
-    }
     
-    func saveAddressData(_ addresses: AddressData) {
+    func saveAddressData(_ addresses: AddressData) throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("address_data").appendingPathExtension("plist")
         
@@ -68,20 +46,18 @@ class BinAddressDataService: BinAddressDataProtocol {
         }
         
         let propertyListEncoder = PropertyListEncoder()
-        let encodedLocations = try? propertyListEncoder.encode(addresses)
-        try? encodedLocations?.write(to: archiveURL, options: .noFileProtection)
+        let encodedLocations = try propertyListEncoder.encode(addresses)
+        try encodedLocations.write(to: archiveURL, options: .noFileProtection)
     }
     
-    func fetchAddressData() -> AddressData? {
+    func fetchAddressData() throws -> AddressData {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("address_data").appendingPathExtension("plist")
         
         let propertyListDecoder = PropertyListDecoder()
-        if let retrievedAddresses = try? Data(contentsOf: archiveURL), let decodedAddresses = try? propertyListDecoder.decode(AddressData.self, from: retrievedAddresses){
-            return decodedAddresses
-        } else {
-            return nil
-        }
+        let retrievedAddresses = try Data(contentsOf: archiveURL)
+        let decodedAddresses = try propertyListDecoder.decode(AddressData.self, from: retrievedAddresses)
+        return decodedAddresses
     }
 }
 
@@ -92,11 +68,13 @@ class MockBinAddressDataService: BinAddressDataProtocol {
         self.shouldFail = shouldFail
     }
     
-    func fetchAddressData() -> AddressData? {
-        guard !shouldFail else { return nil }
+    func fetchAddressData() throws -> AddressData {
+        guard !shouldFail else {
+            throw DecodingError.typeMismatch(String.self, .init(codingPath: [], debugDescription: ""))
+        }
         
         return AddressData(id: 1, title: "1 Leeds Road")
     }
     
-    func saveAddressData(_ addresses: AddressData) {}
+    func saveAddressData(_ addresses: AddressData) throws {}
 }

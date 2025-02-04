@@ -74,6 +74,11 @@ struct BinAddressView: View {
                 }
             }
         }
+        .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
+            Button("OK") { viewModel.clearError() }
+        } message: { message in
+            Text(message)
+        }
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {

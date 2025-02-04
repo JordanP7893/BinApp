@@ -66,8 +66,3 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         print(error.localizedDescription)
     }
 }
-
-enum LocationError: Error {
-    case locationNotFound
-    case noLocatonPermissions
-}

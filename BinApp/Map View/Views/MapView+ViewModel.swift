@@ -27,18 +27,34 @@ class MapViewViewModel {
             locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
         }
     }
+    var showError = false
+    var errorMessage: String? {
+        didSet {
+            if errorMessage == nil {
+                showError = false
+            } else {
+                showError = true
+            }
+        }
+    }
     
     let recyclingLocationService = RecyclingLocationService()
     
-    func getLocations() async {
-        guard locations.isEmpty else { return }
-        
-        do {
-            locations = try await recyclingLocationService.fetchLocations()
-            locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
-        } catch {
-            print("Handle error \(error)")
+    init() {
+        Task {
+            guard locations.isEmpty else { return }
+            
+            do {
+                locations = try await recyclingLocationService.fetchLocations()
+                locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
+            } catch {
+                errorMessage = "Failed to load locations. Please try again later. \n\n \(error)"
+            }
         }
+    }
+
+    func clearError() {
+        errorMessage = nil
     }
     
     func changeMapPinsDisplayed() {

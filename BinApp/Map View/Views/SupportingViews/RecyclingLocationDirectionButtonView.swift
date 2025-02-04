@@ -70,10 +70,10 @@ struct RecyclingLocationDirectionButton: View {
     }
     
     private func calculateDirections() async {
+        directionData = nil
+        guard let userLocation = locationManager.userLocation else { return }
+        
         do {
-            directionData = nil
-            guard let userLocation = locationManager.userLocation else { return }
-            
             directionData = try await DirectionService().fetchDirections(for: recyclingLocation, from: userLocation)
         } catch {
             print(error)

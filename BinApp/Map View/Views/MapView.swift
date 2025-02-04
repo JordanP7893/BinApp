@@ -64,9 +64,13 @@ struct MapView: View {
             .animation(.easeInOut, value: card1)
             .animation(.easeInOut, value: card2)
             .toolbar(content: toolbarContent)
-            .task { await viewModel.getLocations() }
             .task(id: locationManager.userLocation) {
                 viewModel.changeOf(userLocation: locationManager.userLocation)
+            }
+            .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
+                Button("OK") { viewModel.clearError() }
+            } message: { message in
+                Text(message)
             }
             .onAppear {
                 locationManager.startLocationServices()

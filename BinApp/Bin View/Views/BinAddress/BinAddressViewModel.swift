@@ -16,6 +16,16 @@ class BinAddressViewModel: ObservableObject {
     @Published var point: MapPoint?
     @Published var searchText: String = ""
     @Published var addresses: [StoreAddress]?
+    @Published var showError = false
+    @Published var errorMessage: String? {
+        didSet {
+            if errorMessage == nil {
+                showError = false
+            } else {
+                showError = true
+            }
+        }
+    }
     @Published var selectedAddressIndex: Int = 0 {
         didSet {
             selectAddress(at: selectedAddressIndex)
@@ -42,6 +52,10 @@ class BinAddressViewModel: ObservableObject {
 
             self.mapCamera = .camera(.init(centerCoordinate: region, distance: 1000))
         }
+    }
+    
+    func clearError() {
+        errorMessage = nil
     }
 
     private func selectAddress(at index: Int) {

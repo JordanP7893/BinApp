@@ -22,27 +22,21 @@ class BinDaysDataService: BinDaysDataProtocol {
         let paramString = BinAddressDataService.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
         let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
         
-        do {
-            let data = try await BinDaysDataService.asyncGET(url: binDatesUrl)
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            formatter.timeZone = TimeZone.current
-            
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .formatted(formatter)
-            
-            let binDates = try decoder.decode([BinDays].self, from: data)
-//            let uniqueBinDates = Array(Set(binDates))
-//            let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
-//            self.saveBinData(binsWithPending)
-//            UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
-            return binDates.sorted { $0.date < $1.date }
-            
-        } catch {
-            
-            throw error
-        }
+        let data = try await BinDaysDataService.asyncGET(url: binDatesUrl)
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        
+        let binDates = try decoder.decode([BinDays].self, from: data)
+//        let uniqueBinDates = Array(Set(binDates))
+//        let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
+//        self.saveBinData(binsWithPending)
+//        UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
+        return binDates.sorted { $0.date < $1.date }
     }
     
     func saveBinData(_ binDays: [BinDays]) throws {
@@ -78,15 +72,17 @@ class BinDaysDataService: BinDaysDataProtocol {
         request.httpMethod = "GET"
         request.timeoutInterval = 5.0
         
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
-            }
-            return data
-        } catch {
-            throw AlertError(title: "Network Connection Error", body: "Could not retrieve bin data. Please check your connection and try again")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw BinError.invalidResponse
         }
+        
+        guard httpResponse.statusCode < 300 else {
+            throw BinError.errorCode(httpResponse.statusCode)
+        }
+        
+        return data
     }
     
     public func updateBinDateFor(bin id: String, to date: Date, isMorningDate: Bool) throws {
@@ -127,6 +123,8 @@ class BinDaysDataService: BinDaysDataProtocol {
 
 enum BinError: Error {
     case emptyBinArray
+    case invalidResponse
+    case errorCode(Int)
 }
 
 class MockBinDaysDataService: BinDaysDataProtocol {
