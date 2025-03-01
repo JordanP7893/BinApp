@@ -12,6 +12,7 @@ struct BinNotificationList: View {
     @Binding var showNotificationSheet: Bool
     
     @Binding var notifications: BinNotifications
+    var binTypes: [BinType]
     
     var body: some View {
         List {
@@ -36,7 +37,7 @@ struct BinNotificationList: View {
             }
             
             Section {
-                ForEach(BinType.allCases) {
+                ForEach(binTypes) {
                     binTypeListButton(type: $0)
                 }
             } header: {
@@ -131,7 +132,8 @@ extension BinNotificationList {
                         showNotificationSheet: .constant(
                             true
                         ),
-                        notifications: $notifications
+                        notifications: $notifications,
+                        binTypes: [.black, .green, .brown]
                 )
                 
             }

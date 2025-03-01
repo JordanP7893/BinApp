@@ -29,6 +29,11 @@ class BinListViewModel: ObservableObject {
         didSet {
             if binDays != oldValue {
                 do {
+                    if !binDays.contains(where: { $0.type == .food }) {
+                        var binTypesMutated = binTypes
+                        binTypesMutated.removeAll(where: { $0 == .food })
+                        binTypes = binTypesMutated
+                    }
                     try binDaysDataService.saveBinData(binDays)
                 } catch {
                     errorMessage = "Failed to save bin dates. \n\n \(error.localizedDescription)"
@@ -55,6 +60,7 @@ class BinListViewModel: ObservableObject {
             }
         }
     }
+    @Published var binTypes: [BinType] = BinType.allCases
     
     let addressDataService: BinAddressDataProtocol
     let binDaysDataService: BinDaysDataProtocol

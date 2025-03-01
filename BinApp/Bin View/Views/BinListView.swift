@@ -85,7 +85,6 @@ struct BinListView: View {
                     } label: {
                         Image(systemName: "bell")
                     }
-                    
                 }
             })
             .navigationTitle(viewModel.address?.title ?? "Bin Days")
@@ -99,7 +98,8 @@ struct BinListView: View {
             NavigationView {
                 BinNotificationList(
                     showNotificationSheet: $showNotificationSheet,
-                    notifications: $viewModel.binNotifications
+                    notifications: $viewModel.binNotifications,
+                    binTypes: viewModel.binTypes
                 )
             }
         }
