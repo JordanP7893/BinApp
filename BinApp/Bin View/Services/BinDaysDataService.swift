@@ -64,7 +64,15 @@ class BinDaysDataService: BinDaysDataProtocol {
         let retrievedBinDays = try Data(contentsOf: archiveURL)
         let decodedBinDays = try propertyListDecoder.decode([BinDays].self, from: retrievedBinDays)
         if decodedBinDays.isEmpty { throw BinError.emptyBinArray }
-        return decodedBinDays
+        
+        let today = Calendar.current.startOfDay(for: Date())
+        let binDays = decodedBinDays.filter { $0.date >= today }
+        
+        if binDays.count < 6 {
+            throw BinError.outdatedData
+        }
+        
+        return binDays
     }
     
     static func asyncGET(url: URL) async throws -> Data {
@@ -125,6 +133,7 @@ enum BinError: Error {
     case emptyBinArray
     case invalidResponse
     case errorCode(Int)
+    case outdatedData
 }
 
 class MockBinDaysDataService: BinDaysDataProtocol {
