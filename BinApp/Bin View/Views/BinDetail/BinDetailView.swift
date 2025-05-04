@@ -12,7 +12,7 @@ struct BinDetailView: View {
     @State var showPopup = true
     @State var binTypeText: BinTypeList?
     
-    @Binding var bin: BinDays
+    var bin: BinDays
     var donePressed: () -> Void
     var remindPressed: (TimeInterval) -> Void
     var tonightPressed: () -> Void
@@ -61,7 +61,7 @@ struct BinDetailView: View {
     
     return NavigationView {
         BinDetailView(
-            bin: .constant(testBin),
+            bin: testBin,
             donePressed: {},
             remindPressed: { _ in },
             tonightPressed: {}
@@ -72,7 +72,7 @@ struct BinDetailView: View {
 #Preview("Not Pending") {
     NavigationView {
         BinDetailView(
-            bin: .constant(BinDays.testBin),
+            bin: BinDays.testBin,
             donePressed: {},
             remindPressed: { _ in },
             tonightPressed: {}

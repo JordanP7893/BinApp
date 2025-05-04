@@ -12,16 +12,15 @@ import MapKit
 struct BinListView: View {
     @StateObject var viewModel: BinListViewModel
     @Binding var selectedBinID: String?
-    @State var selectedBin: BinDays?
+    @State private var navigationPath = NavigationPath()
     
     @Environment(\.scenePhase) private var scenePhase
     
-    @State var notificationTime: Date?
     @State var showAddressSheet = false
     @State var showNotificationSheet = false
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             Group {
                 if viewModel.address == nil {
                     BinListEmptyView(type: .noAddress) {
@@ -36,34 +35,18 @@ struct BinListView: View {
                     }
                 } else {
                     List(viewModel.binDays) { bin in
-                        Button {
-                            selectedBin = bin
-                        } label: {
+                        NavigationLink(value: bin) {
                             BinCellView(bin: bin)
                         }
                     }
-                }
-            }
-            .navigationDestination(isPresented: Binding(
-                get: { selectedBin != nil },
-                set: { if !$0 { selectedBin = nil } }
-            )) {
-                if let selectedBin = selectedBin {
-                    BinDetailView(
-                        bin: Binding(
-                            get: { selectedBin },
-                            set: { self.selectedBin = $0 }
-                        ),
-                        donePressed: {
-                            viewModel.onDonePress(for: selectedBin)
-                        },
-                        remindPressed: {
-                            viewModel.onRemindMeLaterPress(at: $0, for: selectedBin)
-                        },
-                        tonightPressed: {
-                            viewModel.onRemindMeTonightPress(for: selectedBin)
-                        }
-                    )
+                    .navigationDestination(for: BinDays.self) { bin in
+                        BinDetailView(
+                            bin: bin,
+                            donePressed: { viewModel.onDonePress(for: bin) },
+                            remindPressed: { viewModel.onRemindMeLaterPress(at: $0, for: bin) },
+                            tonightPressed: { viewModel.onRemindMeTonightPress(for: bin) }
+                        )
+                    }
                 }
             }
             .listStyle(.inset)
@@ -109,10 +92,12 @@ struct BinListView: View {
             Text(message)
         }
         .onChange(of: selectedBinID) { _, id in
-            selectedBin = viewModel.binDays.first { $0.id == id }
+            let selectedBin = viewModel.binDays.first { $0.id == id }
+            guard let selectedBin else { return }
+            navigationPath.append(selectedBin)
         }
-        .onChange(of: selectedBin) { _, bin in
-            selectedBinID = bin?.id
+        .onChange(of: navigationPath) { _, _ in
+            selectedBinID = nil
         }
         .onChange(of: viewModel.binDaysDataService.lastUpdate) { _, _ in
             viewModel.onLocalRefresh()
