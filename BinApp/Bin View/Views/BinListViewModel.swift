@@ -45,7 +45,7 @@ class BinListViewModel: ObservableObject {
         didSet {
             if binNotifications != oldValue {
                 Task {
-                    await updateNotifications()
+                    await updateNotifications(with: binNotifications)
                 }
             }
         }
@@ -167,16 +167,16 @@ extension BinListViewModel {
         
         do {
             self.binDays = try await binDaysDataService.fetchNetworkBinDays(id: addressID)
-            await updateNotifications()
+            let notificationState = notificationDataService.fetchNotificationState()
+            await updateNotifications(with: notificationState)
         } catch {
             errorMessage = "Failed to fetch bin dates. Please try again later."
         }
         isLoading = false
     }
 
-    private func updateNotifications() async {
+    private func updateNotifications(with notificationState: BinNotifications) async {
         do {
-            let notificationState = notificationDataService.fetchNotificationState()
             try notificationDataService.saveNotificationState(binNotifications)
             if notificationState.morningTime == nil && notificationState.eveningTime == nil { return }
             
@@ -197,10 +197,14 @@ extension BinListViewModel {
             if notifications.types.contains(binDay.type) {
                 if let morningTime = notifications.morningTime {
                     updatedBinDay.notificationMorning = combine(date: binDay.date, time: morningTime, calendar: calendar)
+                } else {
+                    updatedBinDay.notificationMorning = nil
                 }
                 
                 if let eveningTime = notifications.eveningTime, let previousDate = calendar.date(byAdding: .day, value: -1, to: binDay.date) {
                     updatedBinDay.notificationEvening = combine(date: previousDate, time: eveningTime, calendar: calendar)
+                } else {
+                    updatedBinDay.notificationEvening = nil
                 }
                 
                 /// Uncomment to trigger test notification for the first bin after 10 seconds

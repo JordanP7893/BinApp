@@ -39,7 +39,32 @@ struct BinListView: View {
                 } else {
                     List(viewModel.binDays) { bin in
                         NavigationLink(value: bin) {
-                            BinCellView(bin: bin)
+                            HStack(spacing: 20.0) {
+                                Image(bin.type.rawValue.lowercased())
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 70)
+
+                                VStack(alignment: .leading, spacing: 8.0) {
+                                    Text(bin.type.description)
+                                        .font(.headline)
+
+                                    Text(bin.date.formatDateTodayTomorrowOrActual())
+                                }
+
+                                Spacer()
+
+                                if bin.showNotification {
+                                    Text("1")
+                                        .padding(3)
+                                        .foregroundColor(.white)
+                                        .background {
+                                            Circle()
+                                                .foregroundColor(.red)
+                                                .scaledToFill()
+                                        }
+                                }
+                            }
                         }
                     }
                     .navigationDestination(for: BinDays.self) { bin in
