@@ -31,12 +31,10 @@ class BinDaysDataService: BinDaysDataProtocol {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(formatter)
         
-        let binDates = try decoder.decode([BinDays].self, from: data)
-//        let uniqueBinDates = Array(Set(binDates))
-//        let binsWithPending = updateFetchedBinsWithPendingStates(uniqueBinDates)
-//        self.saveBinData(binsWithPending)
-//        UserDefaults.standard.setValue(Date(), forKey: "binDaysLastFetchedDate")
-        return binDates.sorted { $0.date < $1.date }
+        let fetchedBinDays = try decoder.decode([BinDays].self, from: data)
+        let currentAndNewBins = addOnlyNewFetchedBins(fetchedBinDays)
+        
+        return currentAndNewBins.sorted { $0.date < $1.date }
     }
     
     func saveBinData(_ binDays: [BinDays]) throws {
@@ -113,20 +111,19 @@ class BinDaysDataService: BinDaysDataProtocol {
         try saveBinData(bins)
     }
     
-//    private func updateFetchedBinsWithPendingStates(_ fetchedBins: [BinDays]) -> [BinDays] {
-//        var newBins = fetchedBins
-//        guard let currentBins = fetchBinData(skipDateCheck: true) else { return newBins }
-//        
-//        let pendingBinIds = currentBins.filter({ $0.isPending }).map({$0.id})
-//        
-//        pendingBinIds.forEach { id in
-//            if let index = newBins.firstIndex(where: {$0.id == id}) {
-//                newBins[index].isPending = true
-//            }
-//        }
-//        
-//        return newBins
-//    }
+    private func addOnlyNewFetchedBins(_ fetchedBins: [BinDays]) -> [BinDays] {
+        guard let currentBins = try? fetchLocalBinDays() else { return fetchedBins }
+        
+        let stillValidBins = currentBins.filter { currentBin in
+            fetchedBins.contains { $0.id == currentBin.id }
+        }
+        
+        let newFetchedBins = fetchedBins.filter { fetchedBin in
+            !currentBins.contains { $0.id == fetchedBin.id }
+        }
+        
+        return stillValidBins + newFetchedBins
+    }
 }
 
 enum BinError: Error {

@@ -48,7 +48,7 @@ class MapViewViewModel {
                 locations = try await recyclingLocationService.fetchLocations()
                 locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
             } catch {
-                errorMessage = "Failed to load locations. Please try again later. \n\n \(error)"
+                errorMessage = "Failed to load locations. Please try again later."
             }
         }
     }

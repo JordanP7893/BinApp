@@ -18,7 +18,7 @@ class BinListViewModel: ObservableObject {
                     do {
                         try addressDataService.saveAddressData(address)
                     } catch {
-                        errorMessage = "Failed to save address. \n\n \(error.localizedDescription)"
+                        errorMessage = "Failed to save address."
                     }
                     await fetchDataFromTheNetwork(usingId: address.id)
                 }
@@ -36,7 +36,7 @@ class BinListViewModel: ObservableObject {
                     }
                     try binDaysDataService.saveBinData(binDays)
                 } catch {
-                    errorMessage = "Failed to save bin dates. \n\n \(error.localizedDescription)"
+                    errorMessage = "Failed to save bin dates."
                 }
             }
         }
@@ -50,6 +50,7 @@ class BinListViewModel: ObservableObject {
             }
         }
     }
+    @Published var isLoading = true
     @Published var showError = false
     @Published var errorMessage: String? {
         didSet {
@@ -80,12 +81,14 @@ class BinListViewModel: ObservableObject {
         do {
             self.address = try addressDataService.fetchAddressData()
         } catch {
-            errorMessage = "Failed to fetch address data. \n\n \(error.localizedDescription)"
+            errorMessage = "Failed to fetch address data."
+            isLoading = false
         }
         self.binNotifications = notificationDataService.fetchNotificationState()
         
         do {
             self.binDays = try binDaysDataService.fetchLocalBinDays()
+            isLoading = false
         } catch {
             Task {
                 await fetchDataFromTheNetwork(usingId: address?.id)
@@ -164,21 +167,24 @@ extension BinListViewModel {
         
         do {
             self.binDays = try await binDaysDataService.fetchNetworkBinDays(id: addressID)
+            await updateNotifications()
         } catch {
-            errorMessage = "Failed to fetch bin dates. Please try again later. \n\n \(error.localizedDescription)"
+            errorMessage = "Failed to fetch bin dates. Please try again later."
         }
-        await updateNotifications()
+        isLoading = false
     }
 
     private func updateNotifications() async {
         do {
+            let notificationState = notificationDataService.fetchNotificationState()
             try notificationDataService.saveNotificationState(binNotifications)
+            if notificationState.morningTime == nil && notificationState.eveningTime == nil { return }
             
             guard !binDays.isEmpty else { return }
             binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
             try await notificationDataService.setupBinNotification(for: binDays, at: binNotifications)
         } catch {
-            errorMessage = "Failed to update notifications. \n\n \(error.localizedDescription)"
+            errorMessage = "Failed to update notifications."
         }
     }
     

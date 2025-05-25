@@ -22,7 +22,10 @@ struct BinListView: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             Group {
-                if viewModel.address == nil {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .scaleEffect(2)
+                } else if viewModel.address == nil {
                     BinListEmptyView(type: .noAddress) {
                         showAddressSheet = true
                     }
