@@ -17,10 +17,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
 
     override init() {
         super.init()
-        manager.delegate = self
     }
 
     func startLocationServices() {
+        manager.delegate = self
         userPostcode = nil
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
@@ -33,14 +33,16 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        userLocation = locations.last
-        if let userLocation {
-            Task {
-                let postcode = await getLocationPostcode(for: userLocation)
-                userPostcode = postcode
-            }
+        updateUserLocation(location: locations.last)
+    }
+    
+    func updateUserLocation(location: CLLocation?) {
+        guard let location else { return }
+        Task {
+            userLocation = location
+            let postcode = await getLocationPostcode(for: location)
+            userPostcode = postcode
         }
-
     }
 
     func getLocationPostcode(for location: CLLocation) async -> String {
@@ -52,6 +54,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             isAuthorized = true
+            updateUserLocation(location: manager.location)
         case .notDetermined:
             isAuthorized = false
             manager.requestWhenInUseAuthorization()
