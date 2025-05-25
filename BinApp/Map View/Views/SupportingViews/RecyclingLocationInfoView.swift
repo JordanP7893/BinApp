@@ -23,9 +23,8 @@ struct RecyclingLocationInfoView: View {
                         Text(address)
                         Text(postcode)
                     }
-                    
-                    Spacer()
                 }
+                Spacer()
                 
                 RecyclingIconStackView(recyclingTypes: recyclingLocation.types)
             }
