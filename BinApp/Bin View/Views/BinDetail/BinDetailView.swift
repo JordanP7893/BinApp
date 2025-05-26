@@ -10,6 +10,7 @@ import SwiftUI
 
 struct BinDetailView: View {
     @State var showPopup = true
+    @State var binTypeText: BinTypeList?
     
     var bin: BinDays
     var donePressed: () -> Void
@@ -17,14 +18,9 @@ struct BinDetailView: View {
     var tonightPressed: () -> Void
     
     var body: some View {
-        let binListTypeText: BinTypeList = {
-            let binListData = BinTypeListData().binTypeList
-            return binListData[bin.type.rawValue] ?? BinTypeList()
-        }()
-        
         ScrollView {
             VStack {
-                if showPopup && bin.isPending{
+                if showPopup && bin.showNotification{
                     BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed, tonightPressed: tonightPressed)
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                         .padding(.bottom)
@@ -44,21 +40,43 @@ struct BinDetailView: View {
                 .padding(.bottom)
                 
                 VStack {
-                    BinWhatGoesInView(title: "Yes Please", listText: binListTypeText.yes, markType: .check)
+                    BinWhatGoesInView(title: "Yes Please", listText: binTypeText?.yes, markType: .check)
                     Spacer(minLength: 30)
-                    BinWhatGoesInView(title: "No Thanks", listText: binListTypeText.no, markType: .cross)
+                    BinWhatGoesInView(title: "No Thanks", listText: binTypeText?.no, markType: .cross)
                 }
                 .padding(.trailing, 10)
             }
             .padding(.horizontal)
         }
+        .navigationTitle(bin.type.description)
+        .onAppear {
+            binTypeText = BinTypeListData().binTypeList[bin.type.rawValue] ?? BinTypeList()
+        }
     }
 }
 
-struct BinDetailView_Previews: PreviewProvider {
+#Preview("Pending") {
+    var testBin = BinDays.testBin
+    testBin.notificationEvening = .distantPast
     
-    static var previews: some View {
-        BinDetailView(bin: BinDays(type: BinType(rawValue: "GREEN")!, date: Date(timeIntervalSinceNow: 10000), isPending: true), donePressed: {}, remindPressed: {_ in }, tonightPressed: {})
+    return NavigationView {
+        BinDetailView(
+            bin: testBin,
+            donePressed: {},
+            remindPressed: { _ in },
+            tonightPressed: {}
+        )
+    }
+}
+
+#Preview("Not Pending") {
+    NavigationView {
+        BinDetailView(
+            bin: BinDays.testBin,
+            donePressed: {},
+            remindPressed: { _ in },
+            tonightPressed: {}
+        )
     }
 }
 

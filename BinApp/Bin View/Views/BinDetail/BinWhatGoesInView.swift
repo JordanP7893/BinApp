@@ -10,7 +10,7 @@ import SwiftUI
 
 struct BinWhatGoesInView: View {
     var title: String
-    var listText: String
+    var listText: String?
     var markType: MarkType
     
     var body: some View {
@@ -24,7 +24,7 @@ struct BinWhatGoesInView: View {
                     Spacer()
                 }
                 HStack {
-                    Text(listText)
+                    Text(listText ?? "")
                         .lineSpacing(6)
                     Spacer()
                 }

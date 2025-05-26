@@ -7,52 +7,99 @@
 //
 
 import Foundation
-import UIKit
 
-struct BinDays: Codable, Hashable {
-    var type: BinType
-    var date: Date
+struct BinDays: Codable, Hashable, Identifiable {
+    let type: BinType
+    let date: Date
+    var notificationEvening: Date?
+    var notificationMorning: Date?
     var isPending: Bool
+    
+    var isMorningPending: Bool {
+        if let notificationMorning, notificationMorning < Date() && isPending {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var isEveningPending: Bool {
+        if let notificationEvening, notificationEvening < Date() && isPending {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var showNotification: Bool {
+        if isMorningPending || isEveningPending {
+            return true
+        } else {
+            return false
+        }
+    }
     
     var id: String {
         return "\(date.description) \(type.description)"
     }
     
+    mutating func donePressed() {
+        isPending = false
+    }
+    
     enum CodingKeys: String, CodingKey {
         case type = "BinType"
         case date = "CollectionDate"
+        case notificationEvening
+        case notificationMorning
         case isPending
         case id
     }
     
-    init(type: BinType, date: Date, isPending: Bool) {
+    init(type: BinType, date: Date) {
         self.type = type
         self.date = date
-        self.isPending = isPending
+        self.isPending = true
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.type = try container.decode(BinType.self, forKey: .type)
         self.date = try container.decode(Date.self, forKey: .date)
-        self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? false
+        self.notificationEvening = try container.decodeIfPresent(Date.self, forKey: .notificationEvening)
+        self.notificationMorning = try container.decodeIfPresent(Date.self, forKey: .notificationMorning)
+        self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? true
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(type, forKey: .type)
         try container.encode(date, forKey: .date)
+        try container.encode(notificationEvening, forKey: .notificationEvening)
+        try container.encode(notificationMorning, forKey: .notificationMorning)
         try container.encode(isPending, forKey: .isPending)
-        try container.encode(id, forKey: .id)
     }
+
+    static let testBin = BinDays(type: .green, date: Date(timeIntervalSinceNow: 10000))
+    static let testBinsArray: [BinDays] = [
+        .init(type: .green, date: Date(timeIntervalSinceNow: 1)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 100000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 200000)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 300000)),
+        .init(type: .brown, date: Date(timeIntervalSinceNow: 400000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 500000)),
+        .init(type: .black, date: Date(timeIntervalSinceNow: 600000)),
+        .init(type: .green, date: Date(timeIntervalSinceNow: 700000)),
+    ]
 }
 
-enum BinType: String, Codable{
-    
+enum BinType: String, Codable, CaseIterable, Identifiable {
     case green = "GREEN"
     case black = "BLACK"
     case brown = "BROWN"
     case food = "FOOD"
+    
+    var id: String { rawValue }
     
     var description: String {
         switch self {
@@ -64,32 +111,6 @@ enum BinType: String, Codable{
             return "Brown"
         case .food:
             return "Food"
-        }
-    }
-    
-    var position: Int {
-        switch self {
-        case .black:
-            return 0
-        case .green:
-            return 1
-        case .food:
-            return 2
-        case .brown:
-            return 3
-        }
-    }
-    
-    var color: UIColor {
-        switch self {
-        case .green:
-            return UIColor(red: 81/255, green: 148/255, blue: 124/255, alpha: 1)
-        case .black:
-            return #colorLiteral(red: 0.2757396524, green: 0.2757396524, blue: 0.2757396524, alpha: 1)
-        case .brown:
-            return #colorLiteral(red: 0.6679978967, green: 0.4751212597, blue: 0.2586010993, alpha: 1)
-        case .food:
-            return #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
         }
     }
 }

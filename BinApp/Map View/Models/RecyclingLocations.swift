@@ -9,21 +9,21 @@
 import Foundation
 import CoreLocation
 
-class RecyclingLocation: NSObject, Codable {
-    var name: String
-    var type: String
-    var typeDescription: String
-    var coordinates: CLLocationCoordinate2D
-    var address: String?
-    var postcode: String?
+class RecyclingLocation: NSObject, Codable, Identifiable {
+    let id: UUID
+    let name: String
+    let types: [RecyclingType]
+    let coordinates: CLLocationCoordinate2D
+    let address: String?
+    let postcode: String?
     var distance: Double?
-    var drivingDistance: Double?
-    var drivingTime: Double?
+    var drivingDistance: Measurement<UnitLength>?
+    var drivingTime: TimeInterval?
     
-    init(name: String, type: String, typeDescription: String, coordinates: CLLocationCoordinate2D, address: String?, postcode: String?) {
+    init(name: String, types: [RecyclingType], coordinates: CLLocationCoordinate2D, address: String?, postcode: String?) {
+        self.id = UUID()
         self.name = name
-        self.type = type
-        self.typeDescription = typeDescription
+        self.types = types
         self.coordinates = coordinates
         self.address = address
         self.postcode = postcode
@@ -42,5 +42,52 @@ extension CLLocationCoordinate2D: Codable {
         let longitude = try container.decode(CLLocationDegrees.self)
         let latitude = try container.decode(CLLocationDegrees.self)
         self.init(latitude: latitude, longitude: longitude)
+    }
+}
+
+extension RecyclingLocation {
+    static var mockData: RecyclingLocation {
+        .init(
+            name: "Leeds City Center",
+            types: [.glass],
+            coordinates: CLLocationCoordinate2D(latitude: 53.7997, longitude: -1.5492),
+            address: "123 Main Street\nLeeds",
+            postcode: "LS1 1UR"
+        )
+    }
+}
+
+extension Array where Element == RecyclingLocation {
+    static var mockData: Self {
+        [
+            RecyclingLocation(
+                name: "Leeds City Center",
+                types: [.glass],
+                coordinates: CLLocationCoordinate2D(latitude: 53.7997, longitude: -1.5492),
+                address: "123 Main Street, Leeds",
+                postcode: "LS1 1UR"
+            ),
+            RecyclingLocation(
+                name: "Headingley Taps",
+                types: [.glass, .paper],
+                coordinates: CLLocationCoordinate2D(latitude: 53.8194, longitude: -1.5804),
+                address: "456 Paper Lane, Headingley, Leeds",
+                postcode: "LS6 3AA"
+            ),
+            RecyclingLocation(
+                name: "Holbeck Recycling Centre",
+                types: [.glass, .textiles],
+                coordinates: CLLocationCoordinate2D(latitude: 53.7842, longitude: -1.5556),
+                address: "789 Cloth Street, Holbeck, Leeds",
+                postcode: "LS11 5HJ"
+            ),
+            RecyclingLocation(
+                name: "Seacroft Station",
+                types: [.glass, .paper, .textiles, .electronics],
+                coordinates: CLLocationCoordinate2D(latitude: 53.8184, longitude: -1.4661),
+                address: "654 Tech Avenue, Seacroft, Leeds",
+                postcode: "LS14 6HS"
+            )
+        ]
     }
 }

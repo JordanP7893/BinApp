@@ -6,9 +6,9 @@
 //  Copyright © 2019 Jordan Porter. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 
-enum RecyclingType: CustomStringConvertible {
+enum RecyclingType: CustomStringConvertible, CaseIterable, Codable {
     case glass
     case paper
     case textiles
@@ -17,13 +17,26 @@ enum RecyclingType: CustomStringConvertible {
     var description: String {
         switch self {
         case .glass:
-            return "glass"
+            return "Glass"
         case .paper:
-            return "paper"
+            return "Paper"
         case .textiles:
-            return "textiles"
+            return "Textiles"
         case .electronics:
-            return "electronics"
+            return "Electronics"
+        }
+    }
+    
+    var colour: Color {
+        switch self {
+        case .glass:
+            return Color(red: 96/255, green: 194/255, blue: 183/255)
+        case .paper:
+            return Color(red: 22/255, green: 137/255, blue: 206/255)
+        case .textiles:
+            return Color(red: 251/255, green: 183/255, blue: 49/255)
+        case .electronics:
+            return Color(red: 223/255, green: 20/255, blue: 123/255)
         }
     }
     
