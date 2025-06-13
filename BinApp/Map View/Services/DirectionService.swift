@@ -21,13 +21,10 @@ class DirectionService {
         )
     }
     
-    func createDirectionRequest(startingPoint: CLLocationCoordinate2D, endPoint: CLLocationCoordinate2D) -> MKDirections.Request {
-        let source          = MKPlacemark(coordinate: startingPoint)
-        let destination     = MKPlacemark(coordinate: endPoint)
-        
-        let request         = MKDirections.Request()
-        request.source      = MKMapItem(placemark: source)
-        request.destination = MKMapItem(placemark: destination)
+    private func createDirectionRequest(startingPoint: CLLocationCoordinate2D, endPoint: CLLocationCoordinate2D) -> MKDirections.Request {
+        let request = MKDirections.Request()
+        request.source = .init(placemark: .init(coordinate: startingPoint))
+        request.destination = .init(placemark: .init(coordinate: endPoint))
         
         return request
     }

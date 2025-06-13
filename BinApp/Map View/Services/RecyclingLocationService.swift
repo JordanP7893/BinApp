@@ -11,77 +11,29 @@ import CoreLocation
 
 class RecyclingLocationService {
     func fetchLocations() async throws -> [RecyclingLocation] {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("recycling_data").appendingPathExtension("plist")
-        
-        let urlString = "https://datamillnorth.org/download/bring-sites/53d959b8-f711-4b5b-9c91-94879122d87e/Copy%20of%20Bring%20Sites%20Master%20Sheet%20.csv"
-        
-        guard let url = URL(string: urlString) else { throw RecyclingLocationService.ServiceErrors.invalidURL }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        
-        guard let string = String(data: data, encoding: .isoLatin1) else { throw RecyclingLocationService.ServiceErrors.stringConversionFailed }
-        
-        let locations = try converCsvStringToAddresses(string: string)
-        
-        if FileManager.default.fileExists(atPath: archiveURL.path){
-            try? FileManager.default.removeItem(atPath: archiveURL.path)
+        if let locations = getLocalLocationData() {
+            return locations
+        } else {
+            return try await getRemoteLocationData()
         }
-        let propertyListEncoder = PropertyListEncoder()
-        let encodedLocations = try? propertyListEncoder.encode(locations)
-        try? encodedLocations?.write(to: archiveURL, options: .noFileProtection)
-        
+    }
+    
+    private func getRemoteLocationData() async throws -> [RecyclingLocation] {
+        let data = try await downloadRecyclingData()
+        guard let string = String(data: data, encoding: .isoLatin1) else {
+            throw RecyclingLocationService.ServiceErrors.stringConversionFailed
+        }
+        let locations = try convertCsvStringToRecyclingLocation(string: string)
+        try saveLocationsToDisk(locations)
         return locations
     }
     
-    func converCsvStringToAddresses(string: String) throws -> [RecyclingLocation] {
-        let csv = CSwiftV(with: string)
-    
-        guard let keyedRows = csv.keyedRows else { throw RecyclingLocationService.ServiceErrors.csvConversionFailed }
-        
-        var locations: [RecyclingLocation] = []
-        
-        for row in keyedRows {
-            guard let name = row["Site Name"], let longitudeString = row["Longitude"], let latitudeString = row["Latitude"]  else {continue}
-            let address = row["Address"]
-            let postcode = row["Post Code"]
-            let glass = row["Recyclables-Mixed Glass"] == "Y" ? true : false
-            let paper = row["Recyclables-Paper"] == "Y" ? true : false
-            let textiles = row["Recyclables-Textiles"] == "Y" ? true : false
-            let electronics = row["Recyclables Small Electrical"] == "Y" ? true : false
-            
-            guard var longitude = Double(longitudeString), let latitude = Double(latitudeString) else {continue}
-            
-            //Fix for incorrect longitudes
-            longitude = longitude > 0 ? -longitude : longitude
-            
-            let locationTypesDictonary: [RecyclingType: Bool] = [.glass : glass, .paper : paper, .textiles : textiles, .electronics : electronics]
-            
-            var types: [RecyclingType] = []
-            for type in locationTypesDictonary {
-                if type.value {
-                    types.append(type.key)
-                }
-            }
-            
-            let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let location = RecyclingLocation(name: name, types: types, coordinates: coordinates, address: address, postcode: postcode)
-            
-            locations.append(location)
-        }
-        
-        return locations
-    }
-    
-    func getLocalLocationData() -> [RecyclingLocation]? {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("recycling_data").appendingPathExtension("plist")
-        
-        guard (archiveURL.isThisURL(lessThanDaysOld: 28)) else { return nil }
+    private func getLocalLocationData() -> [RecyclingLocation]? {
+        guard archiveURL.isThisURL(lessThanDaysOld: 28) else { return nil }
         
         let propertyListDecoder = PropertyListDecoder()
-        
-        if let retrievedLocations = try? Data(contentsOf: archiveURL), let decodedLocations = try? propertyListDecoder.decode([RecyclingLocation].self, from: retrievedLocations){
+        if let retrievedLocations = try? Data(contentsOf: archiveURL),
+           let decodedLocations = try? propertyListDecoder.decode([RecyclingLocation].self, from: retrievedLocations) {
             return decodedLocations
         } else {
             return nil
@@ -90,36 +42,86 @@ class RecyclingLocationService {
 }
 
 extension RecyclingLocationService {
+    private var archiveURL: URL {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsDirectory.appendingPathComponent("recycling_data").appendingPathExtension("plist")
+    }
+
+    private func downloadRecyclingData() async throws -> Data {
+        guard let url = URL(string: AppConfig.recyclingLocationsUrl) else {
+            throw RecyclingLocationService.ServiceErrors.invalidURL
+        }
+        
+        let (data, response) = try await URLSession(configuration: .default).data(from: url)
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            throw RecyclingLocationService.ServiceErrors.invalidResponse
+        }
+        return data
+    }
+
+    private func saveLocationsToDisk(_ locations: [RecyclingLocation]) throws {
+        if FileManager.default.fileExists(atPath: archiveURL.path) {
+            try FileManager.default.removeItem(atPath: archiveURL.path)
+        }
+        let propertyListEncoder = PropertyListEncoder()
+        let encodedLocations = try propertyListEncoder.encode(locations)
+        try encodedLocations.write(to: archiveURL, options: .noFileProtection)
+    }
+    
+    private func convertCsvStringToRecyclingLocation(string: String) throws -> [RecyclingLocation] {
+        let rows = try parseCsvRows(from: string)
+        return rows.compactMap { location(from: $0) }
+    }
+    
+    private func parseCsvRows(from string: String) throws -> [[String: String]] {
+        let csv = CSwiftV(with: string)
+        guard let keyedRows = csv.keyedRows else {
+            throw ServiceErrors.csvConversionFailed
+        }
+        return keyedRows
+    }
+    
+    private func location(from row: [String: String]) -> RecyclingLocation? {
+        guard let name = row["Site Name"],
+              let longitudeString = row["Longitude"],
+              let latitudeString = row["Latitude"],
+              var longitude = Double(longitudeString),
+              let latitude = Double(latitudeString)
+        else { return nil }
+        
+        // Fix for incorrect longitudes, Leeds locations are always negative longitude
+        longitude = longitude > 0 ? -longitude : longitude
+
+        let address = row["Address"]
+        let postcode = row["Post Code"]
+        let glass = row["Recyclables-Mixed Glass"] == "Y"
+        let paper = row["Recyclables-Paper"] == "Y"
+        let textiles = row["Recyclables-Textiles"] == "Y"
+        let electronics = row["Recyclables Small Electrical"] == "Y"
+
+        let types: [RecyclingType] = [
+            glass ? .glass : nil,
+            paper ? .paper : nil,
+            textiles ? .textiles : nil,
+            electronics ? .electronics : nil
+        ].compactMap { $0 }
+
+        let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        return RecyclingLocation(
+            name: name,
+            types: types,
+            coordinates: coordinates,
+            address: address,
+            postcode: postcode
+        )
+    }
+}
+
+extension RecyclingLocationService {
     enum ServiceErrors: Error {
         case invalidURL
+        case invalidResponse
         case stringConversionFailed
         case csvConversionFailed
-    }
-}
-
-extension Date {
-    func addDay(noOfDays: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: noOfDays, to: self)!
-    }
-}
-
-extension URL {
-    func isThisURL(lessThanDaysOld: Int) -> Bool {
-        if let attributes = try? FileManager.default.attributesOfItem(atPath: self.path) as [FileAttributeKey: Any],
-            let creationDate = attributes[FileAttributeKey.creationDate] as? Date {
-
-            if creationDate.addDay(noOfDays: lessThanDaysOld) > Date() {
-                return true
-            }
-        }
-        return false
-    }
-}
-
-extension FileManager {
-    func urls(for directory: FileManager.SearchPathDirectory, skipsHiddenFiles: Bool = true ) -> [URL]? {
-        let documentsURL = urls(for: directory, in: .userDomainMask)[0]
-        let fileURLs = try? contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil, options: skipsHiddenFiles ? .skipsHiddenFiles : [] )
-        return fileURLs
     }
 }

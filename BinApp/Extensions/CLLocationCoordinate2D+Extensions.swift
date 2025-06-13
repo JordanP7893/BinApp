@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  CLLocationCoordinate2D+Extensions.swift
 //  BinApp
 //
 //  Created by Jordan Porter on 29/09/2024.
