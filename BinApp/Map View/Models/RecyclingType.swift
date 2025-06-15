@@ -49,3 +49,15 @@ enum RecyclingType: CustomStringConvertible, CaseIterable, Codable {
         }
     }
 }
+
+
+extension RecyclingType {
+    var iconName: String {
+        switch self {
+        case .glass: return "waterbottle"
+        case .paper: return "text.document"
+        case .textiles: return "tshirt"
+        case .electronics: return "tv"
+        }
+    }
+}

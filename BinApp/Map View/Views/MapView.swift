@@ -23,7 +23,7 @@ struct MapView: View {
                     ForEach(viewModel.locationsFiltered) { location in
                         Marker(
                             location.name,
-                            image: viewModel.selectedRecyclingType.description.lowercased(),
+                            systemImage: viewModel.selectedRecyclingType.iconName,
                             coordinate: location.coordinates
                         )
                             .tint(viewModel.selectedRecyclingType.colour)
@@ -83,16 +83,20 @@ extension MapView {
     @ToolbarContentBuilder
     func toolbarContent() -> some ToolbarContent {
         ToolbarItemGroup(placement: .topBarLeading) {
-            Picker("Recycling type", selection: $viewModel.selectedRecyclingType) {
+            Menu {
                 ForEach(RecyclingType.allCases, id: \.self) { type in
-                    HStack {
-                        Text(type.description)
-                        Spacer()
+                    Button {
+                        viewModel.selectedRecyclingType = type
+                    } label: {
+                        Label(type.description, systemImage: type.iconName)
                     }
                 }
+            } label: {
+                Label(
+                    viewModel.selectedRecyclingType.description,
+                    systemImage: viewModel.selectedRecyclingType.iconName
+                )
             }
-            .pickerStyle(.menu)
-            .labelsHidden()
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
             NavigationLink {
