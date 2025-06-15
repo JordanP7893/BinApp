@@ -14,11 +14,19 @@
 			remoteGlobalIDString = 1734D0A3225D27D200FB61C8;
 			remoteInfo = BinApp;
 		};
+		4F819A5C2DFF3A9F0027872D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1734D09C225D27D100FB61C8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1734D0A3225D27D200FB61C8;
+			remoteInfo = BinApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4F74D6AF2D4FD61C00907F75 /* Bins & Recycling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bins & Recycling.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F819A582DFF3A9F0027872D /* BinAppUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinAppUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,6 +51,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4F74D67B2D4AAB4700907F75 /* BinApp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4F74D6A62D4AAB4800907F75 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BinApp; sourceTree = "<group>"; };
 		4F74D6AB2D4AAB5800907F75 /* BinAppUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4F74D6AE2D4AAB5800907F75 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BinAppUITests; sourceTree = "<group>"; };
+		4F819A592DFF3A9F0027872D /* BinAppUnitTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BinAppUnitTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +69,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4F819A552DFF3A9F0027872D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -68,8 +84,10 @@
 			children = (
 				4F74D67B2D4AAB4700907F75 /* BinApp */,
 				4F74D6AB2D4AAB5800907F75 /* BinAppUITests */,
+				4F819A592DFF3A9F0027872D /* BinAppUnitTests */,
 				4F74D6AF2D4FD61C00907F75 /* Bins & Recycling.app */,
 				4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */,
+				4F819A582DFF3A9F0027872D /* BinAppUnitTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,6 +132,29 @@
 			productReference = 4F74D6B02D4FD61C00907F75 /* BinAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		4F819A572DFF3A9F0027872D /* BinAppUnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F819A5E2DFF3A9F0027872D /* Build configuration list for PBXNativeTarget "BinAppUnitTests" */;
+			buildPhases = (
+				4F819A542DFF3A9F0027872D /* Sources */,
+				4F819A552DFF3A9F0027872D /* Frameworks */,
+				4F819A562DFF3A9F0027872D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4F819A5D2DFF3A9F0027872D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4F819A592DFF3A9F0027872D /* BinAppUnitTests */,
+			);
+			name = BinAppUnitTests;
+			packageProductDependencies = (
+			);
+			productName = BinAppUnitTests;
+			productReference = 4F819A582DFF3A9F0027872D /* BinAppUnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -121,7 +162,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = "Jordan Porter";
 				TargetAttributes = {
@@ -130,6 +171,10 @@
 					};
 					4F52EE6429A284B400AF8C8D = {
 						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 1734D0A3225D27D200FB61C8;
+					};
+					4F819A572DFF3A9F0027872D = {
+						CreatedOnToolsVersion = 26.0;
 						TestTargetID = 1734D0A3225D27D200FB61C8;
 					};
 				};
@@ -151,6 +196,7 @@
 			targets = (
 				1734D0A3225D27D200FB61C8 /* BinApp */,
 				4F52EE6429A284B400AF8C8D /* BinAppUITests */,
+				4F819A572DFF3A9F0027872D /* BinAppUnitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -164,6 +210,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4F52EE6329A284B400AF8C8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F819A562DFF3A9F0027872D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -187,6 +240,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4F819A542DFF3A9F0027872D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -194,6 +254,11 @@
 			isa = PBXTargetDependency;
 			target = 1734D0A3225D27D200FB61C8 /* BinApp */;
 			targetProxy = 4F52EE6B29A284B400AF8C8D /* PBXContainerItemProxy */;
+		};
+		4F819A5D2DFF3A9F0027872D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1734D0A3225D27D200FB61C8 /* BinApp */;
+			targetProxy = 4F819A5C2DFF3A9F0027872D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -398,6 +463,55 @@
 			};
 			name = Release;
 		};
+		4F819A5F2DFF3A9F0027872D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A67HQMEUP;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JordanP7893.BinAppUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bins & Recycling.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Bins & Recycling";
+			};
+			name = Debug;
+		};
+		4F819A602DFF3A9F0027872D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2A67HQMEUP;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = JordanP7893.BinAppUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bins & Recycling.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Bins & Recycling";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -424,6 +538,15 @@
 			buildConfigurations = (
 				4F52EE6D29A284B400AF8C8D /* Debug */,
 				4F52EE6E29A284B400AF8C8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4F819A5E2DFF3A9F0027872D /* Build configuration list for PBXNativeTarget "BinAppUnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F819A5F2DFF3A9F0027872D /* Debug */,
+				4F819A602DFF3A9F0027872D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

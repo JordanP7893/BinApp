@@ -9,7 +9,7 @@
 import CoreLocation
 
 @Observable
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class LocationManager: NSObject {
     @ObservationIgnored private let manager = CLLocationManager()
 
     var userLocation: CLLocation?
@@ -34,6 +34,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    private func getLocationPostcode(for location: CLLocation) async -> String {
+        let postcode = try? await CLGeocoder().reverseGeocodeLocation(location).first?.postalCode
+        return postcode ?? ""
+    }
+}
+
+extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         Task {
@@ -41,18 +48,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             self.userPostcode = await getLocationPostcode(for: location)
         }
     }
-
-    func getLocationPostcode(for location: CLLocation) async -> String {
-        let postcode = try? await CLGeocoder().reverseGeocodeLocation(location).first?.postalCode
-        return postcode ?? ""
-    }
-
+    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
             startLocationServices()
         }
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error.localizedDescription)
     }
