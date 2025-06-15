@@ -10,7 +10,7 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @EnvironmentObject var locationManager: LocationManager
+    @Environment(\.locationManager) var locationManager
     @State var viewModel: MapViewViewModel
     
     @State var card1: RecyclingLocation?
@@ -108,5 +108,5 @@ extension MapView {
     NavigationView {
         MapView(viewModel: MapViewViewModel())
     }
-    .environmentObject(LocationManager())
+    .environment(\.locationManager, LocationManager())
 }

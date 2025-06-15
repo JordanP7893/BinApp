@@ -18,7 +18,7 @@ struct BinAddressView: View {
     }
 
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var locationManager: LocationManager
+    @Environment(\.locationManager) var locationManager
 
     @StateObject var viewModel = BinAddressViewModel()
     
@@ -35,6 +35,12 @@ struct BinAddressView: View {
                     Button(action: {
                         locationButtonState = .loading
                         locationManager.startLocationServices()
+                        Task {
+                            try? await Task.sleep(nanoseconds: 5_000_000_000)
+                            if self.locationButtonState == .loading {
+                                self.locationButtonState = .notPressed
+                            }
+                        }
                     }, label: {
                         locationButtonLabel
                     })
@@ -66,7 +72,7 @@ struct BinAddressView: View {
         .navigationTitle("Find Your Address")
         .navigationBarTitleDisplayMode(.inline)
         .task(id: locationManager.userPostcode) {
-            if let userPostcode = locationManager.userPostcode {
+            if let userPostcode = locationManager.userPostcode, locationButtonState == .loading {
                 viewModel.searchText = userPostcode
                 Task {
                     try await viewModel.searchFor(postcode: userPostcode)
@@ -128,5 +134,5 @@ struct BinAddressView: View {
                     BinAddressView(onSavePress: { _ in })
                 }
             })
-        .environmentObject(LocationManager())
+        .environment(\.locationManager, LocationManager())
 }

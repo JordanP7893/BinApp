@@ -35,7 +35,7 @@ struct BinApp: App {
                     .tag(TabSelection.map)
             }
             .tint(.init("AppColour"))
-            .environmentObject(locationManager)
+            .environment(\.locationManager, locationManager)
             .onAppear {
                 delegate.app = self
             }

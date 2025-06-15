@@ -9,23 +9,25 @@
 import CoreLocation
 
 @Observable
-class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
-    @ObservationIgnored let manager = CLLocationManager()
+class LocationManager: NSObject, CLLocationManagerDelegate {
+    @ObservationIgnored private let manager = CLLocationManager()
+
     var userLocation: CLLocation?
     var userPostcode: String?
     var isAuthorized = false
 
     override init() {
         super.init()
+        manager.delegate = self
     }
 
     func startLocationServices() {
-        manager.delegate = self
         userPostcode = nil
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            manager.requestLocation()
             isAuthorized = true
+            manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            manager.requestLocation()
         default:
             isAuthorized = false
             manager.requestWhenInUseAuthorization()
@@ -33,15 +35,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        updateUserLocation(location: locations.last)
-    }
-    
-    func updateUserLocation(location: CLLocation?) {
-        guard let location else { return }
+        guard let location = locations.last else { return }
         Task {
-            userLocation = location
-            let postcode = await getLocationPostcode(for: location)
-            userPostcode = postcode
+            self.userLocation = location
+            self.userPostcode = await getLocationPostcode(for: location)
         }
     }
 
@@ -51,17 +48,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            isAuthorized = true
-            updateUserLocation(location: manager.location)
-        case .notDetermined:
-            isAuthorized = false
-            manager.requestWhenInUseAuthorization()
-        case .denied, .restricted:
-            isAuthorized = false
-        default:
-            print("Unknown")
+        if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
+            startLocationServices()
         }
     }
 
