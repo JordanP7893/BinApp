@@ -64,16 +64,17 @@ struct MapView: View {
             .animation(.easeInOut, value: card1)
             .animation(.easeInOut, value: card2)
             .toolbar(content: toolbarContent)
-            .task(id: locationManager.userLocation) {
-                viewModel.changeOf(userLocation: locationManager.userLocation)
-            }
-            .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
-                Button("OK") { viewModel.clearError() }
+            .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
+                Button("OK") { viewModel.errorMessage = nil }
             } message: { message in
                 Text(message)
             }
-            .onAppear {
+            .task {
                 locationManager.startLocationServices()
+                await viewModel.loadLocations()
+            }
+            .task(id: locationManager.userLocation) {
+                viewModel.changeOf(userLocation: locationManager.userLocation)
             }
         }
     }
@@ -106,7 +107,7 @@ extension MapView {
 
 #Preview {
     NavigationView {
-        MapView(viewModel: MapViewViewModel())
+        MapView(viewModel: MapViewViewModel(recyclingLocationService: MockRecyclingLocationService()))
     }
     .environment(\.locationManager, LocationManager())
 }

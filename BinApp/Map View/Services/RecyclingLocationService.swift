@@ -9,7 +9,11 @@
 import Foundation
 import CoreLocation
 
-class RecyclingLocationService {
+protocol RecyclingLocationServicing {
+    func fetchLocations() async throws -> [RecyclingLocation]
+}
+
+class RecyclingLocationService: RecyclingLocationServicing {
     func fetchLocations() async throws -> [RecyclingLocation] {
         if let locations = getLocalLocationData() {
             return locations
@@ -123,5 +127,11 @@ extension RecyclingLocationService {
         case invalidResponse
         case stringConversionFailed
         case csvConversionFailed
+    }
+}
+
+class MockRecyclingLocationService: RecyclingLocationServicing {
+    func fetchLocations() async throws -> [RecyclingLocation] {
+        .mockData
     }
 }

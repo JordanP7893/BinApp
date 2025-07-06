@@ -30,7 +30,11 @@ struct BinApp: App {
                     .tabItem { Label("Bin Days", image: "waste") }
                     .tag(TabSelection.binList)
                 
-                MapView(viewModel: MapViewViewModel())
+                MapView(
+                    viewModel: MapViewViewModel(
+                        recyclingLocationService: RecyclingLocationService()
+                    )
+                )
                     .tabItem { Label("Recycling Centres", image: "recycle") }
                     .tag(TabSelection.map)
             }
