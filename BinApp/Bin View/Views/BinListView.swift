@@ -144,7 +144,8 @@ struct BinListView: View {
     let viewModel = BinListViewModel(
         addressDataService: MockBinAddressDataService(),
         binDaysDataService: MockBinDaysDataService(),
-        notificationDataService: MockNotificationService()
+        notificationDataService: MockNotificationDataService(),
+        userNotificationService: MockUserNotificationService()
     )
     
     NavigationView {
@@ -157,7 +158,8 @@ struct BinListView: View {
     let viewModel = BinListViewModel(
         addressDataService: MockBinAddressDataService(shouldFail: true),
         binDaysDataService: MockBinDaysDataService(shouldFail: true),
-        notificationDataService: MockNotificationService()
+        notificationDataService: MockNotificationDataService(),
+        userNotificationService: MockUserNotificationService()
     )
     
     return NavigationView {
@@ -170,7 +172,8 @@ struct BinListView: View {
     let viewModel = BinListViewModel(
         addressDataService: MockBinAddressDataService(),
         binDaysDataService: MockBinDaysDataService(shouldFail: true),
-        notificationDataService: MockNotificationService()
+        notificationDataService: MockNotificationDataService(),
+        userNotificationService: MockUserNotificationService()
     )
     
     return NavigationView {

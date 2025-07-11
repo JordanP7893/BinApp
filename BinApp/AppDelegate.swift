@@ -19,11 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var storedBinID: String? = nil
     
     var binDaysDataService: BinDaysDataService
-    var notificationDataService: NotificationService
+    var notificationDataService: UserNotificationService
     
     override init() {
         self.binDaysDataService = BinDaysDataService()
-        self.notificationDataService = NotificationService(binDaysDataService: binDaysDataService)
+        self.notificationDataService = UserNotificationService(binDaysDataService: binDaysDataService)
     }
     
 
@@ -43,7 +43,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         switch response.actionIdentifier {
         case "done":
-            notificationDataService.markBinDone(binId: response.notification.request.identifier)
+            notificationDataService.markBinDone(id: response.notification.request.identifier)
         case "snooze10Min":
             notificationDataService.snoozeNotification(
                 from: response.notification.request.content,
@@ -63,7 +63,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 for: 2 * 60 * 60
             )
         case "tonight":
-            notificationDataService.remindTonightNotification(
+            notificationDataService.remindTonight(
                 from: response.notification.request.content,
                 withId: response.notification.request.identifier
             )

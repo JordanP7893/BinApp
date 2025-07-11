@@ -65,18 +65,21 @@ class BinListViewModel: ObservableObject {
     
     let addressDataService: BinAddressDataProtocol
     let binDaysDataService: BinDaysDataProtocol
-    let notificationDataService: NotificationProtocol
+    let notificationDataService: NotificationDataProtocol
+    let userNotificationService: UserNotificationProtocol
     
     private var timer: Timer?
     
     init(
         addressDataService: BinAddressDataProtocol,
         binDaysDataService: BinDaysDataProtocol,
-        notificationDataService: NotificationProtocol
+        notificationDataService: NotificationDataProtocol,
+        userNotificationService: UserNotificationProtocol
     ) {
         self.addressDataService = addressDataService
         self.binDaysDataService = binDaysDataService
         self.notificationDataService = notificationDataService
+        self.userNotificationService = userNotificationService
         
         do {
             self.address = try addressDataService.fetchAddressData()
@@ -120,15 +123,15 @@ class BinListViewModel: ObservableObject {
     }
     
     func onDonePress(for bin: BinDays) {
-        notificationDataService.markBinDone(binId: bin.id)
+        userNotificationService.markBinDone(id: bin.id)
     }
     
     func onRemindMeLaterPress(at time: TimeInterval, for bin: BinDays) {
-        notificationDataService.snoozeBin(bin, for: time, isMorning: bin.isMorningPending)
+        userNotificationService.snooze(bin, for: time, isMorning: bin.isMorningPending)
     }
     
     func onRemindMeTonightPress(for bin: BinDays) {
-        notificationDataService.tonightBin(bin)
+        userNotificationService.snoozeUntilTonight(bin)
     }
     
     func scheduleTimer() {
@@ -182,7 +185,7 @@ extension BinListViewModel {
             
             guard !binDays.isEmpty else { return }
             binDays = updateBinDaysWithNotifications(binDays: binDays, notifications: binNotifications)
-            try await notificationDataService.setupBinNotification(for: binDays, at: binNotifications)
+            try await userNotificationService.setupBinNotification(for: binDays, at: binNotifications)
         } catch {
             errorMessage = "Failed to update notifications."
         }

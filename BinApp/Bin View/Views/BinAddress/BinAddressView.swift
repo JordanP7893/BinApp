@@ -51,7 +51,7 @@ struct BinAddressView: View {
                         .textContentType(.postalCode)
                         .onSubmit {
                             Task {
-                                try await viewModel.searchFor(postcode: viewModel.searchText)
+                                await viewModel.searchFor(postcode: viewModel.searchText)
                             }
                         }
                 }
@@ -75,7 +75,7 @@ struct BinAddressView: View {
             if let userPostcode = locationManager.userPostcode, locationButtonState == .loading {
                 viewModel.searchText = userPostcode
                 Task {
-                    try await viewModel.searchFor(postcode: userPostcode)
+                    await viewModel.searchFor(postcode: userPostcode)
                     locationButtonState = .active
                 }
             }

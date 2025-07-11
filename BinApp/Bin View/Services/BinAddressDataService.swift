@@ -14,12 +14,17 @@ protocol BinAddressDataProtocol {
 }
 
 class BinAddressDataService: BinAddressDataProtocol {
+    let networkingService: NetworkingService
+    let archivingService: ArchivingService
+    
+    init(networkingService: NetworkingService = DefaultNetworkingService(), archivingService: ArchivingService = DefaultArchivingService()) {
+        self.networkingService = networkingService
+        self.archivingService = archivingService
+    }
+    
     func fetchAddress(postcode: String) async throws -> [StoreAddress] {
         let postcodeToSearch = postcode.replacingOccurrences(of: " ", with: "")
-        let paramString = BinAddressDataService.getParamString(params: ["postcode": postcodeToSearch])
-        let addressUrl = URL(string: "https://bins.azurewebsites.net/api/getaddress?" + paramString)!
-
-        let data = try await BinDaysDataService.asyncGET(url: addressUrl)
+        let data = try await networkingService.fetchData(from: AppConfig.getAddressUrl, withParams: ["postcode": postcodeToSearch])
         
         let decoder = JSONDecoder()
         let escapedData = Data(String(data: data, encoding: .utf8)!.replacingOccurrences(of: "\\u0000", with: "").utf8)
@@ -28,36 +33,18 @@ class BinAddressDataService: BinAddressDataProtocol {
         return addresses
     }
     
-    static func getParamString(params:[String:Any]) -> String {
-        var data = [String]()
-        for(key, value) in params
-        {
-            data.append(key + "=\(value)")
-        }
-        return data.map { String($0) }.joined(separator: "&")
-    }
-    
     func saveAddressData(_ addresses: AddressData) throws {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("address_data").appendingPathExtension("plist")
-        
-        if FileManager.default.fileExists(atPath: archiveURL.path){
-            try? FileManager.default.removeItem(atPath: archiveURL.path)
-        }
-        
-        let propertyListEncoder = PropertyListEncoder()
-        let encodedLocations = try propertyListEncoder.encode(addresses)
-        try encodedLocations.write(to: archiveURL, options: .noFileProtection)
+        try archivingService.save(addresses, to: archiveURL)
     }
     
     func fetchAddressData() throws -> AddressData {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("address_data").appendingPathExtension("plist")
-        
-        let propertyListDecoder = PropertyListDecoder()
-        let retrievedAddresses = try Data(contentsOf: archiveURL)
-        let decodedAddresses = try propertyListDecoder.decode(AddressData.self, from: retrievedAddresses)
-        return decodedAddresses
+        try archivingService.load(from: archiveURL, as: AddressData.self)
+    }
+}
+
+extension BinAddressDataService {
+    private var archiveURL: URL {
+        archivingService.getArchiveUrl(withName: "address_data")
     }
 }
 

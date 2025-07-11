@@ -14,6 +14,14 @@ protocol RecyclingLocationServicing {
 }
 
 class RecyclingLocationService: RecyclingLocationServicing {
+    let networkingService: NetworkingService
+    let archivingService: ArchivingService
+    
+    init(networkingService: NetworkingService = DefaultNetworkingService(), archivingService: ArchivingService = DefaultArchivingService()) {
+        self.networkingService = networkingService
+        self.archivingService = archivingService
+    }
+    
     func fetchLocations() async throws -> [RecyclingLocation] {
         if let locations = getLocalLocationData() {
             return locations
@@ -28,48 +36,23 @@ class RecyclingLocationService: RecyclingLocationServicing {
             throw RecyclingLocationService.ServiceErrors.stringConversionFailed
         }
         let locations = try convertCsvStringToRecyclingLocation(string: string)
-        try saveLocationsToDisk(locations)
+        try archivingService.save(locations, to: archiveURL)
         return locations
     }
     
     private func getLocalLocationData() -> [RecyclingLocation]? {
         guard archiveURL.isThisURL(lessThanDaysOld: 28) else { return nil }
-        
-        let propertyListDecoder = PropertyListDecoder()
-        if let retrievedLocations = try? Data(contentsOf: archiveURL),
-           let decodedLocations = try? propertyListDecoder.decode([RecyclingLocation].self, from: retrievedLocations) {
-            return decodedLocations
-        } else {
-            return nil
-        }
+        return try? archivingService.load(from: archiveURL, as: [RecyclingLocation].self)
     }
 }
 
 extension RecyclingLocationService {
     private var archiveURL: URL {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        return documentsDirectory.appendingPathComponent("recycling_data").appendingPathExtension("plist")
+        archivingService.getArchiveUrl(withName: "recycling_data")
     }
 
     private func downloadRecyclingData() async throws -> Data {
-        guard let url = URL(string: AppConfig.recyclingLocationsUrl) else {
-            throw RecyclingLocationService.ServiceErrors.invalidURL
-        }
-        
-        let (data, response) = try await URLSession(configuration: .default).data(from: url)
-        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-            throw RecyclingLocationService.ServiceErrors.invalidResponse
-        }
-        return data
-    }
-
-    private func saveLocationsToDisk(_ locations: [RecyclingLocation]) throws {
-        if FileManager.default.fileExists(atPath: archiveURL.path) {
-            try FileManager.default.removeItem(atPath: archiveURL.path)
-        }
-        let propertyListEncoder = PropertyListEncoder()
-        let encodedLocations = try propertyListEncoder.encode(locations)
-        try encodedLocations.write(to: archiveURL, options: .noFileProtection)
+        return try await networkingService.fetchData(from: AppConfig.recyclingLocationsUrl)
     }
     
     private func convertCsvStringToRecyclingLocation(string: String) throws -> [RecyclingLocation] {
@@ -124,7 +107,6 @@ extension RecyclingLocationService {
 extension RecyclingLocationService {
     enum ServiceErrors: Error {
         case invalidURL
-        case invalidResponse
         case stringConversionFailed
         case csvConversionFailed
     }

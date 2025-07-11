@@ -18,49 +18,33 @@ protocol BinDaysDataProtocol {
 class BinDaysDataService: BinDaysDataProtocol {
     @Published var lastUpdate: Date?
     
+    let networkingService: NetworkingService
+    let archivingService: ArchivingService
+    
+    init(networkingService: NetworkingService = DefaultNetworkingService(), archivingService: ArchivingService = DefaultArchivingService()) {
+        self.networkingService = networkingService
+        self.archivingService = archivingService
+    }
+    
     func fetchNetworkBinDays(id: Int) async throws -> [BinDays] {
-        let paramString = BinAddressDataService.getParamString(params: ["premisesid": id, "localauthority": "Leeds"])
-        let binDatesUrl = URL(string: "https://bins.azurewebsites.net/api/getcollections?" + paramString)!
+        let data = try await networkingService.fetchData(from: AppConfig.getCollectionsUrl, withParams: ["premisesid": id, "localauthority": "Leeds"])
         
-        let data = try await BinDaysDataService.asyncGET(url: binDatesUrl)
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone.current
-        
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(formatter)
-        
-        let fetchedBinDays = try decoder.decode([BinDays].self, from: data)
+        let fetchedBinDays = try decodeBinDataFrom(data: data)
         let currentAndNewBins = addOnlyNewFetchedBins(fetchedBinDays)
         
         return currentAndNewBins.sorted { $0.date < $1.date }
     }
     
     func saveBinData(_ binDays: [BinDays]) throws {
-        if binDays.isEmpty { return }
+        if binDays.isEmpty { throw BinError.emptyBinArray }
         
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("bin_data_v2").appendingPathExtension("plist")
-        
-        if FileManager.default.fileExists(atPath: archiveURL.path){
-            try FileManager.default.removeItem(atPath: archiveURL.path)
-        }
-        
-        let propertyListEncoder = PropertyListEncoder()
-        let encodedBinDays = try propertyListEncoder.encode(binDays)
-        try encodedBinDays.write(to: archiveURL, options: .noFileProtection)
+        try archivingService.save(binDays, to: archiveURL)
         
         lastUpdate = .now
     }
     
     func fetchLocalBinDays() throws -> [BinDays] {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("bin_data_v2").appendingPathExtension("plist")
-        
-        let propertyListDecoder = PropertyListDecoder()
-        let retrievedBinDays = try Data(contentsOf: archiveURL)
-        let decodedBinDays = try propertyListDecoder.decode([BinDays].self, from: retrievedBinDays)
+        let decodedBinDays = try archivingService.load(from: archiveURL, as: [BinDays].self)
         if decodedBinDays.isEmpty { throw BinError.emptyBinArray }
         
         let today = Calendar.current.startOfDay(for: Date())
@@ -71,24 +55,6 @@ class BinDaysDataService: BinDaysDataProtocol {
         }
         
         return binDays
-    }
-    
-    static func asyncGET(url: URL) async throws -> Data {
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.timeoutInterval = 5.0
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BinError.invalidResponse
-        }
-        
-        guard httpResponse.statusCode < 300 else {
-            throw BinError.errorCode(httpResponse.statusCode)
-        }
-        
-        return data
     }
     
     public func updateBinDateFor(bin id: String, to date: Date, isMorningDate: Bool) throws {
@@ -110,9 +76,12 @@ class BinDaysDataService: BinDaysDataProtocol {
         }
         try saveBinData(bins)
     }
-    
+}
+
+extension BinDaysDataService {
     private func addOnlyNewFetchedBins(_ fetchedBins: [BinDays]) -> [BinDays] {
         guard let currentBins = try? fetchLocalBinDays() else { return fetchedBins }
+        if fetchedBins.isEmpty { return currentBins }
         
         let stillValidBins = currentBins.filter { currentBin in
             fetchedBins.contains { $0.id == currentBin.id }
@@ -123,6 +92,21 @@ class BinDaysDataService: BinDaysDataProtocol {
         }
         
         return stillValidBins + newFetchedBins
+    }
+    
+    private var archiveURL: URL {
+        archivingService.getArchiveUrl(withName: "bin_data_v2")
+    }
+    
+    private func decodeBinDataFrom(data: Data) throws -> [BinDays] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        
+        return try decoder.decode([BinDays].self, from: data)
     }
 }
 

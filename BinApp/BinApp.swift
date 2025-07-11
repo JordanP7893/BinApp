@@ -23,7 +23,8 @@ struct BinApp: App {
                     viewModel: BinListViewModel(
                         addressDataService: BinAddressDataService(),
                         binDaysDataService: delegate.binDaysDataService,
-                        notificationDataService: delegate.notificationDataService
+                        notificationDataService: NotificationDataService(),
+                        userNotificationService: delegate.notificationDataService,
                     ),
                     selectedBinID: $selectBinID
                 )
