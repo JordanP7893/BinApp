@@ -15,28 +15,13 @@ class MapViewViewModel {
     var locations: [RecyclingLocation] = []
     var locationsFiltered: [RecyclingLocation] = []
     var selectedLocation: RecyclingLocation?
-    var selectedRecyclingType: RecyclingType = .glass {
-        didSet {
-            selectedLocation = nil
-            changeMapPinsDisplayed()
-        }
-    }
+    var selectedRecyclingType: RecyclingType = .glass { didSet { changeOfSelectedRecyclingType() } }
+    
     var mapCamera: MapCameraPosition = .automatic
-    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre {
-        didSet {
-            locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
-        }
-    }
+    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre { didSet { changeOfMapCentreTracked() } }
+    
     var showError = false
-    var errorMessage: String? {
-        didSet {
-            if errorMessage == nil {
-                showError = false
-            } else {
-                showError = true
-            }
-        }
-    }
+    var errorMessage: String? { didSet { changeOf(errorMessage: errorMessage) } }
     
     let recyclingLocationService: RecyclingLocationServicing
     
@@ -55,7 +40,14 @@ class MapViewViewModel {
         }
     }
     
-    func changeMapPinsDisplayed() {
+    func changeOf(userLocation: CLLocation?) {
+        if let location = userLocation, mapCamera == .automatic {
+            mapCamera = .region( .init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
+        }
+    }
+    
+    private func changeOfSelectedRecyclingType() {
+        selectedLocation = nil
         locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
         let distance = getDistanceBetween(centre: mapCentreTracked, andFurthestIndex: 4, from: locationsFiltered)
         
@@ -73,9 +65,15 @@ class MapViewViewModel {
         }
     }
     
-    func changeOf(userLocation: CLLocation?) {
-        if let location = userLocation, mapCamera == .automatic {
-            mapCamera = .region( .init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000))
+    private func changeOfMapCentreTracked() {
+        locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
+    }
+    
+    private func changeOf(errorMessage: String?) {
+        if errorMessage == nil {
+            showError = false
+        } else {
+            showError = true
         }
     }
     

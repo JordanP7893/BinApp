@@ -11,20 +11,10 @@ import CoreLocation
 
 @MainActor
 struct BinAddressView: View {
-    enum LocationButtonState {
-        case active
-        case loading
-        case notPressed
-    }
-
     @Environment(\.dismiss) var dismiss
     @Environment(\.locationManager) var locationManager
 
-    @StateObject var viewModel = BinAddressViewModel()
-    
-    var onSavePress: (_ saveAddress: StoreAddress) -> Void
-    
-    @State var locationButtonState: LocationButtonState = .notPressed
+    @StateObject var viewModel: BinAddressViewModel
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -33,18 +23,14 @@ struct BinAddressView: View {
             VStack(alignment: .center) {
                 HStack(spacing: 20.0) {
                     Button(action: {
-                        locationButtonState = .loading
                         locationManager.startLocationServices()
                         Task {
-                            try? await Task.sleep(nanoseconds: 5_000_000_000)
-                            if self.locationButtonState == .loading {
-                                self.locationButtonState = .notPressed
-                            }
+                            await viewModel.onLocationButtonTap()
                         }
                     }, label: {
                         locationButtonLabel
                     })
-                    .disabled(locationButtonState == .loading)
+                    .disabled(viewModel.locationButtonState == .loading)
 
                     TextField("Search", text: $viewModel.searchText)
                         .textInputAutocapitalization(.characters)
@@ -72,13 +58,7 @@ struct BinAddressView: View {
         .navigationTitle("Find Your Address")
         .navigationBarTitleDisplayMode(.inline)
         .task(id: locationManager.userPostcode) {
-            if let userPostcode = locationManager.userPostcode, locationButtonState == .loading {
-                viewModel.searchText = userPostcode
-                Task {
-                    await viewModel.searchFor(postcode: userPostcode)
-                    locationButtonState = .active
-                }
-            }
+            await viewModel.onUserPostcodeUpdate(userPostcode: locationManager.userPostcode)
         }
         .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
             Button("OK") { viewModel.clearError() }
@@ -97,10 +77,7 @@ struct BinAddressView: View {
             ToolbarItem {
                 Button(action: {
                     dismiss()
-                    
-                    guard let addresses = viewModel.addresses else { return }
-                    let address = addresses[viewModel.selectedAddressIndex]
-                    onSavePress(address)
+                    viewModel.onSaveTap()
                 }, label: {
                     Text("Save")
                         .bold()
@@ -112,7 +89,7 @@ struct BinAddressView: View {
 
     @ViewBuilder
     var locationButtonLabel: some View {
-        switch locationButtonState {
+        switch viewModel.locationButtonState {
         case .active:
             Image(systemName: "location.fill")
         case .loading:
@@ -131,7 +108,7 @@ struct BinAddressView: View {
             isPresented: $isPresented,
             content: {
                 NavigationView {
-                    BinAddressView(onSavePress: { _ in })
+                    BinAddressView(viewModel: .init(onSaveCallback: { _ in }))
                 }
             })
         .environment(\.locationManager, LocationManager())

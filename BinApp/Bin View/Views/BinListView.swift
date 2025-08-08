@@ -102,7 +102,7 @@ struct BinListView: View {
         }
         .sheet(isPresented: $showAddressSheet) {
             NavigationView {
-                BinAddressView(onSavePress: viewModel.onSavePress(address:))
+                BinAddressView(viewModel: .init(onSaveCallback: viewModel.onSavePress(address:)))
             }
         }
         .sheet(isPresented: $showNotificationSheet) {
@@ -118,6 +118,13 @@ struct BinListView: View {
             Button("OK") { viewModel.clearError() }
         } message: { message in
             Text(message)
+        }
+        .onAppear(perform: viewModel.onAppear)
+        .onChange(of: viewModel.binDays) { oldValue, newValue in
+            viewModel.onChangeOfBinDays(newValue: newValue, oldValue: oldValue)
+        }
+        .onChange(of: viewModel.binNotifications) { oldValue, newValue in
+            viewModel.onChangeOfBinNotifications(newValue: newValue, oldValue: oldValue)
         }
         .onChange(of: selectedBinID) { _, id in
             let selectedBin = viewModel.binDays.first { $0.id == id }
