@@ -23,19 +23,24 @@ struct BinApp: App {
                     viewModel: BinListViewModel(
                         addressDataService: BinAddressDataService(),
                         binDaysDataService: delegate.binDaysDataService,
-                        notificationDataService: delegate.notificationDataService
+                        notificationDataService: NotificationDataService(),
+                        userNotificationService: delegate.notificationDataService,
                     ),
                     selectedBinID: $selectBinID
                 )
                     .tabItem { Label("Bin Days", image: "waste") }
                     .tag(TabSelection.binList)
                 
-                MapView(viewModel: MapViewViewModel())
+                MapView(
+                    viewModel: MapViewViewModel(
+                        recyclingLocationService: RecyclingLocationService()
+                    )
+                )
                     .tabItem { Label("Recycling Centres", image: "recycle") }
                     .tag(TabSelection.map)
             }
             .tint(.init("AppColour"))
-            .environmentObject(locationManager)
+            .environment(\.locationManager, locationManager)
             .onAppear {
                 delegate.app = self
             }

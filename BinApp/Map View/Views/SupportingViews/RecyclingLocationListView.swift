@@ -10,7 +10,7 @@ import SwiftUI
 import MapKit
 
 struct RecyclingLocationList: View {
-    @EnvironmentObject var locationManager: LocationManager
+    @Environment(\.locationManager) var locationManager
     @State var selected: RecyclingLocation?
     
     let recyclingLocations: [RecyclingLocation]
@@ -36,6 +36,6 @@ struct RecyclingLocationList: View {
 #Preview {
     NavigationView {
         RecyclingLocationList(recyclingLocations: .mockData)
-            .environmentObject(LocationManager())
+            .environment(\.locationManager, LocationManager())
     }
 }

@@ -33,5 +33,5 @@ struct RecyclingLocationCardView: View {
 
 #Preview {
     RecyclingLocationCardView(recyclingLocation: .mockData)
-        .environmentObject(LocationManager())
+        .environment(\.locationManager, LocationManager())
 }

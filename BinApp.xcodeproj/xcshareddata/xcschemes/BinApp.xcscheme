@@ -54,6 +54,17 @@
                ReferencedContainer = "container:BinApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4F819A572DFF3A9F0027872D"
+               BuildableName = "BinAppUnitTests.xctest"
+               BlueprintName = "BinAppUnitTests"
+               ReferencedContainer = "container:BinApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

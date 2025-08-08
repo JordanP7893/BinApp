@@ -43,7 +43,7 @@ struct BinNotificationList: View {
             } header: {
                 Text("Bin Types")
             } footer: {
-                Text("Choose which bin types to recieve notifications for.")
+                Text("Choose which bin types to receive notifications for.")
             }
         }
         .navigationTitle("Notifications")

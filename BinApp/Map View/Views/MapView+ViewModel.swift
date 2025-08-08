@@ -15,54 +15,28 @@ class MapViewViewModel {
     var locations: [RecyclingLocation] = []
     var locationsFiltered: [RecyclingLocation] = []
     var selectedLocation: RecyclingLocation?
-    var selectedRecyclingType: RecyclingType = .glass {
-        didSet {
-            selectedLocation = nil
-            changeMapPinsDisplayed()
-        }
-    }
+    var selectedRecyclingType: RecyclingType = .glass { didSet { changeOfSelectedRecyclingType() } }
+    
     var mapCamera: MapCameraPosition = .automatic
-    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre {
-        didSet {
-            locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
-        }
-    }
+    var mapCentreTracked: CLLocationCoordinate2D = .leedsCityCentre { didSet { changeOfMapCentreTracked() } }
+    
     var showError = false
-    var errorMessage: String? {
-        didSet {
-            if errorMessage == nil {
-                showError = false
-            } else {
-                showError = true
-            }
-        }
+    var errorMessage: String? { didSet { changeOf(errorMessage: errorMessage) } }
+    
+    let recyclingLocationService: RecyclingLocationServicing
+    
+    init(recyclingLocationService: RecyclingLocationServicing) {
+        self.recyclingLocationService = recyclingLocationService
     }
     
-    let recyclingLocationService = RecyclingLocationService()
-    
-    init() {
-        Task {
-            guard locations.isEmpty else { return }
-            
-            do {
-                locations = try await recyclingLocationService.fetchLocations()
-                locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
-            } catch {
-                errorMessage = "Failed to load locations. Please try again later."
-            }
-        }
-    }
-
-    func clearError() {
-        errorMessage = nil
-    }
-    
-    func changeMapPinsDisplayed() {
-        locationsFiltered = filterAndSort(locations: locations, by: selectedRecyclingType)
-        let distance = getDistanceBetween(centre: mapCentreTracked, andFurthestIndex: 4, from: locationsFiltered)
+    func loadLocations() async {
+        guard locations.isEmpty else { return }
         
-        withAnimation {
-            mapCamera = .region(MKCoordinateRegion(center: .init(latitude: mapCentreTracked.latitude, longitude: mapCentreTracked.longitude), latitudinalMeters: distance * 2, longitudinalMeters: distance * 2))
+        do {
+            locations = try await recyclingLocationService.fetchLocations()
+            locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
+        } catch {
+            errorMessage = "Failed to load locations. Please try again later."
         }
     }
     
@@ -72,21 +46,39 @@ class MapViewViewModel {
         }
     }
     
-    private func filterAndSort(locations: [RecyclingLocation], by type: RecyclingType) -> [RecyclingLocation] {
-        let locationsFiltered = locationsFiltered(locations, by: type)
-        return orderLocations(locationsFiltered, asDistanceFrom: mapCentreTracked)
+    private func changeOfSelectedRecyclingType() {
+        selectedLocation = nil
+        locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
+        let distance = getDistanceBetween(centre: mapCentreTracked, andFurthestIndex: 4, from: locationsFiltered)
+        
+        withAnimation {
+            mapCamera = .region(
+                MKCoordinateRegion(
+                    center: .init(
+                        latitude: mapCentreTracked.latitude,
+                        longitude: mapCentreTracked.longitude
+                    ),
+                    latitudinalMeters: distance * 2,
+                    longitudinalMeters: distance * 2
+                )
+            )
+        }
+    }
+    
+    private func changeOfMapCentreTracked() {
+        locationsFiltered = locations.filteredAndSorted(by: selectedRecyclingType, fromCoordinate: mapCentreTracked)
+    }
+    
+    private func changeOf(errorMessage: String?) {
+        if errorMessage == nil {
+            showError = false
+        } else {
+            showError = true
+        }
     }
     
     private func getDistanceBetween(centre: CLLocationCoordinate2D, andFurthestIndex furthestIndex: Int, from locations: [RecyclingLocation]) -> CLLocationDistance {
         let closestLocation = locations[furthestIndex]
-        return mapCentreTracked.distance(to: closestLocation.coordinates)
-    }
-    
-    private func locationsFiltered(_ locations: [RecyclingLocation], by type: RecyclingType) -> [RecyclingLocation] {
-        return locations.filter({ $0.types.contains(type) })
-    }
-    
-    private func orderLocations(_ locations: [RecyclingLocation], asDistanceFrom currentLocation: CLLocationCoordinate2D) -> [RecyclingLocation] {
-        return locations.sorted { currentLocation.distance(to: $0.coordinates) < currentLocation.distance(to: $1.coordinates) }
+        return centre.distance(to: closestLocation.coordinates)
     }
 }
