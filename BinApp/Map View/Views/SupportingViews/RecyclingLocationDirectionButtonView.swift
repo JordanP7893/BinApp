@@ -10,7 +10,7 @@ import MapKit
 import SwiftUI
 
 struct RecyclingLocationDirectionButton: View {
-    @EnvironmentObject var locationManager: LocationManager
+    @Environment(\.locationManager) var locationManager
     @State var directionData: DirectionService.DirectionData?
     
     var recyclingLocation: RecyclingLocation
@@ -83,5 +83,5 @@ struct RecyclingLocationDirectionButton: View {
 
 #Preview {
     RecyclingLocationDirectionButton(recyclingLocation: .mockData, isCompact: false)
-        .environmentObject(LocationManager())
+        .environment(\.locationManager, LocationManager())
 }
