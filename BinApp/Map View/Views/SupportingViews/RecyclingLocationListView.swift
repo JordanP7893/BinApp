@@ -13,6 +13,7 @@ struct RecyclingLocationList: View {
     @Environment(\.locationManager) var locationManager
     @State var selected: RecyclingLocation?
     
+    let recyclingTypeName: String
     let recyclingLocations: [RecyclingLocation]
     
     var body: some View {
@@ -30,12 +31,13 @@ struct RecyclingLocationList: View {
                     .padding()
             }
         }
+        .navigationTitle(recyclingTypeName)
     }
 }
 
 #Preview {
     NavigationView {
-        RecyclingLocationList(recyclingLocations: .mockData)
+        RecyclingLocationList(recyclingTypeName: "Glass", recyclingLocations: .mockData)
             .environment(\.locationManager, LocationManager())
     }
 }

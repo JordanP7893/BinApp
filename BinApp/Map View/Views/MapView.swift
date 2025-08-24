@@ -101,7 +101,10 @@ extension MapView {
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
             NavigationLink {
-                RecyclingLocationList(recyclingLocations: viewModel.locationsFiltered)
+                RecyclingLocationList(
+                    recyclingTypeName: viewModel.selectedRecyclingType.description,
+                    recyclingLocations: viewModel.locationsFiltered
+                )
             } label: {
                 Image(systemName: "list.bullet")
             }

@@ -53,8 +53,12 @@ struct BinNotificationList: View {
                 Button(action: {
                     showNotificationSheet = false
                 }, label: {
-                    Text("Done")
-                        .bold()
+                    if #available(iOS 26, *) {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Text("Done")
+                            .bold()
+                    }
                 })
             }
         })

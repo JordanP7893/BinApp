@@ -70,7 +70,11 @@ struct BinAddressView: View {
                 Button(action: {
                     dismiss()
                 }, label: {
-                    Text("Cancel")
+                    if #available(iOS 26, *) {
+                        Image(systemName: "xmark")
+                    } else {
+                        Text("Cancel")
+                    }
                 })
             }
 
@@ -79,8 +83,12 @@ struct BinAddressView: View {
                     dismiss()
                     viewModel.onSaveTap()
                 }, label: {
-                    Text("Save")
-                        .bold()
+                    if #available(iOS 26, *) {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Text("Save")
+                            .bold()
+                    }
                 })
                 .disabled(viewModel.addresses?.isEmpty ?? true)
             }
