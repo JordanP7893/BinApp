@@ -388,7 +388,7 @@
 		1734D0B7225D27D300FB61C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Bin App Icon";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;
@@ -408,7 +408,7 @@
 		1734D0B8225D27D300FB61C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "Bin App Icon";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2A67HQMEUP;
 				INFOPLIST_FILE = BinApp/Info.plist;

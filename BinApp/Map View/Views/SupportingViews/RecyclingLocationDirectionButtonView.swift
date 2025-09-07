@@ -37,10 +37,9 @@ struct RecyclingLocationDirectionButton: View {
             }
             .frame(height: 80)
             .frame(maxWidth: 200)
-            .foregroundStyle(.white)
-            .background(.blue)
-            .cornerRadius(isCompact ? 10 : 40)
         }
+        .tint(.blue)
+        .buttonStyle(.borderedProminent)
         .task {
             await calculateDirections()
         }
