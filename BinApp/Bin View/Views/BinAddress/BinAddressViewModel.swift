@@ -77,6 +77,8 @@ class BinAddressViewModel: ObservableObject {
                 guard let region = circularRegion?.center else { return }
                 
                 self.mapCamera = .camera(.init(centerCoordinate: region, distance: 1000))
+            } else {
+                errorMessage = "No matching addresses found. This must be a Leeds postcode."
             }
         } catch {
             errorMessage = "Error finding address"
