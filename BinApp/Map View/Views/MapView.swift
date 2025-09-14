@@ -22,7 +22,7 @@ struct MapView: View {
                     ForEach(viewModel.locationsFiltered) { location in
                         Marker(
                             location.name,
-                            systemImage: viewModel.selectedRecyclingType.iconName,
+                            image: viewModel.selectedRecyclingType.rawValue,
                             coordinate: location.coordinates
                         )
                             .tint(viewModel.selectedRecyclingType.colour)

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-enum RecyclingType: CustomStringConvertible, CaseIterable, Codable {
+enum RecyclingType: String, CustomStringConvertible, CaseIterable, Codable {
     case glass
     case paper
     case textiles
