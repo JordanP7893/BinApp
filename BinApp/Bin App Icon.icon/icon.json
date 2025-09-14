@@ -9,9 +9,17 @@
       "hidden" : false,
       "layers" : [
         {
+          "fill-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : {
+                "automatic-gradient" : "srgb:0.00000,0.70588,0.89412,1.00000"
+              }
+            }
+          ],
           "glass" : true,
           "image-name" : "3 – Layer-2.svg",
-          "name" : "3 – Layer-2"
+          "name" : "Wheel"
         }
       ],
       "lighting" : "individual",
@@ -29,8 +37,16 @@
       "blur-material" : 0.5,
       "layers" : [
         {
+          "fill-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : {
+                "automatic-gradient" : "srgb:0.00000,0.70588,0.89412,1.00000"
+              }
+            }
+          ],
           "image-name" : "4 – Layer 2.svg",
-          "name" : "4 – Layer 2"
+          "name" : "Body+Lid"
         }
       ],
       "lighting" : "individual",

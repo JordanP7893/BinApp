@@ -19,6 +19,7 @@ struct RecyclingLocationCardView: View {
                 
                 RecyclingLocationDirectionButton(recyclingLocation: recyclingLocation, isCompact: true)
                     .frame(width: 100)
+                    .buttonStyle(.borderedProminent)
             }
             .padding()
         }

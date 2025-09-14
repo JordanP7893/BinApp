@@ -26,9 +26,17 @@ struct RecyclingLocationList: View {
             .listStyle(.inset)
             
             if let selected {
-                RecyclingLocationDirectionButton(recyclingLocation: selected, isCompact: false)
-                    .shadow(radius: 20)
-                    .padding()
+                if #available(iOS 26.0, *) {
+                    RecyclingLocationDirectionButton(recyclingLocation: selected, isCompact: false)
+                        .shadow(radius: 20)
+                        .padding()
+                        .buttonStyle(.glassProminent)
+                } else {
+                    RecyclingLocationDirectionButton(recyclingLocation: selected, isCompact: false)
+                        .shadow(radius: 20)
+                        .padding()
+                        .buttonStyle(.borderedProminent)
+                }
             }
         }
         .navigationTitle(recyclingTypeName)

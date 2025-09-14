@@ -79,18 +79,24 @@ struct BinAddressView: View {
             }
 
             ToolbarItem {
-                Button(action: {
-                    dismiss()
-                    viewModel.onSaveTap()
-                }, label: {
-                    if #available(iOS 26, *) {
+                if #available(iOS 26, *) {
+                    Button(action: {
+                        dismiss()
+                        viewModel.onSaveTap()
+                    }, label: {
                         Image(systemName: "checkmark")
-                    } else {
+                    })
+                    .disabled(disabledSaveButton)
+                } else {
+                    Button(action: {
+                        dismiss()
+                        viewModel.onSaveTap()
+                    }, label: {
                         Text("Save")
                             .bold()
-                    }
-                })
-                .disabled(viewModel.addresses?.isEmpty ?? true)
+                    })
+                    .disabled(disabledSaveButton)
+                }
             }
         })
     }
@@ -105,6 +111,10 @@ struct BinAddressView: View {
         case .notPressed:
             Image(systemName: "location")
         }
+    }
+    
+    var disabledSaveButton: Bool {
+        viewModel.addresses?.isEmpty ?? true
     }
 }
 
