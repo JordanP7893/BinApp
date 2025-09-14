@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-enum RecyclingType: CustomStringConvertible, CaseIterable, Codable {
+enum RecyclingType: String, CustomStringConvertible, CaseIterable, Codable {
     case glass
     case paper
     case textiles
@@ -46,6 +46,18 @@ enum RecyclingType: CustomStringConvertible, CaseIterable, Codable {
         case "textiles": self = .textiles
         case "electronics": self = .electronics
         default: self = .glass
+        }
+    }
+}
+
+
+extension RecyclingType {
+    var iconName: String {
+        switch self {
+        case .glass: return "waterbottle"
+        case .paper: return "text.document"
+        case .textiles: return "tshirt"
+        case .electronics: return "tv"
         }
     }
 }

@@ -50,12 +50,21 @@ struct BinNotificationList: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(content: {
             ToolbarItem {
-                Button(action: {
-                    showNotificationSheet = false
-                }, label: {
-                    Text("Done")
-                        .bold()
-                })
+                if #available(iOS 26, *) {
+                    Button(action: {
+                        showNotificationSheet = false
+                    }, label: {
+                        Image(systemName: "checkmark")
+                    })
+                    .buttonStyle(.borderedProminent)
+                } else {
+                    Button(action: {
+                        showNotificationSheet = false
+                    }, label: {
+                        Text("Done")
+                            .bold()
+                    })
+                }
             }
         })
     }

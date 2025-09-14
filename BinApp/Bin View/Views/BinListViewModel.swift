@@ -42,12 +42,7 @@ class BinListViewModel: ObservableObject {
     }
     
     func onAppear() {
-        do {
-            self.address = try addressDataService.fetchAddressData()
-        } catch {
-            errorMessage = "Failed to fetch address data."
-            isLoading = false
-        }
+        self.address = try? addressDataService.fetchAddressData()
         self.binNotifications = notificationDataService.fetchNotificationState()
         
         do {
@@ -56,6 +51,7 @@ class BinListViewModel: ObservableObject {
         } catch {
             Task {
                 await fetchDataFromTheNetwork(usingId: address?.id)
+                isLoading = false
             }
         }
         

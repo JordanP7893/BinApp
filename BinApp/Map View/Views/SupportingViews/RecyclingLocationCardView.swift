@@ -13,25 +13,34 @@ struct RecyclingLocationCardView: View {
     var recyclingLocation: RecyclingLocation
     
     var body: some View {
-        HStack(spacing: 5) {
-            RecyclingLocationInfoView(recyclingLocation: recyclingLocation)
-            
-            Spacer()
-            
-            RecyclingLocationDirectionButton(recyclingLocation: recyclingLocation, isCompact: true)
-                .frame(width: 80)
+        VStack(alignment: .trailing) {
+            HStack(spacing: 20) {
+                RecyclingLocationInfoView(recyclingLocation: recyclingLocation)
+                
+                RecyclingLocationDirectionButton(recyclingLocation: recyclingLocation, isCompact: true)
+                    .frame(width: 100)
+                    .buttonStyle(.borderedProminent)
+            }
+            .padding()
         }
-        .padding()
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .shadow(radius: 10)
-        .padding()
-        .safeAreaPadding(.bottom)
-        .transition(.offset(y: 200).combined(with: .opacity))
     }
 }
 
 #Preview {
-    RecyclingLocationCardView(recyclingLocation: .mockData)
-        .environment(\.locationManager, LocationManager())
+    @Previewable @State var sheetHeight: CGFloat = 0
+    
+    Color.blue.opacity(0.3)
+        .sheet(isPresented: .constant(true)) {
+            RecyclingLocationCardView(recyclingLocation: .mockData)
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onAppear {
+                                sheetHeight = max(proxy.size.height, 160)
+                            }
+                    }
+                )
+                .presentationDetents([.height(sheetHeight)])
+                .environment(\.locationManager, LocationManager())
+        }
 }

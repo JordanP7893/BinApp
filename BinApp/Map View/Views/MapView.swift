@@ -13,8 +13,7 @@ struct MapView: View {
     @Environment(\.locationManager) var locationManager
     @State var viewModel: MapViewViewModel
     
-    @State var card1: RecyclingLocation?
-    @State var card2: RecyclingLocation?
+    @State var sheetHeight: CGFloat = 0
     
     var body: some View {
         NavigationStack {
@@ -23,7 +22,7 @@ struct MapView: View {
                     ForEach(viewModel.locationsFiltered) { location in
                         Marker(
                             location.name,
-                            image: viewModel.selectedRecyclingType.description.lowercased(),
+                            image: viewModel.selectedRecyclingType.rawValue,
                             coordinate: location.coordinates
                         )
                             .tint(viewModel.selectedRecyclingType.colour)
@@ -36,33 +35,21 @@ struct MapView: View {
                     MapUserLocationButton()
                     MapCompass()
                 }
-                
-                ZStack {
-                    if let card1 {
-                        RecyclingLocationCardView(recyclingLocation: card1)
-                    }
-                    
-                    if let card2 {
-                        RecyclingLocationCardView(recyclingLocation: card2)
-                    }
-                }
             }
-            .onChange(of: viewModel.selectedLocation) {
-                if $1 == nil {
-                    card1 = nil
-                    card2 = nil
-                } else if card1 == nil {
-                    card1 = $1
-                    card2 = nil
-                } else {
-                    card2 = $1
-                    card1 = nil
-                }
+            .sheet(item: $viewModel.selectedLocation) {
+                RecyclingLocationCardView(recyclingLocation: $0)
+                    .presentationDetents([.height(sheetHeight)])
+                    .background(
+                        GeometryReader { proxy in
+                            Color.clear
+                                .onAppear {
+                                    sheetHeight = max(proxy.size.height, 160)
+                                }
+                        }
+                    )
             }
             .navigationTitle("Recycling Centres")
             .navigationBarTitleDisplayMode(.inline)
-            .animation(.easeInOut, value: card1)
-            .animation(.easeInOut, value: card2)
             .toolbar(content: toolbarContent)
             .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
                 Button("OK") { viewModel.errorMessage = nil }
@@ -84,20 +71,27 @@ extension MapView {
     @ToolbarContentBuilder
     func toolbarContent() -> some ToolbarContent {
         ToolbarItemGroup(placement: .topBarLeading) {
-            Picker("Recycling type", selection: $viewModel.selectedRecyclingType) {
+            Menu {
                 ForEach(RecyclingType.allCases, id: \.self) { type in
-                    HStack {
-                        Text(type.description)
-                        Spacer()
+                    Button {
+                        viewModel.selectedRecyclingType = type
+                    } label: {
+                        Label(type.description, systemImage: type.iconName)
                     }
                 }
+            } label: {
+                Label(
+                    viewModel.selectedRecyclingType.description,
+                    systemImage: viewModel.selectedRecyclingType.iconName
+                )
             }
-            .pickerStyle(.menu)
-            .labelsHidden()
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
             NavigationLink {
-                RecyclingLocationList(recyclingLocations: viewModel.locationsFiltered)
+                RecyclingLocationList(
+                    recyclingTypeName: viewModel.selectedRecyclingType.description,
+                    recyclingLocations: viewModel.locationsFiltered
+                )
             } label: {
                 Image(systemName: "list.bullet")
             }

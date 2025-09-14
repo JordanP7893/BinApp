@@ -30,7 +30,7 @@ class RecyclingLocation: NSObject, Codable, Identifiable {
     }
 }
 
-extension CLLocationCoordinate2D: Codable {
+extension CLLocationCoordinate2D: @retroactive Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
         try container.encode(longitude)
