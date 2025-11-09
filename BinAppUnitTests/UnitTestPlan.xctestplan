@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BA0CD0BD-3B3F-4BEF-AF34-3D8A2660DD2E",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:BinApp.xcodeproj",
+        "identifier" : "4F819A572DFF3A9F0027872D",
+        "name" : "BinAppUnitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

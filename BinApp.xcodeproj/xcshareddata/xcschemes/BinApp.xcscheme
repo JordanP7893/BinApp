@@ -38,7 +38,10 @@
       </MacroExpansion>
       <TestPlans>
          <TestPlanReference
-            reference = "container:BinAppUITests/LocationTestPlan.xctestplan"
+            reference = "container:BinAppUITests/LocationTestPlan.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:BinAppUnitTests/UnitTestPlan.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

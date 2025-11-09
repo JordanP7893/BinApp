@@ -9,6 +9,7 @@
 import Foundation
 
 protocol BinAddressDataProtocol {
+    func fetchAddress(postcode: String) async throws -> [StoreAddress]
     func fetchAddressData() throws -> AddressData
     func saveAddressData(_ addresses: AddressData) throws
 }
@@ -54,6 +55,15 @@ class MockBinAddressDataService: BinAddressDataProtocol {
     init(shouldFail: Bool = false) {
         self.shouldFail = shouldFail
     }
+    
+    func fetchAddress(postcode: String) async throws -> [StoreAddress] {
+        guard !shouldFail else {
+            throw DecodingError.typeMismatch(String.self, .init(codingPath: [], debugDescription: ""))
+        }
+        
+        return [.dummy, .dummy2, .dummy3]
+    }
+    
     
     func fetchAddressData() throws -> AddressData {
         guard !shouldFail else {

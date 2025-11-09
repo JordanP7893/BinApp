@@ -66,7 +66,7 @@ struct BinAddressView: View {
             Text(message)
         }
         .toolbar(content: {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button(action: {
                     dismiss()
                 }, label: {
@@ -78,7 +78,7 @@ struct BinAddressView: View {
                 })
             }
 
-            ToolbarItem {
+            ToolbarItem(placement: .confirmationAction) {
                 if #available(iOS 26, *) {
                     Button(action: {
                         dismiss()
