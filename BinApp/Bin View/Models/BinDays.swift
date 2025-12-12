@@ -40,8 +40,16 @@ struct BinDays: Codable, Hashable, Identifiable {
     }
     
     var id: String {
-        return "\(date.description) \(type.description)"
+        let dateString = BinDays.fullDateFormatter.string(from: date)
+        return "\(dateString) \(type.description)"
     }
+    
+    private static let fullDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        formatter.timeZone = TimeZone(identifier: "Europe/London")
+        return formatter
+    }()
     
     mutating func donePressed() {
         isPending = false
@@ -114,4 +122,3 @@ enum BinType: String, Codable, CaseIterable, Identifiable {
         }
     }
 }
-
