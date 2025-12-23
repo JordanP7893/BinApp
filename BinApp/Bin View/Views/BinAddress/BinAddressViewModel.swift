@@ -27,14 +27,18 @@ class BinAddressViewModel: ObservableObject {
     @Published var selectedAddressIndex: Int = 0 { didSet { selectAddress(at: selectedAddressIndex) } }
     @Published var locationButtonState: LocationButtonState = .notPressed
 
-    let geocoder = CLGeocoder()
-    let binAddressDataService = BinAddressDataService()
+    let geocoder: Geocoding
+    let binAddressDataService: BinAddressDataProtocol
     
     private var onSaveCallback: (_ saveAddress: StoreAddress) -> Void
     
     init(
+        geocoder: Geocoding = CLGeocoder(),
+        binAddressDataService: BinAddressDataProtocol = BinAddressDataService(),
         onSaveCallback: @escaping (_: StoreAddress) -> Void
     ) {
+        self.geocoder = geocoder
+        self.binAddressDataService = binAddressDataService
         self.onSaveCallback = onSaveCallback
     }
 
@@ -62,7 +66,7 @@ class BinAddressViewModel: ObservableObject {
     
     func searchFor(postcode: String) async {
         do {
-            let location = try await geocoder.geocodeAddressString(postcode)
+            let location = try await geocoder.geocodeString(postcode)
             let addresses = try await binAddressDataService.fetchAddress(postcode: postcode)
             
             if !addresses.isEmpty {
@@ -100,7 +104,7 @@ class BinAddressViewModel: ObservableObject {
     }
 
     private func retrievePointFromAddress(_ address: String) async throws {
-        let location = try await geocoder.geocodeAddressString(address + " " + searchText)
+        let location = try await geocoder.geocodeString(address + " " + searchText)
 
         let circularRegion = location.first?.region as? CLCircularRegion
         guard let coordinates = circularRegion?.center else { return }
