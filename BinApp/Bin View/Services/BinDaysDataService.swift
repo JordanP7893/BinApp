@@ -101,7 +101,7 @@ extension BinDaysDataService {
     private func decodeBinDataFrom(data: Data) throws -> [BinDays] {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone.current
+        formatter.timeZone = TimeZone(identifier: "Europe/London")
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(formatter)

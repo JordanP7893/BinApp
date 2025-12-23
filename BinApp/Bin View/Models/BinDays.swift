@@ -9,6 +9,7 @@
 import Foundation
 
 struct BinDays: Codable, Hashable, Identifiable {
+    let id: String
     let type: BinType
     let date: Date
     var notificationEvening: Date?
@@ -39,9 +40,17 @@ struct BinDays: Codable, Hashable, Identifiable {
         }
     }
     
-    var id: String {
-        return "\(date.description) \(type.description)"
+    private static func createId(date: Date, type: BinType) -> String {
+        let dateString = BinDays.fullDateFormatter.string(from: date)
+        return "\(dateString) \(type.description)"
     }
+    
+    private static let fullDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        formatter.timeZone = TimeZone(identifier: "Europe/London")
+        return formatter
+    }()
     
     mutating func donePressed() {
         isPending = false
@@ -57,6 +66,7 @@ struct BinDays: Codable, Hashable, Identifiable {
     }
     
     init(type: BinType, date: Date) {
+        self.id = BinDays.createId(date: date, type: type)
         self.type = type
         self.date = date
         self.isPending = true
@@ -64,8 +74,12 @@ struct BinDays: Codable, Hashable, Identifiable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.type = try container.decode(BinType.self, forKey: .type)
-        self.date = try container.decode(Date.self, forKey: .date)
+        let type = try container.decode(BinType.self, forKey: .type)
+        let date = try container.decode(Date.self, forKey: .date)
+        
+        self.id = BinDays.createId(date: date, type: type)
+        self.type = type
+        self.date = date
         self.notificationEvening = try container.decodeIfPresent(Date.self, forKey: .notificationEvening)
         self.notificationMorning = try container.decodeIfPresent(Date.self, forKey: .notificationMorning)
         self.isPending = try container.decodeIfPresent(Bool.self, forKey: .isPending) ?? true
@@ -114,4 +128,3 @@ enum BinType: String, Codable, CaseIterable, Identifiable {
         }
     }
 }
-
