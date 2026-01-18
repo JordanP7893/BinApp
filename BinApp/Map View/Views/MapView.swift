@@ -48,8 +48,6 @@ struct MapView: View {
                         }
                     )
             }
-            .navigationTitle("Recycling Centres")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: toolbarContent)
             .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { _ in
                 Button("OK") { viewModel.errorMessage = nil }
