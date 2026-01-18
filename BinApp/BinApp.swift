@@ -38,6 +38,10 @@ struct BinApp: App {
                 )
                     .tabItem { Label("Recycling Centres", image: "recycle") }
                     .tag(TabSelection.map)
+                
+                SupportListView()
+                    .tabItem { Label("Support", systemImage: "questionmark.circle") }
+                    .tag(TabSelection.support)
             }
             .tint(.init("AppColour"))
             .environment(\.locationManager, locationManager)
@@ -51,4 +55,5 @@ struct BinApp: App {
 enum TabSelection {
     case binList
     case map
+    case support
 }

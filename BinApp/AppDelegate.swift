@@ -6,6 +6,7 @@
 //  Copyright © 2019 Jordan Porter. All rights reserved.
 //
 
+import StoreKit
 import UIKit
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,6 +25,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override init() {
         self.binDaysDataService = BinDaysDataService()
         self.notificationDataService = UserNotificationService(binDaysDataService: binDaysDataService)
+
+        Task.detached {
+            for await result in Transaction.updates {
+                do {
+                    let transaction = try result.payloadValue
+                    // Deliver content or update state
+                    await transaction.finish()
+                } catch {
+                    // Handle error
+                }
+            }
+        }
     }
     
 
