@@ -10,8 +10,7 @@ import SwiftUI
 
 struct TipJarView: View {
     @Environment(\.dismiss) var dismiss
-    
-    @StateObject private var tipStore = TipStore()
+    @EnvironmentObject var tipStore: TipStore
     @State var showThankYouText = false
     
     var body: some View {
@@ -34,30 +33,42 @@ struct TipJarView: View {
                             .multilineTextAlignment(.center)
                     }
                     .padding(.horizontal)
-
+                    
                     VStack(spacing: 0) {
-                        ForEach(Array(tipStore.tipProducts.enumerated()), id: \.element.id) { idx, product in
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(product.displayName)
-                                        .font(.headline)
-                                }
-                                Spacer()
-                                Button {
-                                    Task {
-                                        await tipStore.purchase(product)
+                        if tipStore.isLoading {
+                            ProgressView()
+                        } else if tipStore.tipProducts.isEmpty {
+                            Text("No tips available")
+                        } else {
+                            ForEach(Array(tipStore.tipProducts.enumerated()), id: \.element.id) { idx, product in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("\(getEmoji(for: product.id)) \(product.displayName)")
+                                            .font(.headline)
                                     }
-                                } label: {
-                                    Text(product.displayPrice)
-                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Button {
+                                        Task {
+                                            await tipStore.purchase(product)
+                                        }
+                                    } label: {
+                                        Text(product.displayPrice)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .tint(.accentColor)
+                                    .disabled(tipStore.purchaseInProgress != nil)
+                                    .overlay {
+                                        if let productPurchasing = tipStore.purchaseInProgress, productPurchasing == product {
+                                            ProgressView()
+                                        }
+                                    }
                                 }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.accentColor)
-                            }
-                            .padding(.vertical, 16)
-                            .padding(.horizontal)
-                            if idx < tipStore.tipProducts.count - 1 {
-                                Divider()
+                                .padding(.vertical, 16)
+                                .padding(.horizontal)
+                                if idx < tipStore.tipProducts.count - 1 {
+                                    Divider()
+                                }
                             }
                         }
                     }
@@ -105,8 +116,20 @@ struct TipJarView: View {
                 }
             }
             .task {
-                await tipStore.fetchTipProducts()
+                if tipStore.tipProducts.isEmpty {
+                    await tipStore.fetchTipProducts()
+                }
             }
+        }
+    }
+    
+    func getEmoji(for productId: String) -> String {
+        switch productId {
+        case "tip_small": return "👍"
+        case "tip_medium": return "☕️"
+        case "tip_large": return "🙌"
+        case "tip_massive": return "🚀"
+        default: return "🎁"
         }
     }
 }
@@ -115,4 +138,5 @@ struct TipJarView: View {
     Text("Sheet view").sheet(isPresented: .constant(true)) {
         TipJarView()
     }
+    .environmentObject(TipStore())
 }

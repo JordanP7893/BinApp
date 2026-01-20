@@ -12,6 +12,8 @@ import StoreKit
 @MainActor
 class TipStore: ObservableObject {
     @Published var tipProducts: [Product] = []
+    @Published var isLoading = false
+    @Published var purchaseInProgress: Product?
     @Published var showCompleteAnimation = false {
         didSet {
             Task {
@@ -30,15 +32,19 @@ class TipStore: ObservableObject {
     
     func fetchTipProducts() async {
         do {
+            isLoading = true
             let products = try await Product.products(for: productIDs)
             tipProducts = products.sorted(by: { $0.price < $1.price })
+            isLoading = false
         } catch {
+            isLoading = false
             print("Failed to fetch products: \(error)")
         }
     }
     
     func purchase(_ product: Product) async {
         do {
+            purchaseInProgress = product
             let result = try await product.purchase()
             switch result {
             case .success(let verification):
@@ -46,19 +52,23 @@ class TipStore: ObservableObject {
                 case .verified(let transaction):
                     await transaction.finish()
                     showCompleteAnimation = true
+                    purchaseInProgress = nil
                     return
                 case .unverified(let transaction, _):
                     await transaction.finish()
                     showCompleteAnimation = true
+                    purchaseInProgress = nil
                     return
                 }
             case .pending:
+                purchaseInProgress = nil
                 return
             default:
+                purchaseInProgress = nil
                 return
             }
-            // Handle result (success, userCancelled, etc.)
         } catch {
+            purchaseInProgress = nil
             print("Purchase failed: \(error)")
         }
     }

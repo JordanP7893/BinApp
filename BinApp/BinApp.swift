@@ -13,6 +13,7 @@ import SwiftUI
 struct BinApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State var locationManager = LocationManager()
+    @State var tipStore = TipStore()
     @State var tabSelection: TabSelection = .binList
     @State var selectBinID: String?
     
@@ -45,8 +46,12 @@ struct BinApp: App {
             }
             .tint(.init("AppColour"))
             .environment(\.locationManager, locationManager)
+            .environmentObject(tipStore)
             .onAppear {
                 delegate.app = self
+            }
+            .task {
+                await tipStore.fetchTipProducts()
             }
         }
     }
