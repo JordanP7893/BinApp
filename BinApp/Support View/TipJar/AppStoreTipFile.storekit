@@ -1,0 +1,102 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "CA744326",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6757984453",
+      "localizations" : [
+        {
+          "description" : "A large tip",
+          "displayName" : "Support the app",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "tip_large",
+      "referenceName" : "Large Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6757984435",
+      "localizations" : [
+        {
+          "description" : "A massive tip",
+          "displayName" : "Help future features",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "tip_massive",
+      "referenceName" : "Massive Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "6757984088",
+      "localizations" : [
+        {
+          "description" : "A medium tip",
+          "displayName" : "Buy me a coffee",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "tip_medium",
+      "referenceName" : "Medium Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6756929815",
+      "localizations" : [
+        {
+          "description" : "A small tip",
+          "displayName" : "Say thanks",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "tip_small",
+      "referenceName" : "Small Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1599887664",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "2A67HQMEUP",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 790624461.38896501,
+    "_locale" : "en_GB",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "GBR",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

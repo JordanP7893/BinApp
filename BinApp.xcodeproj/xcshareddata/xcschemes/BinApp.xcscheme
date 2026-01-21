@@ -95,7 +95,7 @@
          referenceType = "1">
       </LocationScenarioReference>
       <StoreKitConfigurationFileReference
-         identifier = "../../BinApp/Support View/TipJar/Tips.storekit">
+         identifier = "../../BinApp/Support View/TipJar/AppStoreTipFile.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
