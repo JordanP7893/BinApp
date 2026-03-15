@@ -10,7 +10,9 @@ import SwiftUI
 
 struct BinDuePopupView: View {
     @Binding var showPopup: Bool
-    @State var showConfirmation = false
+    @State private var showConfirmation = false
+    @State private var showTipJar = false
+    @State private var showTipJarAlert = true
     
     var donePressed: () -> Void
     var remindPressed: (TimeInterval) -> Void
@@ -28,7 +30,11 @@ struct BinDuePopupView: View {
                         donePressed()
                         Task {
                             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
-                            AppReviewRequest.requestReviewIfNeeded()
+                            if EngagementPrompt.handleCompletion() {
+                                await MainActor.run {
+                                    showTipJarAlert = true
+                                }
+                            }
                         }
                     }
                 }, label: {
@@ -86,6 +92,17 @@ struct BinDuePopupView: View {
                 .fill(Color(UIColor(named: "AppColour")!))
                 .shadow(radius: 10)
         )
+        .sheet(isPresented: $showTipJar) {
+            TipJarView()
+        }
+        .alert("Leave a tip?", isPresented: $showTipJarAlert) {
+            Button("Sure!") {
+                showTipJar = true
+            }
+            Button("Not now") {}
+        } message: {
+            Text("If you're enjoying the app, a small tip helps support ongoing development.")
+        }
     }
 }
 

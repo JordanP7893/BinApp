@@ -18,11 +18,8 @@ struct SupportListView: View {
                     Link("Cannot find my address", destination: HelpUrls.cannotFindAddressUrl)
                     Link("Bin day is incorrect", destination: HelpUrls.binDayIncorrectUrl)
                     Link("Report a missed bin collection", destination: HelpUrls.missedCollectionUrl)
+                    Link("Bugs in the app", destination: HelpUrls.email)
                     Link("Other queries", destination: HelpUrls.generalEnquiryUrl)
-                }
-                
-                Section("Bugs in the app 🐛") {
-                    Link("Email us", destination: HelpUrls.email)
                 }
 
                 Section("Say thank you 🥰") {

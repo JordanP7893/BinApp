@@ -35,6 +35,7 @@ struct BinAddressView: View {
                     TextField("Search", text: $viewModel.searchText)
                         .textInputAutocapitalization(.characters)
                         .textContentType(.postalCode)
+                        .submitLabel(.search)
                         .onSubmit {
                             Task {
                                 await viewModel.searchFor(postcode: viewModel.searchText)
@@ -57,8 +58,8 @@ struct BinAddressView: View {
         }
         .navigationTitle("Find Your Address")
         .navigationBarTitleDisplayMode(.inline)
-        .task(id: locationManager.userPostcode) {
-            await viewModel.onUserPostcodeUpdate(userPostcode: locationManager.userPostcode)
+        .task(id: locationManager.userAddressComponents) {
+            await viewModel.onUserAddressUpdate(components: locationManager.userAddressComponents)
         }
         .alert("Error", isPresented: $viewModel.showError, presenting: viewModel.errorMessage) { message in
             Button("OK") { viewModel.clearError() }

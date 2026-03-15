@@ -20,7 +20,7 @@ struct BinDetailView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if showPopup && bin.showNotification{
+                if showPopup && bin.showNotification {
                     BinDuePopupView(showPopup: $showPopup, donePressed: donePressed, remindPressed: remindPressed, tonightPressed: tonightPressed)
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                         .padding(.bottom)
