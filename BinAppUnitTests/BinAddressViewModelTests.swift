@@ -46,7 +46,8 @@ struct BinAddressViewModelTests {
         let viewModel = BinAddressViewModel(binAddressDataService: MockBinAddressDataService(), onSaveCallback: { _ in})
         viewModel.locationButtonState = .loading
         
-        await viewModel.onUserPostcodeUpdate(userPostcode: "LS1 ABC")
+        let components = UserAddressComponents(postcode: "LS1 ABC", houseNameOrNumber: nil, streetName: nil)
+        await viewModel.onUserAddressUpdate(components: components)
         
         #expect(viewModel.searchText == "LS1 ABC")
         #expect(viewModel.addresses?.count == 3)

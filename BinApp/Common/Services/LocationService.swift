@@ -8,12 +8,18 @@
 
 import CoreLocation
 
+struct UserAddressComponents: Equatable {
+    let postcode: String
+    let houseNameOrNumber: String?
+    let streetName: String?
+}
+
 @Observable
 class LocationManager: NSObject {
     @ObservationIgnored private let manager = CLLocationManager()
 
     var userLocation: CLLocation?
-    var userPostcode: String?
+    var userAddressComponents: UserAddressComponents?
     var isAuthorized = false
 
     override init() {
@@ -22,7 +28,7 @@ class LocationManager: NSObject {
     }
 
     func startLocationServices() {
-        userPostcode = nil
+        userAddressComponents = nil
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             isAuthorized = true
@@ -34,9 +40,12 @@ class LocationManager: NSObject {
         }
     }
 
-    private func getLocationPostcode(for location: CLLocation) async -> String {
-        let postcode = try? await CLGeocoder().reverseGeocodeLocation(location).first?.postalCode
-        return postcode ?? ""
+    private func getLocationAddressComponents(for location: CLLocation) async -> UserAddressComponents {
+        let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first
+        let postcode = placemark?.postalCode ?? ""
+        let houseNameOrNumber = placemark?.subThoroughfare
+        let streetName = placemark?.thoroughfare
+        return .init(postcode: postcode, houseNameOrNumber: houseNameOrNumber, streetName: streetName)
     }
 }
 
@@ -45,7 +54,8 @@ extension LocationManager: CLLocationManagerDelegate {
         guard let location = locations.last else { return }
         Task {
             self.userLocation = location
-            self.userPostcode = await getLocationPostcode(for: location)
+            let addressComponents = await getLocationAddressComponents(for: location)
+            self.userAddressComponents = addressComponents
         }
     }
     

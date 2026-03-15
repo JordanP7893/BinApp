@@ -29,8 +29,9 @@ class BinAddressViewModel: ObservableObject {
 
     let geocoder: Geocoding
     let binAddressDataService: BinAddressDataProtocol
-    
+
     private var onSaveCallback: (_ saveAddress: StoreAddress) -> Void
+    private var locationAddressComponents: UserAddressComponents?
     
     init(
         geocoder: Geocoding = CLGeocoder(),
@@ -56,12 +57,14 @@ class BinAddressViewModel: ObservableObject {
         }
     }
     
-    func onUserPostcodeUpdate(userPostcode: String?) async {
-        if let userPostcode, locationButtonState == .loading {
-            searchText = userPostcode
-            await searchFor(postcode: userPostcode)
+    func onUserAddressUpdate(components: UserAddressComponents?) async {
+        guard locationButtonState == .loading else { return }
+        guard let components, !components.postcode.isEmpty else { return }
+
+        searchText = components.postcode
+        locationAddressComponents = components
+        await searchFor(postcode: components.postcode)
             locationButtonState = .active
-        }
     }
     
     func searchFor(postcode: String) async {
@@ -71,10 +74,16 @@ class BinAddressViewModel: ObservableObject {
             
             if !addresses.isEmpty {
                 withAnimation {
-                    self.addresses = addresses.sorted {
+                    let sortedAddresses = addresses.sorted {
                         $0.formattedAddress.localizedStandardCompare($1.formattedAddress) == .orderedAscending
                     }
-                    selectAddress(at: 0)
+                    self.addresses = sortedAddresses
+                    let bestIndex = AddressMatcher.bestAddressIndex(
+                        in: sortedAddresses,
+                        houseNameOrNumber: postcode == locationAddressComponents?.postcode ? locationAddressComponents?.houseNameOrNumber : nil,
+                        streetName: postcode == locationAddressComponents?.postcode ? locationAddressComponents?.streetName : nil
+                    )
+                    selectedAddressIndex = bestIndex
                 }
                 
                 let circularRegion = location.first?.region as? CLCircularRegion
@@ -121,6 +130,7 @@ class BinAddressViewModel: ObservableObject {
             showError = true
         }
     }
+
 }
 
 extension CLLocationCoordinate2D {
