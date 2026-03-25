@@ -12,7 +12,7 @@ struct BinDuePopupView: View {
     @Binding var showPopup: Bool
     @State private var showConfirmation = false
     @State private var showTipJar = false
-    @State private var showTipJarAlert = true
+    @State private var showTipJarAlert = false
     
     var donePressed: () -> Void
     var remindPressed: (TimeInterval) -> Void
